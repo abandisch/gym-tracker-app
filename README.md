@@ -19,16 +19,9 @@ This continues week after week, and over time the gym goer can see how the weigh
 - As a gym goer, I want to create a training session, so that I can track my exercises for that session
 - As a gym goer, I want to add exercises to a training session, so I can track the weight lifted, number of sets completed and my max reps for that exercise
 - As a gym goer, I want to see the results of my last training session (if any), so that I can set my goals (max reps and weight increase) for my current training session
-
-
-- As an app user, I want to create an exercise session
-- As a user I want to add an exercise to a session
-- As a user I want to record the exercise name, number of sets and maximum reps achieved
-- As a user I want to delete an exercise
-- As a user I want to get all exercises for a session
-- As a user I want to see what I achieved in an exercise in my last session
-- As a user I want to see a high level overview of all sessions and their exercises (get all sessions)
-- As a user I want to delete a session 
+- As a gym goer, I want to view all exercises for a training session, so I can see my results (max reps and weight lifted) for each exercise at a glance
+- As a gym goer, I want to remove an exercise from my training session
+- As a gym goer, I want to remove a training session (including any recorded exercises under that training session)
 
 ## User Stories for MVP
 
