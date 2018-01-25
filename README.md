@@ -38,7 +38,9 @@ This continues week after week, and over time the gym goer can see how the weigh
 - Screen for adding/editing a training session
 - Screen for adding/editing an exercise to a training session (including number of sets, weight lifted and max reps)
 
+## User Flow Diagram
 
+![Gym Tracker App - User Flow](https://github.com/abandisch/gym-tracker-app/blob/master/resources/user-flow.jpg)
 
 
 
