@@ -42,5 +42,13 @@ This continues week after week, and over time the gym goer can see how the weigh
 
 ![Gym Tracker App - User Flow](https://github.com/abandisch/gym-tracker-app/blob/master/resources/user-flow.jpg)
 
+## Wireframes
 
+### Home Page / Login Page
+![Wireframe - Home page and Login Page](https://github.com/abandisch/gym-tracker-app/blob/master/resources/Home_Page.png)
 
+### Registration Page
+![Wireframe - Registration Page](https://github.com/abandisch/gym-tracker-app/blob/master/resources/Register_Page.png)
+
+### Main Gym Training Session Page
+![Wireframe - Gym Training Session Page](https://github.com/abandisch/gym-tracker-app/blob/master/resources/Training_Session_Page.png)
