@@ -36,7 +36,7 @@ This continues week after week, and over time the gym goer can see how the weigh
 - Screen for login or registration
 - Screen for listing all the training sessions
 - Screen for adding/editing a training session
-- Screen for adding/editing an exercise
+- Screen for adding/editing an exercise to a training session (including number of sets, weight lifted and max reps)
 
 
 
