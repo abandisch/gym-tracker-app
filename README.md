@@ -30,3 +30,15 @@ This continues week after week, and over time the gym goer can see how the weigh
 - As a gym goer, I want to create a training session, so that I can record my exercises for that training session
 - As a gym goer, I want to add exercises to a training session, so I can track the weight lifted, number of sets and my max reps
 - As a gym goer, I want to see the results of my last training session (if any), so that I can set my goals (max reps and weight increase) for my current training session
+
+## App Screen List
+
+- Screen for login or registration
+- Screen for listing all the training sessions
+- Screen for adding/editing a training session
+- Screen for adding/editing an exercise
+
+
+
+
+
