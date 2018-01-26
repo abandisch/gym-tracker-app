@@ -1,0 +1,29 @@
+{
+  "name": "gym-tracker-app",
+  "version": "1.0.0",
+  "description": "App to track gym exercises",
+  "main": "server.js",
+  "scripts": {
+    "test": "mocha --recursive --exit",
+    "start": "node server.js",
+    "devstart": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abandisch/gym-tracker-app.git"
+  },
+  "author": "Alex Bandisch <alexander.bandisch@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abandisch/gym-tracker-app/issues"
+  },
+  "homepage": "https://github.com/abandisch/gym-tracker-app#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-http": "^3.0.0",
+    "mocha": "^5.0.0"
+  }
+}
