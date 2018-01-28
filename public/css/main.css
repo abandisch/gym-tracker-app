@@ -1,0 +1,78 @@
+/* General Styles */
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+/* Fonts */
+body {
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+}
+
+/* Form fields */
+input, .btn {
+  border: 1px solid #b9b9b9;
+  border-radius: 3px;
+  padding: 5px 10px;
+  line-height: 1.7em;
+  font-size: 1em;
+  transition: all 0.1s ease-in-out;
+}
+input:active, input:focus {
+  outline: none !important;
+  border: 1px solid #428ee6;;
+  box-shadow: 0 0 3px #004d9a;
+}
+label {
+  font-weight: bold;
+}
+
+/* Button Types */
+.btn.btn-success {
+  background-color: #00bb00;
+  border-color: #00a900;
+  color: #fff;
+}
+.btn.btn-success:hover {
+  background-color: #00a800;
+}
+
+/* header */
+header {
+  max-width: 960px;
+  margin: 0 auto;
+}
+header img {
+  max-width: 100%;
+
+}
+header h1 {
+  margin: 10px 0 0;
+  text-transform: uppercase;
+  font-size: 1.8em;
+  font-weight: normal;
+  text-align: center;
+}
+
+/* main */
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Start Page */
+#login-form {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+#login-form input, #login-form .btn {
+  width: 100%
+}
+#login-form input, #login-form .btn {
+  margin-top: 8px;
+}
