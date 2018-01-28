@@ -15,7 +15,7 @@ describe('# Static HTML files', function () {
     closeServer();
   });
 
-  it('should serve HTML files with correct response code', function () {
+  it('should serve HTML files with http 200 response code', function () {
     return chai.request(app)
       .get('/')
       .then(function (res) {

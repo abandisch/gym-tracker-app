@@ -4,6 +4,11 @@ const app = express();
 // Static files
 app.use(express.static('public'));
 
+// Home page
+app.get('/', (req, res) => {
+  res.sendFile(`${__dirname}/views/index.html`);
+});
+
 // Start / Stop Server
 let server;
 function runServer() {
