@@ -26,15 +26,4 @@ describe('# Static HTML files', function () {
     });
   });
 
-  describe('# Select a Training Session page', function () {
-    it('should get HTML file with http 200 response code', function () {
-      return chai.request(app)
-        .get('/training-session/select-session/')
-        .then(function (res) {
-          expect(res).to.be.html;
-          expect(res).to.have.status(200);
-        });
-    });
-  });
-
 });

@@ -9,10 +9,6 @@ app.get('/', (req, res) => {
   res.sendFile(`${__dirname}/views/index.html`);
 });
 
-// Select Training Session page
-app.get('/training-session/select-session/', (req, res) => {
-  res.sendFile(`${__dirname}/views/training-session.html`);
-});
 
 // Start / Stop Server
 let server;
