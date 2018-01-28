@@ -1,14 +1,47 @@
 const State = {
   displayHomePage: false,
+  displaySelectTrainingSessionPage: false,
   render() {
     if (this.displayHomePage) {
       const main = $('main');
-      const homePageIntroHtml = HomePage.render({template: HomePage.introText});
+      const pageTextHtml = HomePage.render({template: HomePage.introText});
       const homePageLoginHtml = HomePage.render({template: HomePage.loginForm, onSubmitForm: EventHandler.onLoginFormSubmit});
-      main.html(homePageIntroHtml);
+      main.html(pageTextHtml);
       main.append(homePageLoginHtml);
       this.displayHomePage = false;
     }
+
+    if (this.displaySelectTrainingSessionPage) {
+      const main = $('main');
+      const pageTextHtml = TrainingSession.render({template: TrainingSession.introText});
+      const selectTrainingSessionHtml = TrainingSession.render({template: TrainingSession.selectTrainingSessionForm, onSubmitForm: EventHandler.onSelectTrainingFormSubmit});
+      main.html(pageTextHtml);
+      main.append(selectTrainingSessionHtml);
+      this.displaySelectTrainingSessionPage = false;
+    }
+  }
+};
+
+const TrainingSession = {
+  introText() {
+    return `
+      <h2 class="heading-select-session">Select your training session for today</h2>
+    `;
+  },
+  selectTrainingSessionForm() {
+    return `<form role="form" id="select-training-session-form">
+              <button class="btn-block btn-blue"><i class="fa fa-user"></i> CHEST <span><i class="fa fa-angle-right"></i></span></button>
+              <button class="btn-block btn-pink"><i class="fa fa-hand-grab-o"></i> ARMS <span><i class="fa fa-angle-right"></i></span></button>
+              <button class="btn-block btn-teal"><i class="fa fa-male"></i> LEGS <span><i class="fa fa-angle-right"></i></span></button>
+              <button class="btn-block btn-orange"><i class="fa fa-heart"></i> BACK <span><i class="fa fa-angle-right"></i></span></button>
+            </form>`;
+  },
+  render(props) {
+    const templateHtml= props.template;
+    if (props.onSubmitForm) {
+      $(templateHtml).on('submit', props.onSubmitForm);
+    }
+    return templateHtml;
   }
 };
 
@@ -39,13 +72,21 @@ const HomePage = {
 const EventHandler = {
   onLoginFormSubmit: function (event) {
     event.preventDefault();
-    window.location.href = 'training-session/select-session/';
+    //window.location.href = 'training-session/select-session/';
+    GymTracker.showSelectTrainingSessionPage();
+  },
+  onSelectTrainingFormSubmit: function (event) {
+    event.preventDefault();
   }
 };
 
 const GymTracker = {
   showStartPage() {
     State.displayHomePage = true;
+    State.render();
+  },
+  showSelectTrainingSessionPage() {
+    State.displaySelectTrainingSessionPage = true;
     State.render();
   }
 };

@@ -13,7 +13,7 @@ body {
 }
 
 /* Form fields */
-input, .btn {
+input, .btn, .btn-block {
   border: 1px solid #b9b9b9;
   border-radius: 3px;
   padding: 5px 10px;
@@ -31,15 +31,34 @@ label {
 }
 
 /* Button Types */
+.btn-block {
+  display: block;
+  width: 100%;
+  color: #fff;
+  border-radius: 0;
+}
+.btn {
+  color: #fff;
+}
 .btn.btn-success {
   background-color: #00bb00;
   border-color: #00a900;
-  color: #fff;
 }
 .btn.btn-success:hover {
   background-color: #00a800;
 }
-
+.btn-blue {
+  background-color: #0275d8;
+}
+.btn-pink {
+  background-color: #e91e63;
+}
+.btn-teal {
+  background-color: #009688;
+}
+.btn-orange {
+  background-color: #ff9800;
+}
 /* header */
 header {
   max-width: 960px;
@@ -75,4 +94,32 @@ main {
 }
 #login-form input, #login-form .btn {
   margin-top: 8px;
+}
+
+/* Select training session form */
+.heading-select-session {
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: normal;
+}
+#select-training-session-form {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+#select-training-session-form .btn-block {
+  margin: 0 0 5px;
+  text-align: left;
+  position: relative;
+  height: 45px;
+}
+#select-training-session-form .btn-block > i {
+  display: inline-block;
+  width: 20px;
+  margin: 0 5px;
+  text-align: center;
+}
+#select-training-session-form .btn-block span {
+  position: absolute;
+  right: 10px;
 }
