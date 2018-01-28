@@ -44,11 +44,10 @@ This continues week after week, and over time the gym goer can see how the weigh
 
 ## Wireframes
 
-### Home Page / Login Page
-![Wireframe - Home page and Login Page](https://github.com/abandisch/gym-tracker-app/blob/master/resources/Home_Page.png)
+### Start page and second page
+![Gym Tracker App - Start page and second page](https://github.com/abandisch/gym-tracker-app/blob/master/resources/Mobile_View_Page_1_and_2_templates.png)
 
-### Registration Page
-![Wireframe - Registration Page](https://github.com/abandisch/gym-tracker-app/blob/master/resources/Register_Page.png)
+### Session Page
+![Gym Tracker App - Session page](https://github.com/abandisch/gym-tracker-app/blob/master/resources/Mobile_View_Page_3_templates.png)
 
-### Main Gym Training Session Page
-![Wireframe - Gym Training Session Page](https://github.com/abandisch/gym-tracker-app/blob/master/resources/Training_Session_Page.png)
+
