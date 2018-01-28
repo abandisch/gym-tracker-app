@@ -13,7 +13,7 @@ const State = {
 
     if (this.displaySelectTrainingSessionPage) {
       const main = $('main');
-      const pageTextHtml = TrainingSession.render({template: TrainingSession.introText});
+      const pageTextHtml = TrainingSession.render({template: TrainingSession.selectTrainingSessionIntroText});
       const selectTrainingSessionHtml = TrainingSession.render({template: TrainingSession.selectTrainingSessionForm, onSubmitForm: EventHandler.onSelectTrainingFormSubmit});
       main.html(pageTextHtml);
       main.append(selectTrainingSessionHtml);
@@ -23,7 +23,7 @@ const State = {
 };
 
 const TrainingSession = {
-  introText() {
+  selectTrainingSessionIntroText() {
     return `
       <h2 class="heading-select-session">Select your training session for today</h2>
     `;
