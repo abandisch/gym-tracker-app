@@ -4,6 +4,8 @@ const State = {
   displayHomePage: false,
   displaySelectTrainingSessionPage: false,
   displayEmptyTrainingSessionPage: false,
+  displayTrainingSessionPage: false,
+  displayAddExerciseInputForm: false,
   trainingSessionType: '',
   trainingSessionIcons: [
     {exercise: 'chest', icon: 'fa-user'},
@@ -11,9 +13,10 @@ const State = {
     {exercise: 'legs', icon: 'fa-male'},
     {exercise: 'back', icon: 'fa-heart'}
   ],
-  previousExercises: [],
+  previousTrainingSessionExercises: {},
   render() {
     const main = $('main');
+    let sessionDetails = { };
 
     if (this.displayHomePage) {
       const pageTextHtml = HomePage.render({template: HomePage.introText});
@@ -31,21 +34,52 @@ const State = {
       this.displaySelectTrainingSessionPage = false;
     }
 
-    if (this.displayEmptyTrainingSessionPage) {
-      const sessionDetails = {
+    if (this.displayEmptyTrainingSessionPage || this.displayTrainingSessionPage) {
+      sessionDetails = {
         sessionIcon: this.trainingSessionIcons.find(x => x.exercise === this.trainingSessionType).icon,
         sessionType: this.trainingSessionType,
         sessionDate: new Date().getTime()
       };
+    }
+
+    if (this.displayEmptyTrainingSessionPage) {
       const pageHeadingHtml = TrainingSessionPage.render({ template: TrainingSessionPage.sessionHeading, session: sessionDetails });
       const formsContainer = $('<div class="no-previous-data"></div>');
       const changeSessionForm = TrainingSessionPage.render({ template: TrainingSessionPage.changeSessionForm, onSubmitForm: EventHandler.onChangeSessionFormSubmit });
-      const addExercisesForm = TrainingSessionPage.render({ template: TrainingSessionPage.addExerciseBigButtonForm, session: sessionDetails, onSubmitForm: EventHandler.onAddExerciseFormSubmit });
+      let addExercisesForm;
+      if (this.displayAddExerciseInputForm) { // show the form with input field
+        addExercisesForm = TrainingSessionPage.render({ template: TrainingSessionPage.addExerciseInputForm, session: sessionDetails, onSubmitForm: EventHandler.onAddExerciseInputFormSubmit });
+      } else { // just show the big button form
+        addExercisesForm = TrainingSessionPage.render({ template: TrainingSessionPage.addExerciseBigButtonForm, session: sessionDetails, onSubmitForm: EventHandler.onAddExerciseBigButtonFormSubmit });
+      }
       main.html(pageHeadingHtml);
       formsContainer.append(changeSessionForm);
       formsContainer.append(addExercisesForm);
       main.append(formsContainer);
       this.displayEmptyTrainingSessionPage = false;
+      this.displayAddExerciseInputForm = false;
+    }
+
+    if (this.displayTrainingSessionPage) {
+      const pageHeadingHtml = TrainingSessionPage.render({ template: TrainingSessionPage.sessionHeading, session: sessionDetails });
+      const formsContainer = $('<div class="exercise-data"></div>');
+      const changeSessionForm = TrainingSessionPage.render({ template: TrainingSessionPage.changeSessionForm, onSubmitForm: EventHandler.onChangeSessionFormSubmit });
+      let addExercisesFormProps;
+      if (this.displayAddExerciseInputForm) { // show the form with input field
+        addExercisesFormProps = { template: TrainingSessionPage.addExerciseInputForm, session: sessionDetails, onSubmitForm: EventHandler.onAddExerciseInputFormSubmit };
+      } else { // just show the big button form
+        addExercisesFormProps = { template: TrainingSessionPage.addExerciseSmallButtonForm, session: sessionDetails, onSubmitForm: EventHandler.onAddExerciseBigButtonFormSubmit };
+      }
+      const addExercisesForm = TrainingSessionPage.render(addExercisesFormProps);
+      const exercisesForm = TrainingSessionPage.render({ template: TrainingSessionPage.exercisesForm, session: State.previousTrainingSessionExercises });
+      formsContainer.append(changeSessionForm);
+      formsContainer.append(addExercisesForm);
+      formsContainer.append(exercisesForm);
+      main.html(pageHeadingHtml);
+      main.append(formsContainer);
+      // main.append(formsContainer);
+      this.displayTrainingSessionPage = false;
+      this.displayAddExerciseInputForm = false;
     }
   }
 };
@@ -60,11 +94,55 @@ const TrainingSessionPage = {
               <button class="btn btn-grey btn-small"><i class="fa fa-undo" aria-hidden="true"></i> Change Session</button>
             </form>`;
   },
+  addExerciseSmallButtonForm() {
+    return `<form role="form" id="add-exercise-button-form">
+              <button class="btn btn-green btn-small"><i class="fa fa-plus" aria-hidden="true"></i> Add Exercise</button>
+            </form>`;
+  },
   addExerciseBigButtonForm(session) {
-    return `<form role="form" id="add-exercise-form">
+    return `<form role="form" id="add-exercise-button-form">
               <p>No previous data - this is the first time you're tracking ${session.sessionType}. Add a new exercise to begin.</p>
               <button id="addBigExerciseButton" class="btn btn-big-round btn-green"><i class="fa fa-plus" aria-hidden="true"></i></button>
               <label for="addBigExerciseButton">Add a new Exercise</label>
+            </form>`;
+  },
+  addExerciseInputForm(session) {
+    return `<form role="form" id="add-exercise-input-form">
+              <p>No previous data - this is the first time you're tracking ${session.sessionType}. Add a new exercise to begin.</p>
+              <label for="exerciseName">Add a new exercise</label>
+              <input type="text" id="exerciseName" name="exerciseName" placeholder="New exercise name">
+              <button class="btn btn-green"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Save New Exercise</button>
+            </form>`;
+  },
+  exercisesLiElement(exercise) {
+    let lastSessionDate = new Date(exercise.sessionDate).toLocaleString().split(',').splice(0, 1)[0];
+    return `<li>
+              <h3>${exercise.name.toUpperCase()}</h3>
+              <div class="last-session-results">
+                <p class="last-session-date">Last Session [${lastSessionDate}]</p>
+                <p class="last-session-stats"><span class="stats-weight">Weight: ${exercise.bestSet.weight}</span> - <span class="stats-reps">Max Reps: ${exercise.bestSet.reps}</span></p>
+              </div>
+              <div class="set-table">
+                <div class="table-row">
+                  <div class="table-cell">Set #</div>
+                  <div class="table-cell">Weight</div>
+                  <div class="table-cell">Reps</div>
+                </div>
+                <div class="table-row">
+                  <div class="table-cell"></div>
+                  <div class="table-cell"></div>
+                  <div class="table-cell"></div>
+                </div>
+              </div>
+              <button class="btn btn-small btn-aqua"><i class="fa fa-plus-square-o"></i> Add Set</button>
+            </li>`;
+  },
+  exercisesForm(session) {
+    const liElements = session.exercises.map(exercise => TrainingSessionPage.exercisesLiElement(exercise)).join('');
+    return `<form role="form" id="exercises-form">
+              <ul class="exercise-list">
+                ${liElements}
+              </ul>
             </form>`;
   },
   render(props) {
@@ -142,15 +220,39 @@ const EventHandler = {
     event.preventDefault();
     // get exercises from server here, if empty, display the empty training session page, else
     // display the training session page with the previous exercises on it
-    GymTrackerClient.showEmptyTrainingSessionPage($(event.currentTarget).data('session'));
+    const selectedTrainingSession = $(event.currentTarget).data('session');
+    GymTrackerAPI
+      .addTrainingSession(selectedTrainingSession)
+      .then((trainingSession) => {
+        State.trainingSessionType = trainingSession.session;
+        return GymTrackerAPI.getPreviousTrainingSessionExercises(trainingSession);
+      })
+      .then(previousExercises => {
+        if (previousExercises.exercises) { // if there are previous exercises, show previous exercises page
+          State.previousTrainingSessionExercises = previousExercises;
+          GymTrackerClient.showTrainingSessionPage();
+        } else { // if there are no previous exercises, show empty training session page
+          GymTrackerClient.showEmptyTrainingSessionPage();
+        }
+      });
   },
   onChangeSessionFormSubmit: function (event) {
     event.preventDefault();
     GymTrackerClient.showSelectTrainingSessionPage();
   },
-  onAddExerciseFormSubmit: function (event) {
+  onAddExerciseBigButtonFormSubmit: function (event) {
     event.preventDefault();
-    console.log('show modal to add new exercise');
+    State.displayAddExerciseInputForm = true;
+    GymTrackerClient.showEmptyTrainingSessionPage();
+  },
+  onAddExerciseInputFormSubmit: function (event) {
+    event.preventDefault();
+    const exerciseName = $(event.currentTarget).find('input[name=exerciseName]').val();
+    console.log('new exercise is:', exerciseName);
+    GymTrackerAPI.addExercise(State.trainingSessionType, exerciseName)
+      .then(() => {
+        GymTrackerClient.showTrainingSessionPage();
+      });
   }
 };
 
@@ -163,9 +265,12 @@ const GymTrackerClient = {
     State.displaySelectTrainingSessionPage = true;
     State.render();
   },
-  showEmptyTrainingSessionPage(trainingSession) {
-    State.trainingSessionType = trainingSession;
+  showEmptyTrainingSessionPage() {
     State.displayEmptyTrainingSessionPage = true;
+    State.render();
+  },
+  showTrainingSessionPage() {
+    State.displayTrainingSessionPage = true;
     State.render();
   }
 };
@@ -183,6 +288,67 @@ const GymTrackerAPI = {
       }, 1);
     });
   },
+  addTrainingSession(trainingSession) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        let createdSession = trainingSession;
+        resolve({
+          created: true,
+          session: createdSession
+        });
+      }, 1);
+    });
+  },
+  addExercise(trainingSession, exerciseName) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve({
+          created: true
+        });
+      }, 1);
+    });
+  },
+  getPreviousTrainingSessionExercises(trainingSession) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (trainingSession.session === 'chest') { // only fake 'chest', leave others blank
+          resolve({
+            sessionType: "chest",
+            exercises: [
+              {
+                sessionDate: 1517260770351,
+                name: "bench press",
+                bestSet: {
+                  weight: "60kg",
+                  reps: 12
+                }
+              },
+              {
+                sessionDate: 1517260770351,
+                name: "dips",
+                bestSet: {
+                  weight: "body weight",
+                  reps: 8
+                }
+              },
+              {
+                sessionDate: 1517260770351,
+                name: "inclined bench",
+                bestSet: {
+                  weight: "45kg",
+                  reps: 10
+                }
+              }
+            ]
+          })
+        } else {
+          resolve({
+            previousTrainingSessionExercises: {}
+          });
+        }
+      }, 1);
+    })
+  },
   // Get all training session data
   // Include JWT in request Authorization header to identify the user
   // - /training-session/<training session type>, e.g. /training-session/chest
@@ -197,4 +363,8 @@ const GymTrackerAPI = {
 
 };
 
+// $(() => {
+//   State.trainingSessionType = 'chest';
+//   GymTrackerClient.showTrainingSessionPage();
+// });
 $(GymTrackerClient.showStartPage());

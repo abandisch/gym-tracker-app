@@ -8,7 +8,7 @@ html {
 
 /* Fonts */
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Montserrat", Arial, sans-serif;
   font-size: 16px;
 }
 
@@ -74,6 +74,10 @@ label {
 .btn-grey {
   background-color: #607d8b;
 }
+.btn-aqua {
+  background-color: #5bc0de;
+  border-color: #2E9ADE;
+}
 /* header */
 header {
   max-width: 960px;
@@ -90,7 +94,7 @@ header h1 {
   font-weight: normal;
   text-align: center;
   line-height: 140px;
-  color: #ffffff;
+  color: #1ed0dc;
   text-shadow: 1px 1px 1px #000, 3px 3px 5px #000;
   margin: 0;
 }
@@ -174,24 +178,110 @@ main > section {
   background-color: #ff9800;
 }
 /* Training Session Page - No previous exercises */
-.no-previous-data #add-exercise-form > p {
+.no-previous-data #add-exercise-button-form > p {
   text-align: center;
   margin: 15px 0 0;
 }
-.no-previous-data #add-exercise-form button {
+.no-previous-data #add-exercise-button-form button {
   margin: 15px auto 0;
 }
-.no-previous-data #add-exercise-form .btn-big-round > i {
+.no-previous-data #add-exercise-button-form .btn-big-round > i {
   line-height: 97px;
   font-size: 2.5em;
   font-weight: normal;
 }
-.no-previous-data #add-exercise-form button + label {
+.no-previous-data #add-exercise-button-form button + label {
   font-weight: normal;
   text-align: center;
   display: block;
   margin: 10px 0 0;
 }
-.no-previous-data {
+.no-previous-data #add-exercise-input-form > p {
+  text-align: center;
+  margin: 15px 0;
+}
+.no-previous-data #add-exercise-input-form label {
+  margin: 0 auto;
+}
+.no-previous-data #add-exercise-input-form label , .no-previous-data #add-exercise-input-form input, .no-previous-data #add-exercise-input-form button {
+  width: 100%;
+  max-width: 375px;
+  display: block;
+}
+.no-previous-data #add-exercise-input-form input {
+  margin: 3px auto 5px;
+}
+.no-previous-data #add-exercise-input-form button {
+  margin: 0 auto;
+  text-align: center;
+}
+.no-previous-data, .exercise-data {
   padding: 55px 0 0;
+}
+.exercise-data #change-session-form {
+  float: left;
+}
+.exercise-data #add-exercise-button-form {
+  float: right;
+}
+.exercise-data #add-exercise-button-form button, .exercise-data #change-session-form button {
+  width: 140px;
+}
+.exercise-data #exercises-form {
+  margin: 50px 0 0;
+}
+#exercises-form .exercise-list {
+  list-style-type: none;
+  padding: 0;
+  max-width: 460px;
+  margin: 0 auto;
+}
+#exercises-form .exercise-list li {
+  border-bottom: 1px dashed #022f5f;
+  margin: 0 0 20px;
+  padding: 0 0 20px;
+}
+#exercises-form .exercise-list h3 {
+  margin: 0;
+  background-color: #e0e0e0;
+  padding: 15px;
+  text-align: center;
+  font-size: 1.2em;
+}
+#exercises-form .exercise-list .last-session-results {
+  background-color: #03a9f4;
+  color: #fff;
+  font-size: 0.8em;
+  padding: 8px;
+  text-align: center;
+}
+#exercises-form .exercise-list .last-session-results p {
+  margin: 0;
+  line-height: 1.4em;
+  letter-spacing: 0.1em;
+}
+#exercises-form .exercise-list .last-session-results p:first-of-type {
+  font-weight: bold;
+}
+#exercises-form .exercise-list .set-table {
+  display: table;
+  font-size: 0.8em;
+  width: 100%;
+  table-layout: fixed;
+  margin: 0 0 10px;
+}
+#exercises-form .exercise-list .set-table .table-row {
+  display: table-row;
+}
+#exercises-form .exercise-list .set-table .table-cell {
+  display: table-cell;
+  text-align: center;
+  padding: 8px 0;
+  height: 31px;
+  border-bottom: 1px solid #cecaca;
+}
+#exercises-form .exercise-list button {
+  display: block;
+  width: 140px;
+  margin: 0 auto;
 }
