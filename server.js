@@ -9,6 +9,10 @@ app.get('/', (req, res) => {
   res.sendFile(`${__dirname}/views/index.html`);
 });
 
+// Mock data
+app.get('/resources/mock-data', (req, res) => {
+  res.sendFile(`${__dirname}/resources/mock-data/data.json`);
+});
 
 // Start / Stop Server
 let server;
