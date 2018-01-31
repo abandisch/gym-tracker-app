@@ -1,9 +1,9 @@
 {
   "trainingSessions": [
     {
-      "id": "11111",
+      "id": "2d62be13-0820-45b4-b14f-60453a6a71eb",
       "sessionType": "chest",
-      "sessionDate": "2018-01-25",
+      "sessionDate": "1517331036931",
       "exercises": [
         {
           "name": "bench press",
@@ -68,9 +68,9 @@
       ]
     },
     {
-      "id": "22222",
+      "id": "c1d7ec68-0382-4dfb-ae1b-1b6c8715f8db",
       "sessionType": "legs",
-      "sessionDate": "2018-01-24",
+      "sessionDate": "1517158236931",
       "exercises": [
         {
           "name": "leg press",
@@ -133,6 +133,12 @@
           ]
         }
       ]
+    },
+    {
+      "id": "27782519-5e78-4369-abba-90d6e46a9d12",
+      "sessionType": "back",
+      "sessionDate": "1517158394973",
+      "exercises": []
     }
   ]
 }
