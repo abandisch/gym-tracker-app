@@ -149,6 +149,22 @@ const MOCK_TRAINING_SESSION_DATA = {
   ]
 };
 
+function setCookie(cName, cValue, exDays) {
+  let expires = '';
+  if (exDays) {
+    const d = new Date();
+    d.setTime(d.getTime() + (exDays*24*60*60*1000));
+    expires = "expires="+ d.toUTCString();
+  }
+  document.cookie = cName + "=" + cValue + ";" + expires + ";path=/";
+}
+
+function getCookie(name) {
+  const regexp = new RegExp("(?:^" + name + "|;\s*"+ name + ")=(.*?)(?:;|$)", "g");
+  const result = regexp.exec(document.cookie);
+  return (result === null) ? null : result[1];
+}
+
 const GymTrackerAPI = {
   authenticate(emailAddress) {
     // talk to server and authenticate
@@ -167,7 +183,7 @@ const GymTrackerAPI = {
           jwt_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhbGV4QGJhbmRpc2NoLmNvbSJ9.Kt3jE6DLqzqSU8lDC3heeqhLfBfbMV8GOdefU2blZqQ'
         };
         // create cookie
-        document.cookie = 'gymgoer=' + JSON.stringify(cookieData);
+        setCookie('gymGoer', JSON.stringify(cookieData));
         resolve({email: emailAddress});
       }, 1);
     });
