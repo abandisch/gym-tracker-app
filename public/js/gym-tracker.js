@@ -227,7 +227,7 @@ const EventHandler = {
         return GymTrackerAPI.getLastTrainingSessionExercises(trainingSession);
       })
       .then(previousExercises => {
-        if (previousExercises.exercises) { // if there are previous exercises, show previous exercises page
+        if (previousExercises.exercises.length) { // if there are previous exercises, show previous exercises page
           State.previousTrainingSessionExercises = previousExercises;
           GymTrackerClient.showTrainingSessionPage();
         } else { // if there are no previous exercises, show empty training session page
