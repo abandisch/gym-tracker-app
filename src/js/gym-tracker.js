@@ -287,8 +287,4 @@ const GymTrackerClient = {
 
 
 
-// $(() => {
-//   State.trainingSessionType = 'chest';
-//   GymTrackerClient.showTrainingSessionPage();
-// });
 $(GymTrackerClient.showStartPage());
