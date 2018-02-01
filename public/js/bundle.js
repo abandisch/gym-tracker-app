@@ -366,6 +366,7 @@ $(GymTrackerClient.showStartPage());
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__cookies__ = __webpack_require__(3);
 
 
 const MOCK_TRAINING_SESSION_DATA = {
@@ -582,27 +583,11 @@ const MOCK_TRAINING_SESSION_DATA = {
   ]
 };
 
-function setCookie(cName, cValue, exDays) {
-  let expires = '';
-  if (exDays) {
-    const d = new Date();
-    d.setTime(d.getTime() + (exDays*24*60*60*1000));
-    expires = "expires="+ d.toUTCString();
-  }
-  document.cookie = cName + "=" + cValue + ";" + expires + ";path=/";
-}
-
-function getCookie(name) {
-  const regexp = new RegExp("(?:^" + name + "|;\s*"+ name + ")=(.*?)(?:;|$)", "g");
-  const result = regexp.exec(document.cookie);
-  return (result === null) ? null : result[1];
-}
-
 const COOKIE_NAME = 'gymGoer';
 
 const GymTrackerAPI = {
   getCurrentGymGoer() {
-    return MOCK_TRAINING_SESSION_DATA.gymgoers.find(gGoer => gGoer.email === JSON.parse(getCookie(COOKIE_NAME)).email);
+    return MOCK_TRAINING_SESSION_DATA.gymgoers.find(gGoer => gGoer.email === JSON.parse(Object(__WEBPACK_IMPORTED_MODULE_0__cookies__["a" /* getCookie */])(COOKIE_NAME)).email);
   },
   hasDoneTrainingSessionToday(trainingSessionType) {
     return this.getCurrentGymGoer().trainingSessions.find(session => {
@@ -628,7 +613,7 @@ const GymTrackerAPI = {
           jwt_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhbGV4QGJhbmRpc2NoLmNvbSJ9.Kt3jE6DLqzqSU8lDC3heeqhLfBfbMV8GOdefU2blZqQ'
         };
         // create cookie
-        setCookie(COOKIE_NAME, JSON.stringify(cookieData));
+        Object(__WEBPACK_IMPORTED_MODULE_0__cookies__["b" /* setCookie */])(COOKIE_NAME, JSON.stringify(cookieData));
         resolve({email: emailAddress});
       }, 1);
     });
@@ -11097,6 +11082,32 @@ if ( !noGlobal ) {
 
 return jQuery;
 } );
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return setCookie; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getCookie; });
+
+function setCookie(cName, cValue, exDays) {
+  let expires = '';
+  if (exDays) {
+    const d = new Date();
+    d.setTime(d.getTime() + (exDays*24*60*60*1000));
+    expires = "expires="+ d.toUTCString();
+  }
+  document.cookie = cName + "=" + cValue + ";" + expires + ";path=/";
+}
+
+function getCookie(name) {
+  const regexp = new RegExp("(?:^" + name + "|;\s*"+ name + ")=(.*?)(?:;|$)", "g");
+  const result = regexp.exec(document.cookie);
+  return (result === null) ? null : result[1];
+}
+
 
 
 /***/ })
