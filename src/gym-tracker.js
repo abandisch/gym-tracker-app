@@ -1,3 +1,6 @@
+import { GymTrackerAPI }  from './gym-tracker-api';
+const $ = require("jquery");
+
 const GYM_TRACKER_API_URL = `/resources/mock-data`;
 
 const State = {

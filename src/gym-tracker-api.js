@@ -1,3 +1,5 @@
+
+
 const MOCK_TRAINING_SESSION_DATA = {
   "gymgoers": [
     {
@@ -230,7 +232,7 @@ function getCookie(name) {
 
 const COOKIE_NAME = 'gymGoer';
 
-const GymTrackerAPI = {
+export const GymTrackerAPI = {
   getCurrentGymGoer() {
     return MOCK_TRAINING_SESSION_DATA.gymgoers.find(gGoer => gGoer.email === JSON.parse(getCookie(COOKIE_NAME)).email);
   },
