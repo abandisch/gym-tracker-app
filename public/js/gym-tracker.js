@@ -46,6 +46,7 @@ const State = {
       const pageHeadingHtml = TrainingSessionPage.render({ template: TrainingSessionPage.sessionHeading, session: sessionDetails });
       const formsContainer = $('<div class="no-previous-data"></div>');
       const changeSessionForm = TrainingSessionPage.render({ template: TrainingSessionPage.changeSessionForm, onSubmitForm: EventHandler.onChangeSessionFormSubmit });
+      const noPreviousDataNote = TrainingSessionPage.render({ template: TrainingSessionPage.noPreviousDataNote, session: sessionDetails });
       let addExercisesForm;
       if (this.displayAddExerciseInputForm) { // show the form with input field
         addExercisesForm = TrainingSessionPage.render({ template: TrainingSessionPage.addExerciseInputForm, session: sessionDetails, onSubmitForm: EventHandler.onAddExerciseInputFormSubmit });
@@ -54,6 +55,7 @@ const State = {
       }
       main.html(pageHeadingHtml);
       formsContainer.append(changeSessionForm);
+      formsContainer.append(noPreviousDataNote);
       formsContainer.append(addExercisesForm);
       main.append(formsContainer);
       this.displayEmptyTrainingSessionPage = false;
@@ -68,7 +70,7 @@ const State = {
       if (this.displayAddExerciseInputForm) { // show the form with input field
         addExercisesFormProps = { template: TrainingSessionPage.addExerciseInputForm, session: sessionDetails, onSubmitForm: EventHandler.onAddExerciseInputFormSubmit };
       } else { // just show the big button form
-        addExercisesFormProps = { template: TrainingSessionPage.addExerciseSmallButtonForm, session: sessionDetails, onSubmitForm: EventHandler.onAddExerciseBigButtonFormSubmit };
+        addExercisesFormProps = { template: TrainingSessionPage.addExerciseSmallButtonForm, session: sessionDetails, onSubmitForm: EventHandler.onAddExerciseSmallButtonFormSubmit };
       }
       const addExercisesForm = TrainingSessionPage.render(addExercisesFormProps);
       const exercisesForm = TrainingSessionPage.render({ template: TrainingSessionPage.exercisesForm, session: State.previousTrainingSessionExercises });
@@ -89,6 +91,9 @@ const TrainingSessionPage = {
     let trainingDate = new Date(session.sessionDate).toLocaleString().split(',').splice(0, 1)[0];
     return `<h2 class="training-session-type type-${session.sessionType}"><i class="fa ${session.sessionIcon}"></i> ${session.sessionType.toUpperCase()} - ${trainingDate}</h2>`;
   },
+  noPreviousDataNote(session) {
+    return `<p class="text-center">No previous data - this is the first time you're tracking ${session.sessionType}. Add a new exercise to begin.</p>`
+  },
   changeSessionForm() {
     return `<form role="form" id="change-session-form">
               <button class="btn btn-grey btn-small"><i class="fa fa-undo" aria-hidden="true"></i> Change Session</button>
@@ -101,14 +106,12 @@ const TrainingSessionPage = {
   },
   addExerciseBigButtonForm(session) {
     return `<form role="form" id="add-exercise-button-form">
-              <p>No previous data - this is the first time you're tracking ${session.sessionType}. Add a new exercise to begin.</p>
               <button id="addBigExerciseButton" class="btn btn-big-round btn-green"><i class="fa fa-plus" aria-hidden="true"></i></button>
               <label for="addBigExerciseButton">Add a new Exercise</label>
             </form>`;
   },
-  addExerciseInputForm(session) {
+  addExerciseInputForm() {
     return `<form role="form" id="add-exercise-input-form">
-              <p>No previous data - this is the first time you're tracking ${session.sessionType}. Add a new exercise to begin.</p>
               <label for="exerciseName">Add a new exercise</label>
               <input type="text" id="exerciseName" name="exerciseName" placeholder="New exercise name">
               <button class="btn btn-green"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Save New Exercise</button>
@@ -243,6 +246,11 @@ const EventHandler = {
     event.preventDefault();
     State.displayAddExerciseInputForm = true;
     GymTrackerClient.showEmptyTrainingSessionPage();
+  },
+  onAddExerciseSmallButtonFormSubmit: function (event) {
+    event.preventDefault();
+    State.displayAddExerciseInputForm = true;
+    GymTrackerClient.showTrainingSessionPage();
   },
   onAddExerciseInputFormSubmit: function (event) {
     event.preventDefault();

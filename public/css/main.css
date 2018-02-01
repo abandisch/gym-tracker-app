@@ -12,6 +12,11 @@ body {
   font-size: 16px;
 }
 
+/* Generic Styles */
+.text-center {
+  text-align: center;
+}
+
 /* Form fields */
 input, .btn, .btn-block {
   border: 1px solid #b9b9b9;
