@@ -165,6 +165,8 @@ function getCookie(name) {
   return (result === null) ? null : result[1];
 }
 
+const COOKIE_NAME = 'gymGoer';
+
 const GymTrackerAPI = {
   authenticate(emailAddress) {
     // talk to server and authenticate
@@ -183,18 +185,34 @@ const GymTrackerAPI = {
           jwt_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhbGV4QGJhbmRpc2NoLmNvbSJ9.Kt3jE6DLqzqSU8lDC3heeqhLfBfbMV8GOdefU2blZqQ'
         };
         // create cookie
-        setCookie('gymGoer', JSON.stringify(cookieData));
+        setCookie(COOKIE_NAME, JSON.stringify(cookieData));
         resolve({email: emailAddress});
       }, 1);
     });
   },
-  addTrainingSession(trainingSession) {
+  addTrainingSession(trainingSessionType) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        let createdSession = trainingSession;
+        const gymGoer = MOCK_TRAINING_SESSION_DATA.gymgoers.find(gGoer => gGoer.email === JSON.parse(getCookie(COOKIE_NAME)).email);
+        
+        const hasTrainingSessionToday = gymGoer.trainingSessions.find(session => {
+          const trainingDate = new Date(Number.parseInt(session.sessionDate)).toLocaleString().split(',').splice(0, 1)[0];
+          const today = new Date().toLocaleString().split(',').splice(0, 1)[0];
+          return session.sessionType === trainingSessionType && trainingDate === today;
+        }) !== undefined;
+
+        if (!hasTrainingSessionToday) {
+          const session = {
+            exercises: [],
+            sessionType: trainingSessionType,
+            sessionDate: new Date().getTime()
+          };
+          gymGoer.trainingSessions.push(session);
+        }
+
         resolve({
           created: true,
-          session: createdSession
+          sessionType: trainingSessionType
         });
       }, 1);
     });
