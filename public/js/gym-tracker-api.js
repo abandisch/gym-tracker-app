@@ -5,7 +5,6 @@ const MOCK_TRAINING_SESSION_DATA = {
       "email": "alex@bandisch.com",
       "trainingSessions": [
         {
-          "id": "2d62be13-0820-45b4-b14f-60453a6a71eb",
           "sessionType": "chest",
           "sessionDate": "1517331036931",
           "exercises": [
@@ -59,7 +58,7 @@ const MOCK_TRAINING_SESSION_DATA = {
                 },
                 {
                   "setNumber": "2",
-                  "weight": "45",
+                  "weight": "50",
                   "reps": "10"
                 },
                 {
@@ -72,7 +71,6 @@ const MOCK_TRAINING_SESSION_DATA = {
           ]
         },
         {
-          "id": "c1d7ec68-0382-4dfb-ae1b-1b6c8715f8db",
           "sessionType": "legs",
           "sessionDate": "1517158236931",
           "exercises": [
@@ -139,10 +137,75 @@ const MOCK_TRAINING_SESSION_DATA = {
           ]
         },
         {
-          "id": "27782519-5e78-4369-abba-90d6e46a9d12",
           "sessionType": "back",
           "sessionDate": "1517158394973",
           "exercises": []
+        },
+        {
+          "sessionType": "chest",
+          "sessionDate": "1516726236931",
+          "exercises": [
+            {
+              "name": "bench press",
+              "sets": [
+                {
+                  "setNumber": "1",
+                  "weight": "55",
+                  "reps": "14"
+                },
+                {
+                  "setNumber": "2",
+                  "weight": "55",
+                  "reps": "13"
+                },
+                {
+                  "setNumber": "3",
+                  "weight": "55",
+                  "reps": "13"
+                }
+              ]
+            },
+            {
+              "name": "dips",
+              "sets": [
+                {
+                  "setNumber": "1",
+                  "weight": "body weight",
+                  "reps": "14"
+                },
+                {
+                  "setNumber": "2",
+                  "weight": "body weight",
+                  "reps": "14"
+                },
+                {
+                  "setNumber": "3",
+                  "weight": "body weight",
+                  "reps": "13"
+                }
+              ]
+            },
+            {
+              "name": "inclined bench",
+              "sets": [
+                {
+                  "setNumber": "1",
+                  "weight": "40",
+                  "reps": "13"
+                },
+                {
+                  "setNumber": "2",
+                  "weight": "40",
+                  "reps": "13"
+                },
+                {
+                  "setNumber": "3",
+                  "weight": "40",
+                  "reps": "12"
+                }
+              ]
+            }
+          ]
         }
       ]
     }
@@ -168,6 +231,16 @@ function getCookie(name) {
 const COOKIE_NAME = 'gymGoer';
 
 const GymTrackerAPI = {
+  getCurrentGymGoer() {
+    return MOCK_TRAINING_SESSION_DATA.gymgoers.find(gGoer => gGoer.email === JSON.parse(getCookie(COOKIE_NAME)).email);
+  },
+  hasDoneTrainingSessionToday(trainingSessionType) {
+    return this.getCurrentGymGoer().trainingSessions.find(session => {
+      const trainingDate = new Date(Number.parseInt(session.sessionDate)).toLocaleString().split(',').splice(0, 1)[0];
+      const today = new Date().toLocaleString().split(',').splice(0, 1)[0];
+      return session.sessionType === trainingSessionType && trainingDate === today;
+    }) !== undefined;
+  },
   authenticate(emailAddress) {
     // talk to server and authenticate
     return new Promise((resolve, reject) => {
@@ -193,21 +266,16 @@ const GymTrackerAPI = {
   addTrainingSession(trainingSessionType) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        const gymGoer = MOCK_TRAINING_SESSION_DATA.gymgoers.find(gGoer => gGoer.email === JSON.parse(getCookie(COOKIE_NAME)).email);
-        
-        const hasTrainingSessionToday = gymGoer.trainingSessions.find(session => {
-          const trainingDate = new Date(Number.parseInt(session.sessionDate)).toLocaleString().split(',').splice(0, 1)[0];
-          const today = new Date().toLocaleString().split(',').splice(0, 1)[0];
-          return session.sessionType === trainingSessionType && trainingDate === today;
-        }) !== undefined;
 
-        if (!hasTrainingSessionToday) {
+        const hasDoneSessionToday = this.hasDoneTrainingSessionToday(trainingSessionType);
+
+        if (!hasDoneSessionToday) {
           const session = {
             exercises: [],
             sessionType: trainingSessionType,
             sessionDate: new Date().getTime()
           };
-          gymGoer.trainingSessions.push(session);
+          this.getCurrentGymGoer().trainingSessions.push(session);
         }
 
         resolve({
@@ -226,44 +294,50 @@ const GymTrackerAPI = {
       }, 1);
     });
   },
-  getPreviousTrainingSessionExercises(trainingSession) {
+  findLastTrainingSession(sessionType) {
+    return this.getCurrentGymGoer().trainingSessions
+      .reduce((sessions, current) => {
+        if (current.exercises.length && current.sessionType === sessionType) {
+          sessions.push(current);
+        }
+        return sessions;
+      }, [])
+      .sort((a, b) => Number.parseInt(b.sessionDate) - Number.parseInt(a.sessionDate))[0];
+  },
+  findBestSet(sets) {
+    sets
+      .sort((setA, setB) => setB.reps - setA.reps) // sort by reps
+      .sort((setA, setB) => { // sort by weight
+        if (!Number.isNaN(Number.parseInt(setA.weight)) && setA.weight !== setB.weight) {
+          return Number.parseInt(setB.weight) - Number.parseInt(setA.weight);
+        } else {
+          return 0;
+        }
+      });
+    return sets[0];
+  },
+  getLastTrainingSessionExercises(trainingSession) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        if (trainingSession.session === 'chest') { // only fake 'chest', leave others blank
-          resolve({
-            sessionType: "chest",
-            exercises: [
-              {
-                sessionDate: 1517260770351,
-                name: "bench press",
-                bestSet: {
-                  weight: "60kg",
-                  reps: 12
-                }
-              },
-              {
-                sessionDate: 1517260770351,
-                name: "dips",
-                bestSet: {
-                  weight: "body weight",
-                  reps: 8
-                }
-              },
-              {
-                sessionDate: 1517260770351,
-                name: "inclined bench",
-                bestSet: {
-                  weight: "45kg",
-                  reps: 10
-                }
-              }
-            ]
-          })
-        } else {
-          resolve({
-            previousTrainingSessionExercises: {}
-          });
+        const lastSession = this.findLastTrainingSession(trainingSession.sessionType);
+
+        const lastSessionExercises = {
+          sessionType: trainingSession.sessionType,
+          exercises: []
+        };
+
+        if (lastSession !== undefined) {
+          lastSessionExercises.exercises =
+            lastSession.exercises
+              .map(exercise => ({
+                sessionDate: Number.parseInt(lastSession.sessionDate),
+                name: exercise.name,
+                bestSet: this.findBestSet(exercise.sets)
+              }));
         }
+
+        resolve(lastSessionExercises);
+
       }, 1);
     })
   },

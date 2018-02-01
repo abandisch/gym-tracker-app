@@ -223,8 +223,8 @@ const EventHandler = {
     GymTrackerAPI
       .addTrainingSession(selectedTrainingSession)
       .then((trainingSession) => {
-        State.trainingSessionType = trainingSession.session;
-        return GymTrackerAPI.getPreviousTrainingSessionExercises(trainingSession);
+        State.trainingSessionType = trainingSession.sessionType;
+        return GymTrackerAPI.getLastTrainingSessionExercises(trainingSession);
       })
       .then(previousExercises => {
         if (previousExercises.exercises) { // if there are previous exercises, show previous exercises page
