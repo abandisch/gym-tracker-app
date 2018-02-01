@@ -162,11 +162,13 @@ const GymTrackerAPI = {
           };
           MOCK_TRAINING_SESSION_DATA.gymgoers.push(newGymGoer);
         }
-        const JWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhbGV4QGJhbmRpc2NoLmNvbSJ9.Kt3jE6DLqzqSU8lDC3heeqhLfBfbMV8GOdefU2blZqQ';
-        resolve({
+        const cookieData = {
           email: emailAddress,
-          token: JWT
-        });
+          jwt_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhbGV4QGJhbmRpc2NoLmNvbSJ9.Kt3jE6DLqzqSU8lDC3heeqhLfBfbMV8GOdefU2blZqQ'
+        };
+        // create cookie
+        document.cookie = 'gymgoer=' + JSON.stringify(cookieData);
+        resolve({email: emailAddress});
       }, 1);
     });
   },
