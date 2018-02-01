@@ -208,9 +208,10 @@ const EventHandler = {
     const emailAddress = $(event.currentTarget).find('input[name=emailAddress]').val();
     GymTrackerAPI.authenticate(emailAddress)
       .then(result => {
-        if (result.isAuth) {
-          GymTrackerClient.showSelectTrainingSessionPage();
-        }
+        // create cookie
+        document.cookie = 'gymgoer=' + JSON.stringify(result);
+        // show select training session page
+        GymTrackerClient.showSelectTrainingSessionPage();
       })
       .catch(err => {
         console.log('error:', err);
