@@ -226,14 +226,24 @@ main > section {
 .exercise-data #change-session-form {
   float: left;
 }
-.exercise-data #add-exercise-button-form {
+.exercise-data #add-exercise-button-form, .exercise-data #cancel-add-exercise-button-form {
   float: right;
 }
-.exercise-data #add-exercise-button-form button, .exercise-data #change-session-form button {
+.exercise-data #add-exercise-button-form button, .exercise-data #change-session-form button, .exercise-data #cancel-add-exercise-button-form button {
   width: 140px;
 }
 .exercise-data #exercises-form {
   margin: 50px 0 0;
+}
+.exercise-data #add-exercise-input-form {
+  clear: both;
+  padding-top: 15px;
+}
+.exercise-data #add-exercise-input-form label , .exercise-data #add-exercise-input-form input, .exercise-data #add-exercise-input-form button {
+  width: 100%;
+  max-width: 375px;
+  display: block;
+  margin: 0 auto 5px;
 }
 #exercises-form .exercise-list {
   list-style-type: none;

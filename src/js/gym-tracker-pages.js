@@ -13,6 +13,11 @@ const TrainingSessionPage = {
               <button class="btn btn-grey btn-small"><i class="fa fa-undo" aria-hidden="true"></i> Change Session</button>
             </form>`;
   },
+  cancelAddExerciseSmallButtonForm() {
+    return `<form role="form" id="cancel-add-exercise-button-form">
+              <button class="btn btn-orange btn-small"><i class="fa fa-ban" aria-hidden="true"></i> Cancel</button>
+            </form>`;
+  },
   addExerciseSmallButtonForm() {
     return `<form role="form" id="add-exercise-button-form">
               <button class="btn btn-green btn-small"><i class="fa fa-plus" aria-hidden="true"></i> Add Exercise</button>

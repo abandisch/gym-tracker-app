@@ -141,22 +141,25 @@ const State = {
 
     if (this.displayTrainingSessionPage) {
       const pageHeadingHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].sessionHeading, session: sessionDetails });
+
       const formsContainer = $('<div class="exercise-data"></div>');
       const changeSessionForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].changeSessionForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onChangeSessionFormSubmit });
-      let addExercisesFormProps;
-      if (this.displayAddExerciseInputForm) { // show the form with input field
-        addExercisesFormProps = { template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].addExerciseInputForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseInputFormSubmit };
-      } else { // just show the big button form
-        addExercisesFormProps = { template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].addExerciseSmallButtonForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseSmallButtonFormSubmit };
-      }
-      const addExercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render(addExercisesFormProps);
-      const exercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].exercisesForm, session: State.previousTrainingSessionExercises });
       formsContainer.append(changeSessionForm);
-      formsContainer.append(addExercisesForm);
+
+      if (this.displayAddExerciseInputForm) { // show the form with input field and cancel button
+        const cancelAddExerciseButtonForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].cancelAddExerciseSmallButtonForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onCancelAddExerciseButtonFormSubmit  });
+        const addExerciseInputForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].addExerciseInputForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseInputFormSubmit });
+        formsContainer.append(cancelAddExerciseButtonForm);
+        formsContainer.append(addExerciseInputForm);
+      } else { // just show the big button form
+        const addExercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].addExerciseSmallButtonForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseSmallButtonFormSubmit });
+        formsContainer.append(addExercisesForm);
+      }
+
+      const exercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].exercisesForm, session: State.previousTrainingSessionExercises });
       formsContainer.append(exercisesForm);
       main.html(pageHeadingHtml);
       main.append(formsContainer);
-      // main.append(formsContainer);
       this.displayTrainingSessionPage = false;
       this.displayAddExerciseInputForm = false;
     }
@@ -10957,6 +10960,11 @@ const TrainingSessionPage = {
               <button class="btn btn-grey btn-small"><i class="fa fa-undo" aria-hidden="true"></i> Change Session</button>
             </form>`;
   },
+  cancelAddExerciseSmallButtonForm() {
+    return `<form role="form" id="cancel-add-exercise-button-form">
+              <button class="btn btn-orange btn-small"><i class="fa fa-ban" aria-hidden="true"></i> Cancel</button>
+            </form>`;
+  },
   addExerciseSmallButtonForm() {
     return `<form role="form" id="add-exercise-button-form">
               <button class="btn btn-green btn-small"><i class="fa fa-plus" aria-hidden="true"></i> Add Exercise</button>
@@ -11132,6 +11140,10 @@ const EventHandler = {
       .then(() => {
         __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showTrainingSessionPage();
       });
+  },
+  onCancelAddExerciseButtonFormSubmit: function (event) {
+    event.preventDefault();
+    __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showTrainingSessionPage();
   }
 };
 

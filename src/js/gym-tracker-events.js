@@ -57,6 +57,10 @@ const EventHandler = {
       .then(() => {
         GymTrackerClient.showTrainingSessionPage();
       });
+  },
+  onCancelAddExerciseButtonFormSubmit: function (event) {
+    event.preventDefault();
+    GymTrackerClient.showTrainingSessionPage();
   }
 };
 
