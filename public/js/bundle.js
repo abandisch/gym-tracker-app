@@ -417,12 +417,15 @@ const GymTrackerAPI = {
   getCurrentGymGoer() {
     return MOCK_TRAINING_SESSION_DATA.gymgoers.find(gGoer => gGoer.email === JSON.parse(Object(__WEBPACK_IMPORTED_MODULE_0__cookies__["a" /* getCookie */])(COOKIE_NAME)).email);
   },
-  hasDoneTrainingSessionToday(trainingSessionType) {
+  getTodaysSession(trainingSessionType) {
     return this.getCurrentGymGoer().trainingSessions.find(session => {
       const trainingDate = new Date(Number.parseInt(session.sessionDate)).toLocaleString().split(',').splice(0, 1)[0];
       const today = new Date().toLocaleString().split(',').splice(0, 1)[0];
       return session.sessionType === trainingSessionType && trainingDate === today;
-    }) !== undefined;
+    });
+  },
+  hasDoneTrainingSessionToday(trainingSessionType) {
+    return this.getTodaysSession(trainingSessionType) !== undefined;
   },
   authenticate(emailAddress) {
     // talk to server and authenticate
@@ -471,6 +474,12 @@ const GymTrackerAPI = {
   addExercise(trainingSession, exerciseName) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
+
+        const isExistingExercise = this.getTodaysSession(trainingSession).exercises.find(exercise => exercise.name === exerciseName) !== undefined;
+        if (!isExistingExercise) {
+          this.getTodaysSession(trainingSession).exercises.push({name: exerciseName, sets: []});
+        }
+        console.log(this.getTodaysSession(trainingSession).exercises);
         resolve({
           created: true
         });
@@ -11111,6 +11120,9 @@ const EventHandler = {
       })
       .then(previousExercises => {
         if (previousExercises.exercises.length) { // if there are previous exercises, show previous exercises page
+          previousExercises.exercises.forEach(exercise => {
+            __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */].addExercise(__WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionType, exercise.name);
+          });
           __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].previousTrainingSessionExercises = previousExercises;
           __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showTrainingSessionPage();
         } else { // if there are no previous exercises, show empty training session page

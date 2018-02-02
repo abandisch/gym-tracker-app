@@ -220,12 +220,15 @@ export const GymTrackerAPI = {
   getCurrentGymGoer() {
     return MOCK_TRAINING_SESSION_DATA.gymgoers.find(gGoer => gGoer.email === JSON.parse(getCookie(COOKIE_NAME)).email);
   },
-  hasDoneTrainingSessionToday(trainingSessionType) {
+  getTodaysSession(trainingSessionType) {
     return this.getCurrentGymGoer().trainingSessions.find(session => {
       const trainingDate = new Date(Number.parseInt(session.sessionDate)).toLocaleString().split(',').splice(0, 1)[0];
       const today = new Date().toLocaleString().split(',').splice(0, 1)[0];
       return session.sessionType === trainingSessionType && trainingDate === today;
-    }) !== undefined;
+    });
+  },
+  hasDoneTrainingSessionToday(trainingSessionType) {
+    return this.getTodaysSession(trainingSessionType) !== undefined;
   },
   authenticate(emailAddress) {
     // talk to server and authenticate
@@ -274,6 +277,12 @@ export const GymTrackerAPI = {
   addExercise(trainingSession, exerciseName) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
+
+        const isExistingExercise = this.getTodaysSession(trainingSession).exercises.find(exercise => exercise.name === exerciseName) !== undefined;
+        if (!isExistingExercise) {
+          this.getTodaysSession(trainingSession).exercises.push({name: exerciseName, sets: []});
+        }
+        console.log(this.getTodaysSession(trainingSession).exercises);
         resolve({
           created: true
         });

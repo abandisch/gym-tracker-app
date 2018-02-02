@@ -28,6 +28,9 @@ const EventHandler = {
       })
       .then(previousExercises => {
         if (previousExercises.exercises.length) { // if there are previous exercises, show previous exercises page
+          previousExercises.exercises.forEach(exercise => {
+            GymTrackerAPI.addExercise(State.trainingSessionType, exercise.name);
+          });
           State.previousTrainingSessionExercises = previousExercises;
           GymTrackerClient.showTrainingSessionPage();
         } else { // if there are no previous exercises, show empty training session page
