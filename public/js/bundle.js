@@ -474,7 +474,7 @@ const GymTrackerAPI = {
       }, 1);
     });
   },
-  findLastTrainingSession(sessionType) {
+  findPreviousTrainingSession(sessionType) {
     return this.getCurrentGymGoer().trainingSessions
       .reduce((sessions, current) => {
         if (current.exercises.length && current.sessionType === sessionType) {
@@ -488,18 +488,17 @@ const GymTrackerAPI = {
     sets
       .sort((setA, setB) => setB.reps - setA.reps) // sort by reps
       .sort((setA, setB) => { // sort by weight
-        if (!Number.isNaN(Number.parseInt(setA.weight)) && setA.weight !== setB.weight) {
+        if (!Number.isNaN(Number.parseInt(setA.weight))) {
           return Number.parseInt(setB.weight) - Number.parseInt(setA.weight);
-        } else {
-          return 0;
         }
+        return 0;
       });
     return sets[0];
   },
   getLastTrainingSessionExercises(trainingSession) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        const lastSession = this.findLastTrainingSession(trainingSession.sessionType);
+        const lastSession = this.findPreviousTrainingSession(trainingSession.sessionType);
 
         const lastSessionExercises = {
           sessionType: trainingSession.sessionType,
