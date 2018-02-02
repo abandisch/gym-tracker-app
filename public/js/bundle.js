@@ -488,10 +488,10 @@ const GymTrackerAPI = {
     sets
       .sort((setA, setB) => setB.reps - setA.reps) // sort by reps
       .sort((setA, setB) => { // sort by weight
-        if (!Number.isNaN(Number.parseInt(setA.weight))) {
-          return Number.parseInt(setB.weight) - Number.parseInt(setA.weight);
+        if (Number.isNaN(Number.parseInt(setA.weight))) {
+          return 0;
         }
-        return 0;
+        return Number.parseInt(setB.weight) - Number.parseInt(setA.weight);
       });
     return sets[0];
   },
