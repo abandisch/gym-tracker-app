@@ -69,13 +69,13 @@
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__ = __webpack_require__(4);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "State", function() { return State; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GymTrackerClient", function() { return GymTrackerClient; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__ = __webpack_require__(5);
 
 
 const $ = __webpack_require__(2);
-
-const GYM_TRACKER_API_URL = `/resources/mock-data`;
 
 const State = {
   displayHomePage: false,
@@ -96,16 +96,16 @@ const State = {
     let sessionDetails = { };
 
     if (this.displayHomePage) {
-      const pageTextHtml = __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["a" /* HomePage */].render({template: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["a" /* HomePage */].introText});
-      const homePageLoginHtml = __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["a" /* HomePage */].render({template: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["a" /* HomePage */].loginForm, onSubmitForm: EventHandler.onLoginFormSubmit});
+      const pageTextHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["a" /* HomePage */].render({template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["a" /* HomePage */].introText});
+      const homePageLoginHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["a" /* HomePage */].render({template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["a" /* HomePage */].loginForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onLoginFormSubmit});
       main.html(pageTextHtml);
       main.append(homePageLoginHtml);
       this.displayHomePage = false;
     }
 
     if (this.displaySelectTrainingSessionPage) {
-      const pageTextHtml = __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["b" /* SelectTrainingSessionPage */].render({template: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["b" /* SelectTrainingSessionPage */].selectTrainingSessionIntroText});
-      const selectTrainingSessionHtml = __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["b" /* SelectTrainingSessionPage */].render({template: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["b" /* SelectTrainingSessionPage */].selectTrainingSessionForm, onSubmitForm: EventHandler.onSelectTrainingSessionFormSubmit});
+      const pageTextHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["b" /* SelectTrainingSessionPage */].render({template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["b" /* SelectTrainingSessionPage */].selectTrainingSessionIntroText});
+      const selectTrainingSessionHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["b" /* SelectTrainingSessionPage */].render({template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["b" /* SelectTrainingSessionPage */].selectTrainingSessionForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onSelectTrainingSessionFormSubmit});
       main.html(pageTextHtml);
       main.append(selectTrainingSessionHtml);
       this.displaySelectTrainingSessionPage = false;
@@ -120,15 +120,15 @@ const State = {
     }
 
     if (this.displayEmptyTrainingSessionPage) {
-      const pageHeadingHtml = __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["c" /* TrainingSessionPage */].sessionHeading, session: sessionDetails });
+      const pageHeadingHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].sessionHeading, session: sessionDetails });
       const formsContainer = $('<div class="no-previous-data"></div>');
-      const changeSessionForm = __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["c" /* TrainingSessionPage */].changeSessionForm, onSubmitForm: EventHandler.onChangeSessionFormSubmit });
-      const noPreviousDataNote = __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["c" /* TrainingSessionPage */].noPreviousDataNote, session: sessionDetails });
+      const changeSessionForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].changeSessionForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onChangeSessionFormSubmit });
+      const noPreviousDataNote = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].noPreviousDataNote, session: sessionDetails });
       let addExercisesForm;
       if (this.displayAddExerciseInputForm) { // show the form with input field
-        addExercisesForm = __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["c" /* TrainingSessionPage */].addExerciseInputForm, session: sessionDetails, onSubmitForm: EventHandler.onAddExerciseInputFormSubmit });
+        addExercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].addExerciseInputForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseInputFormSubmit });
       } else { // just show the big button form
-        addExercisesForm = __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["c" /* TrainingSessionPage */].addExerciseBigButtonForm, session: sessionDetails, onSubmitForm: EventHandler.onAddExerciseBigButtonFormSubmit });
+        addExercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].addExerciseBigButtonForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseBigButtonFormSubmit });
       }
       main.html(pageHeadingHtml);
       formsContainer.append(changeSessionForm);
@@ -140,17 +140,17 @@ const State = {
     }
 
     if (this.displayTrainingSessionPage) {
-      const pageHeadingHtml = __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["c" /* TrainingSessionPage */].sessionHeading, session: sessionDetails });
+      const pageHeadingHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].sessionHeading, session: sessionDetails });
       const formsContainer = $('<div class="exercise-data"></div>');
-      const changeSessionForm = __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["c" /* TrainingSessionPage */].changeSessionForm, onSubmitForm: EventHandler.onChangeSessionFormSubmit });
+      const changeSessionForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].changeSessionForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onChangeSessionFormSubmit });
       let addExercisesFormProps;
       if (this.displayAddExerciseInputForm) { // show the form with input field
-        addExercisesFormProps = { template: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["c" /* TrainingSessionPage */].addExerciseInputForm, session: sessionDetails, onSubmitForm: EventHandler.onAddExerciseInputFormSubmit };
+        addExercisesFormProps = { template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].addExerciseInputForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseInputFormSubmit };
       } else { // just show the big button form
-        addExercisesFormProps = { template: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["c" /* TrainingSessionPage */].addExerciseSmallButtonForm, session: sessionDetails, onSubmitForm: EventHandler.onAddExerciseSmallButtonFormSubmit };
+        addExercisesFormProps = { template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].addExerciseSmallButtonForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseSmallButtonFormSubmit };
       }
-      const addExercisesForm = __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["c" /* TrainingSessionPage */].render(addExercisesFormProps);
-      const exercisesForm = __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_pages__["c" /* TrainingSessionPage */].exercisesForm, session: State.previousTrainingSessionExercises });
+      const addExercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render(addExercisesFormProps);
+      const exercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].exercisesForm, session: State.previousTrainingSessionExercises });
       formsContainer.append(changeSessionForm);
       formsContainer.append(addExercisesForm);
       formsContainer.append(exercisesForm);
@@ -160,64 +160,6 @@ const State = {
       this.displayTrainingSessionPage = false;
       this.displayAddExerciseInputForm = false;
     }
-  }
-};
-
-const EventHandler = {
-  onLoginFormSubmit: function (event) {
-    event.preventDefault();
-    const emailAddress = $(event.currentTarget).find('input[name=emailAddress]').val();
-    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */].authenticate(emailAddress)
-      .then(result => {
-        // show select training session page
-        GymTrackerClient.showSelectTrainingSessionPage();
-      })
-      .catch(err => {
-        console.log('error:', err);
-      });
-  },
-  onSelectTrainingSessionFormSubmit: function (event) {
-    event.preventDefault();
-    // get exercises from server here, if empty, display the empty training session page, else
-    // display the training session page with the previous exercises on it
-    const selectedTrainingSession = $(event.currentTarget).data('session');
-    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */]
-      .addTrainingSession(selectedTrainingSession)
-      .then((trainingSession) => {
-        State.trainingSessionType = trainingSession.sessionType;
-        return __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */].getLastTrainingSessionExercises(trainingSession);
-      })
-      .then(previousExercises => {
-        if (previousExercises.exercises.length) { // if there are previous exercises, show previous exercises page
-          State.previousTrainingSessionExercises = previousExercises;
-          GymTrackerClient.showTrainingSessionPage();
-        } else { // if there are no previous exercises, show empty training session page
-          GymTrackerClient.showEmptyTrainingSessionPage();
-        }
-      });
-  },
-  onChangeSessionFormSubmit: function (event) {
-    event.preventDefault();
-    GymTrackerClient.showSelectTrainingSessionPage();
-  },
-  onAddExerciseBigButtonFormSubmit: function (event) {
-    event.preventDefault();
-    State.displayAddExerciseInputForm = true;
-    GymTrackerClient.showEmptyTrainingSessionPage();
-  },
-  onAddExerciseSmallButtonFormSubmit: function (event) {
-    event.preventDefault();
-    State.displayAddExerciseInputForm = true;
-    GymTrackerClient.showTrainingSessionPage();
-  },
-  onAddExerciseInputFormSubmit: function (event) {
-    event.preventDefault();
-    const exerciseName = $(event.currentTarget).find('input[name=exerciseName]').val();
-    console.log('new exercise is:', exerciseName);
-    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */].addExercise(State.trainingSessionType, exerciseName)
-      .then(() => {
-        GymTrackerClient.showTrainingSessionPage();
-      });
   }
 };
 
@@ -240,9 +182,9 @@ const GymTrackerClient = {
   }
 };
 
-
-
 $(GymTrackerClient.showStartPage());
+
+
 
 /***/ }),
 /* 1 */
@@ -11119,6 +11061,78 @@ const HomePage = {
     } else {
       return templateHtml;
     }
+  }
+};
+
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return EventHandler; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gym_tracker__ = __webpack_require__(0);
+
+
+const $ = __webpack_require__(2);
+
+const EventHandler = {
+  onLoginFormSubmit: function (event) {
+    event.preventDefault();
+    const emailAddress = $(event.currentTarget).find('input[name=emailAddress]').val();
+    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */].authenticate(emailAddress)
+      .then(result => {
+        // show select training session page
+        __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showSelectTrainingSessionPage();
+      })
+      .catch(err => {
+        console.log('error:', err);
+      });
+  },
+  onSelectTrainingSessionFormSubmit: function (event) {
+    event.preventDefault();
+    // get exercises from server here, if empty, display the empty training session page, else
+    // display the training session page with the previous exercises on it
+    const selectedTrainingSession = $(event.currentTarget).data('session');
+    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */]
+      .addTrainingSession(selectedTrainingSession)
+      .then((trainingSession) => {
+        __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionType = trainingSession.sessionType;
+        return __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */].getLastTrainingSessionExercises(trainingSession);
+      })
+      .then(previousExercises => {
+        if (previousExercises.exercises.length) { // if there are previous exercises, show previous exercises page
+          __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].previousTrainingSessionExercises = previousExercises;
+          __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showTrainingSessionPage();
+        } else { // if there are no previous exercises, show empty training session page
+          __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showEmptyTrainingSessionPage();
+        }
+      });
+  },
+  onChangeSessionFormSubmit: function (event) {
+    event.preventDefault();
+    __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showSelectTrainingSessionPage();
+  },
+  onAddExerciseBigButtonFormSubmit: function (event) {
+    event.preventDefault();
+    __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].displayAddExerciseInputForm = true;
+    __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showEmptyTrainingSessionPage();
+  },
+  onAddExerciseSmallButtonFormSubmit: function (event) {
+    event.preventDefault();
+    __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].displayAddExerciseInputForm = true;
+    __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showTrainingSessionPage();
+  },
+  onAddExerciseInputFormSubmit: function (event) {
+    event.preventDefault();
+    const exerciseName = $(event.currentTarget).find('input[name=exerciseName]').val();
+    console.log('new exercise is:', exerciseName);
+    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */].addExercise(__WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionType, exerciseName)
+      .then(() => {
+        __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showTrainingSessionPage();
+      });
   }
 };
 
