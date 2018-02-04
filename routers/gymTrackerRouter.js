@@ -65,15 +65,21 @@ router.post('/training-session', [cookieParser(), jsonParser, jwtAuth], (req, re
           sessionType: sessionType,
           exercises: []
         };
-        return GymGoerModel
+        GymGoerModel
           .findByIdAndUpdate(
             gymGoerID,
             { $push: { trainingSessions: newSession }}
-          );
+          )
+          .then(() => {
+            return sessionType;
+          });
       }
+      return sessionType;
+    })
+    .then(session => {
       res.json({
         created: true,
-        sessionType: sessionType
+        sessionType: session
       });
     });
 });
