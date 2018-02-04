@@ -80,7 +80,8 @@ const State = {
         const addExercisesForm = TrainingSessionPage.render({ template: TrainingSessionPage.addExerciseSmallButtonForm, session: sessionDetails, onSubmitForm: EventHandler.onAddExerciseSmallButtonFormSubmit });
         formsContainer.append(addExercisesForm);
       }
-
+      // TODO: this is not right - previousTrainingSessionExercises - need to display the current added exercises, not the previous ones
+      //       call it currentTrainingSessionExercioses
       const exercisesForm = TrainingSessionPage.render({ template: TrainingSessionPage.exercisesForm, session: State.previousTrainingSessionExercises });
       formsContainer.append(exercisesForm);
       main.html(pageHeadingHtml);
