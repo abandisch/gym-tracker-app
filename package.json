@@ -7,7 +7,8 @@
     "test": "mocha --recursive --exit",
     "start": "node server.js",
     "devstart": "nodemon server.js",
-    "build": "webpack --watch"
+    "build": "webpack --watch",
+    "//": "devstart: concurrently nodemon server.js webpack --watch"
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,7 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-http": "^3.0.0",
+    "concurrently": "^3.5.1",
     "mocha": "^5.0.0",
     "webpack": "^3.10.0"
   }

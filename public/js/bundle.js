@@ -60,497 +60,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "State", function() { return State; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GymTrackerClient", function() { return GymTrackerClient; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__ = __webpack_require__(5);
-
-
-const $ = __webpack_require__(2);
-
-const State = {
-  displayHomePage: false,
-  displaySelectTrainingSessionPage: false,
-  displayEmptyTrainingSessionPage: false,
-  displayTrainingSessionPage: false,
-  displayAddExerciseInputForm: false,
-  trainingSessionType: '',
-  trainingSessionIcons: [
-    {exercise: 'chest', icon: 'fa-user'},
-    {exercise: 'arms', icon: 'fa-hand-grab-o'},
-    {exercise: 'legs', icon: 'fa-male'},
-    {exercise: 'back', icon: 'fa-heart'}
-  ],
-  previousTrainingSessionExercises: {},
-  render() {
-    const main = $('main');
-    let sessionDetails = { };
-
-    if (this.displayHomePage) {
-      const pageTextHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["a" /* HomePage */].render({template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["a" /* HomePage */].introText});
-      const homePageLoginHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["a" /* HomePage */].render({template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["a" /* HomePage */].loginForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onLoginFormSubmit});
-      main.html(pageTextHtml);
-      main.append(homePageLoginHtml);
-      this.displayHomePage = false;
-    }
-
-    if (this.displaySelectTrainingSessionPage) {
-      const pageTextHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["b" /* SelectTrainingSessionPage */].render({template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["b" /* SelectTrainingSessionPage */].selectTrainingSessionIntroText});
-      const selectTrainingSessionHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["b" /* SelectTrainingSessionPage */].render({template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["b" /* SelectTrainingSessionPage */].selectTrainingSessionForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onSelectTrainingSessionFormSubmit});
-      main.html(pageTextHtml);
-      main.append(selectTrainingSessionHtml);
-      this.displaySelectTrainingSessionPage = false;
-    }
-
-    if (this.displayEmptyTrainingSessionPage || this.displayTrainingSessionPage) {
-      sessionDetails = {
-        sessionIcon: this.trainingSessionIcons.find(x => x.exercise === this.trainingSessionType).icon,
-        sessionType: this.trainingSessionType,
-        sessionDate: new Date().getTime()
-      };
-    }
-
-    if (this.displayEmptyTrainingSessionPage) {
-      const pageHeadingHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].sessionHeading, session: sessionDetails });
-      const formsContainer = $('<div class="no-previous-data"></div>');
-      const changeSessionForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].changeSessionForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onChangeSessionFormSubmit });
-      const noPreviousDataNote = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].noPreviousDataNote, session: sessionDetails });
-      let addExercisesForm;
-      if (this.displayAddExerciseInputForm) { // show the form with input field
-        addExercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].addExerciseInputForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseInputFormSubmit });
-      } else { // just show the big button form
-        addExercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].addExerciseBigButtonForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseBigButtonFormSubmit });
-      }
-      main.html(pageHeadingHtml);
-      formsContainer.append(changeSessionForm);
-      formsContainer.append(noPreviousDataNote);
-      formsContainer.append(addExercisesForm);
-      main.append(formsContainer);
-      this.displayEmptyTrainingSessionPage = false;
-      this.displayAddExerciseInputForm = false;
-    }
-
-    if (this.displayTrainingSessionPage) {
-      const pageHeadingHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].sessionHeading, session: sessionDetails });
-
-      const formsContainer = $('<div class="exercise-data"></div>');
-      const changeSessionForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].changeSessionForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onChangeSessionFormSubmit });
-      formsContainer.append(changeSessionForm);
-
-      if (this.displayAddExerciseInputForm) { // show the form with input field and cancel button
-        const cancelAddExerciseButtonForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].cancelAddExerciseSmallButtonForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onCancelAddExerciseButtonFormSubmit  });
-        const addExerciseInputForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].addExerciseInputForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseInputFormSubmit });
-        formsContainer.append(cancelAddExerciseButtonForm);
-        formsContainer.append(addExerciseInputForm);
-      } else { // just show the big button form
-        const addExercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].addExerciseSmallButtonForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseSmallButtonFormSubmit });
-        formsContainer.append(addExercisesForm);
-      }
-
-      const exercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].exercisesForm, session: State.previousTrainingSessionExercises });
-      formsContainer.append(exercisesForm);
-      main.html(pageHeadingHtml);
-      main.append(formsContainer);
-      this.displayTrainingSessionPage = false;
-      this.displayAddExerciseInputForm = false;
-    }
-  }
-};
-
-const GymTrackerClient = {
-  showStartPage() {
-    State.displayHomePage = true;
-    State.render();
-  },
-  showSelectTrainingSessionPage() {
-    State.displaySelectTrainingSessionPage = true;
-    State.render();
-  },
-  showEmptyTrainingSessionPage() {
-    State.displayEmptyTrainingSessionPage = true;
-    State.render();
-  },
-  showTrainingSessionPage() {
-    State.displayTrainingSessionPage = true;
-    State.render();
-  }
-};
-
-$(GymTrackerClient.showStartPage());
-
-
-
-/***/ }),
-/* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__cookies__ = __webpack_require__(3);
-
-
-const MOCK_TRAINING_SESSION_DATA = {
-  "gymgoers": [
-    {
-      "id": "4c4ed66f-baf4-42c2-ac69-3e238db0d5d6",
-      "email": "alex@bandisch.com",
-      "trainingSessions": [
-        {
-          "sessionType": "chest",
-          "sessionDate": "1517331036931",
-          "exercises": [
-            {
-              "name": "bench press",
-              "sets": [
-                {
-                  "setNumber": "1",
-                  "weight": "60",
-                  "reps": "12"
-                },
-                {
-                  "setNumber": "2",
-                  "weight": "60",
-                  "reps": "10"
-                },
-                {
-                  "setNumber": "3",
-                  "weight": "60",
-                  "reps": "11"
-                }
-              ]
-            },
-            {
-              "name": "dips",
-              "sets": [
-                {
-                  "setNumber": "1",
-                  "weight": "body weight",
-                  "reps": "11"
-                },
-                {
-                  "setNumber": "2",
-                  "weight": "body weight",
-                  "reps": "12"
-                },
-                {
-                  "setNumber": "3",
-                  "weight": "body weight",
-                  "reps": "11"
-                }
-              ]
-            },
-            {
-              "name": "inclined bench",
-              "sets": [
-                {
-                  "setNumber": "1",
-                  "weight": "45",
-                  "reps": "10"
-                },
-                {
-                  "setNumber": "2",
-                  "weight": "50",
-                  "reps": "10"
-                },
-                {
-                  "setNumber": "3",
-                  "weight": "45",
-                  "reps": "10"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "sessionType": "legs",
-          "sessionDate": "1517158236931",
-          "exercises": [
-            {
-              "name": "leg press",
-              "sets": [
-                {
-                  "setNumber": "1",
-                  "weight": "110",
-                  "reps": "12"
-                },
-                {
-                  "setNumber": "2",
-                  "weight": "110",
-                  "reps": "11"
-                },
-                {
-                  "setNumber": "3",
-                  "weight": "110",
-                  "reps": "12"
-                }
-              ]
-            },
-            {
-              "name": "barbell squat",
-              "sets": [
-                {
-                  "setNumber": "1",
-                  "weight": "100",
-                  "reps": "10"
-                },
-                {
-                  "setNumber": "2",
-                  "weight": "100",
-                  "reps": "10"
-                },
-                {
-                  "setNumber": "3",
-                  "weight": "100",
-                  "reps": "9"
-                }
-              ]
-            },
-            {
-              "name": "split squats",
-              "sets": [
-                {
-                  "setNumber": "1",
-                  "weight": "12",
-                  "reps": "10"
-                },
-                {
-                  "setNumber": "2",
-                  "weight": "12",
-                  "reps": "10"
-                },
-                {
-                  "setNumber": "3",
-                  "weight": "12",
-                  "reps": "10"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "sessionType": "back",
-          "sessionDate": "1517158394973",
-          "exercises": []
-        },
-        {
-          "sessionType": "chest",
-          "sessionDate": "1516726236931",
-          "exercises": [
-            {
-              "name": "bench press",
-              "sets": [
-                {
-                  "setNumber": "1",
-                  "weight": "55",
-                  "reps": "14"
-                },
-                {
-                  "setNumber": "2",
-                  "weight": "55",
-                  "reps": "13"
-                },
-                {
-                  "setNumber": "3",
-                  "weight": "55",
-                  "reps": "13"
-                }
-              ]
-            },
-            {
-              "name": "dips",
-              "sets": [
-                {
-                  "setNumber": "1",
-                  "weight": "body weight",
-                  "reps": "14"
-                },
-                {
-                  "setNumber": "2",
-                  "weight": "body weight",
-                  "reps": "14"
-                },
-                {
-                  "setNumber": "3",
-                  "weight": "body weight",
-                  "reps": "13"
-                }
-              ]
-            },
-            {
-              "name": "inclined bench",
-              "sets": [
-                {
-                  "setNumber": "1",
-                  "weight": "40",
-                  "reps": "13"
-                },
-                {
-                  "setNumber": "2",
-                  "weight": "40",
-                  "reps": "13"
-                },
-                {
-                  "setNumber": "3",
-                  "weight": "40",
-                  "reps": "12"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ]
-};
-
-const COOKIE_NAME = 'gymGoer';
-
-const GymTrackerAPI = {
-  getCurrentGymGoer() {
-    return MOCK_TRAINING_SESSION_DATA.gymgoers.find(gGoer => gGoer.email === JSON.parse(Object(__WEBPACK_IMPORTED_MODULE_0__cookies__["a" /* getCookie */])(COOKIE_NAME)).email);
-  },
-  getTodaysSession(trainingSessionType) {
-    return this.getCurrentGymGoer().trainingSessions.find(session => {
-      const trainingDate = new Date(Number.parseInt(session.sessionDate)).toLocaleString().split(',').splice(0, 1)[0];
-      const today = new Date().toLocaleString().split(',').splice(0, 1)[0];
-      return session.sessionType === trainingSessionType && trainingDate === today;
-    });
-  },
-  hasDoneTrainingSessionToday(trainingSessionType) {
-    return this.getTodaysSession(trainingSessionType) !== undefined;
-  },
-  authenticate(emailAddress) {
-    // talk to server and authenticate
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const isExistingGymGoer = MOCK_TRAINING_SESSION_DATA.gymgoers.find(g => g.email === emailAddress) !== undefined;
-        if (!isExistingGymGoer) {
-          const newGymGoer = {
-            email: emailAddress,
-            trainingSessions: []
-          };
-          MOCK_TRAINING_SESSION_DATA.gymgoers.push(newGymGoer);
-        }
-        const cookieData = {
-          email: emailAddress,
-          jwt_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhbGV4QGJhbmRpc2NoLmNvbSJ9.Kt3jE6DLqzqSU8lDC3heeqhLfBfbMV8GOdefU2blZqQ'
-        };
-        // create cookie
-        Object(__WEBPACK_IMPORTED_MODULE_0__cookies__["b" /* setCookie */])(COOKIE_NAME, JSON.stringify(cookieData));
-        resolve({email: emailAddress});
-      }, 1);
-    });
-  },
-  addTrainingSession(trainingSessionType) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-
-        const hasDoneSessionToday = this.hasDoneTrainingSessionToday(trainingSessionType);
-
-        if (!hasDoneSessionToday) {
-          const session = {
-            exercises: [],
-            sessionType: trainingSessionType,
-            sessionDate: new Date().getTime()
-          };
-          this.getCurrentGymGoer().trainingSessions.push(session);
-        }
-
-        resolve({
-          created: true,
-          sessionType: trainingSessionType
-        });
-      }, 1);
-    });
-  },
-  addExercise(trainingSession, exerciseName) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-
-        const isExistingExercise = this.getTodaysSession(trainingSession).exercises.find(exercise => exercise.name === exerciseName) !== undefined;
-        if (!isExistingExercise) {
-          this.getTodaysSession(trainingSession).exercises.push({name: exerciseName, sets: []});
-        }
-        console.log(this.getTodaysSession(trainingSession).exercises);
-        resolve({
-          created: true
-        });
-      }, 1);
-    });
-  },
-  findPreviousTrainingSession(sessionType) {
-    return this.getCurrentGymGoer().trainingSessions
-      .reduce((sessions, current) => {
-        if (current.exercises.length && current.sessionType === sessionType) {
-          sessions.push(current);
-        }
-        return sessions;
-      }, [])
-      .sort((a, b) => Number.parseInt(b.sessionDate) - Number.parseInt(a.sessionDate))[0];
-  },
-  findBestSet(sets) {
-    sets
-      .sort((setA, setB) => setB.reps - setA.reps) // sort by reps
-      .sort((setA, setB) => { // sort by weight
-        if (Number.isNaN(Number.parseInt(setA.weight))) {
-          return 0;
-        }
-        return Number.parseInt(setB.weight) - Number.parseInt(setA.weight);
-      });
-    return sets[0];
-  },
-  getLastTrainingSessionExercises(trainingSession) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const lastSession = this.findPreviousTrainingSession(trainingSession.sessionType);
-
-        const lastSessionExercises = {
-          sessionType: trainingSession.sessionType,
-          exercises: []
-        };
-
-        if (lastSession !== undefined) {
-          lastSessionExercises.exercises =
-            lastSession.exercises
-              .map(exercise => ({
-                sessionDate: Number.parseInt(lastSession.sessionDate),
-                name: exercise.name,
-                bestSet: this.findBestSet(exercise.sets)
-              }));
-        }
-
-        resolve(lastSessionExercises);
-
-      }, 1);
-    })
-  },
-  // Get all training session data
-  // Include JWT in request Authorization header to identify the user
-  // - /training-session/<training session type>, e.g. /training-session/chest
-  getTrainingSessionData(trainingSession) {
-    $.getJSON(GYM_TRACKER_API_URL, (data) => {
-      console.log(data);
-    })
-  },
-  // Get only the last training session data
-  // Include JWT in request Authorization header to identify the user
-  // - /training-session/<training session type>/last, e.g. /training-session/chest/last
-
-};
-/* harmony export (immutable) */ __webpack_exports__["a"] = GymTrackerAPI;
-
-
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10921,40 +10435,141 @@ return jQuery;
 
 
 /***/ }),
-/* 3 */
+/* 1 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return setCookie; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getCookie; });
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "State", function() { return State; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GymTrackerClient", function() { return GymTrackerClient; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__ = __webpack_require__(3);
 
-function setCookie(cName, cValue, exDays) {
-  let expires = '';
-  if (exDays) {
-    const d = new Date();
-    d.setTime(d.getTime() + (exDays*24*60*60*1000));
-    expires = "expires="+ d.toUTCString();
+
+const $ = __webpack_require__(0);
+
+const State = {
+  displayHomePage: false,
+  displaySelectTrainingSessionPage: false,
+  displayEmptyTrainingSessionPage: false,
+  displayTrainingSessionPage: false,
+  displayAddExerciseInputForm: false,
+  trainingSessionType: '',
+  trainingSessionIcons: [
+    {exercise: 'chest', icon: 'fa-user'},
+    {exercise: 'arms', icon: 'fa-hand-grab-o'},
+    {exercise: 'legs', icon: 'fa-male'},
+    {exercise: 'back', icon: 'fa-heart'}
+  ],
+  previousTrainingSessionExercises: {},
+  render() {
+    const main = $('main');
+    let sessionDetails = { };
+
+    if (this.displayHomePage) {
+      const pageTextHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["a" /* HomePage */].render({template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["a" /* HomePage */].introText});
+      const homePageLoginHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["a" /* HomePage */].render({template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["a" /* HomePage */].loginForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onLoginFormSubmit});
+      main.html(pageTextHtml);
+      main.append(homePageLoginHtml);
+      this.displayHomePage = false;
+    }
+
+    if (this.displaySelectTrainingSessionPage) {
+      const pageTextHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["b" /* SelectTrainingSessionPage */].render({template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["b" /* SelectTrainingSessionPage */].selectTrainingSessionIntroText});
+      const selectTrainingSessionHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["b" /* SelectTrainingSessionPage */].render({template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["b" /* SelectTrainingSessionPage */].selectTrainingSessionForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onSelectTrainingSessionFormSubmit});
+      main.html(pageTextHtml);
+      main.append(selectTrainingSessionHtml);
+      this.displaySelectTrainingSessionPage = false;
+    }
+
+    if (this.displayEmptyTrainingSessionPage || this.displayTrainingSessionPage) {
+      sessionDetails = {
+        sessionIcon: this.trainingSessionIcons.find(x => x.exercise === this.trainingSessionType).icon,
+        sessionType: this.trainingSessionType,
+        sessionDate: new Date().getTime()
+      };
+    }
+
+    if (this.displayEmptyTrainingSessionPage) {
+      const pageHeadingHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].sessionHeading, session: sessionDetails });
+      const formsContainer = $('<div class="no-previous-data"></div>');
+      const changeSessionForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].changeSessionForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onChangeSessionFormSubmit });
+      const noPreviousDataNote = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].noPreviousDataNote, session: sessionDetails });
+      let addExercisesForm;
+      if (this.displayAddExerciseInputForm) { // show the form with input field
+        addExercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].addExerciseInputForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseInputFormSubmit });
+      } else { // just show the big button form
+        addExercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].addExerciseBigButtonForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseBigButtonFormSubmit });
+      }
+      main.html(pageHeadingHtml);
+      formsContainer.append(changeSessionForm);
+      formsContainer.append(noPreviousDataNote);
+      formsContainer.append(addExercisesForm);
+      main.append(formsContainer);
+      this.displayEmptyTrainingSessionPage = false;
+      this.displayAddExerciseInputForm = false;
+    }
+
+    if (this.displayTrainingSessionPage) {
+      const pageHeadingHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].sessionHeading, session: sessionDetails });
+
+      const formsContainer = $('<div class="exercise-data"></div>');
+      const changeSessionForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].changeSessionForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onChangeSessionFormSubmit });
+      formsContainer.append(changeSessionForm);
+
+      if (this.displayAddExerciseInputForm) { // show the form with input field and cancel button
+        const cancelAddExerciseButtonForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].cancelAddExerciseSmallButtonForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onCancelAddExerciseButtonFormSubmit  });
+        const addExerciseInputForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].addExerciseInputForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseInputFormSubmit });
+        formsContainer.append(cancelAddExerciseButtonForm);
+        formsContainer.append(addExerciseInputForm);
+      } else { // just show the big button form
+        const addExercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].addExerciseSmallButtonForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseSmallButtonFormSubmit });
+        formsContainer.append(addExercisesForm);
+      }
+      // TODO: this is not right - previousTrainingSessionExercises - need to display the current added exercises, not the previous ones
+      //       call it currentTrainingSessionExercioses
+      const exercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].exercisesForm, session: State.previousTrainingSessionExercises });
+      formsContainer.append(exercisesForm);
+      main.html(pageHeadingHtml);
+      main.append(formsContainer);
+      this.displayTrainingSessionPage = false;
+      this.displayAddExerciseInputForm = false;
+    }
   }
-  document.cookie = cName + "=" + cValue + ";" + expires + ";path=/";
-}
+};
 
-function getCookie(name) {
-  const regexp = new RegExp("(?:^" + name + "|;\s*"+ name + ")=(.*?)(?:;|$)", "g");
-  const result = regexp.exec(document.cookie);
-  return (result === null) ? null : result[1];
-}
+const GymTrackerClient = {
+  showStartPage() {
+    State.displayHomePage = true;
+    State.render();
+  },
+  showSelectTrainingSessionPage() {
+    State.displaySelectTrainingSessionPage = true;
+    State.render();
+  },
+  showEmptyTrainingSessionPage() {
+    State.displayEmptyTrainingSessionPage = true;
+    State.render();
+  },
+  showTrainingSessionPage() {
+    State.displayTrainingSessionPage = true;
+    State.render();
+  }
+};
+
+$(GymTrackerClient.showStartPage());
 
 
 
 /***/ }),
-/* 4 */
+/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return TrainingSessionPage; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return SelectTrainingSessionPage; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HomePage; });
-const $ = __webpack_require__(2);
+const $ = __webpack_require__(0);
 
 const TrainingSessionPage = {
   sessionHeading(session) {
@@ -11083,16 +10698,16 @@ const HomePage = {
 
 
 /***/ }),
-/* 5 */
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return EventHandler; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gym_tracker__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gym_tracker__ = __webpack_require__(1);
 
 
-const $ = __webpack_require__(2);
+const $ = __webpack_require__(0);
 
 const EventHandler = {
   onLoginFormSubmit: function (event) {
@@ -11158,6 +10773,392 @@ const EventHandler = {
     __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showTrainingSessionPage();
   }
 };
+
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__cookies__ = __webpack_require__(5);
+
+
+const MOCK_TRAINING_SESSION_DATA = {
+  "gymgoers": [
+    {
+      "id": "4c4ed66f-baf4-42c2-ac69-3e238db0d5d6",
+      "email": "alex@bandisch.com",
+      "trainingSessions": [
+        {
+          "sessionType": "chest",
+          "sessionDate": "1517331036931",
+          "exercises": [
+            {
+              "name": "bench press",
+              "sets": [
+                {
+                  "setNumber": "1",
+                  "weight": "60",
+                  "reps": "12"
+                },
+                {
+                  "setNumber": "2",
+                  "weight": "60",
+                  "reps": "10"
+                },
+                {
+                  "setNumber": "3",
+                  "weight": "60",
+                  "reps": "11"
+                }
+              ]
+            },
+            {
+              "name": "dips",
+              "sets": [
+                {
+                  "setNumber": "1",
+                  "weight": "body weight",
+                  "reps": "11"
+                },
+                {
+                  "setNumber": "2",
+                  "weight": "body weight",
+                  "reps": "12"
+                },
+                {
+                  "setNumber": "3",
+                  "weight": "body weight",
+                  "reps": "11"
+                }
+              ]
+            },
+            {
+              "name": "inclined bench",
+              "sets": [
+                {
+                  "setNumber": "1",
+                  "weight": "45",
+                  "reps": "10"
+                },
+                {
+                  "setNumber": "2",
+                  "weight": "50",
+                  "reps": "10"
+                },
+                {
+                  "setNumber": "3",
+                  "weight": "45",
+                  "reps": "10"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "sessionType": "legs",
+          "sessionDate": "1517158236931",
+          "exercises": [
+            {
+              "name": "leg press",
+              "sets": [
+                {
+                  "setNumber": "1",
+                  "weight": "110",
+                  "reps": "12"
+                },
+                {
+                  "setNumber": "2",
+                  "weight": "110",
+                  "reps": "11"
+                },
+                {
+                  "setNumber": "3",
+                  "weight": "110",
+                  "reps": "12"
+                }
+              ]
+            },
+            {
+              "name": "barbell squat",
+              "sets": [
+                {
+                  "setNumber": "1",
+                  "weight": "100",
+                  "reps": "10"
+                },
+                {
+                  "setNumber": "2",
+                  "weight": "100",
+                  "reps": "10"
+                },
+                {
+                  "setNumber": "3",
+                  "weight": "100",
+                  "reps": "9"
+                }
+              ]
+            },
+            {
+              "name": "split squats",
+              "sets": [
+                {
+                  "setNumber": "1",
+                  "weight": "12",
+                  "reps": "10"
+                },
+                {
+                  "setNumber": "2",
+                  "weight": "12",
+                  "reps": "10"
+                },
+                {
+                  "setNumber": "3",
+                  "weight": "12",
+                  "reps": "10"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "sessionType": "back",
+          "sessionDate": "1517158394973",
+          "exercises": []
+        },
+        {
+          "sessionType": "chest",
+          "sessionDate": "1516726236931",
+          "exercises": [
+            {
+              "name": "bench press",
+              "sets": [
+                {
+                  "setNumber": "1",
+                  "weight": "55",
+                  "reps": "14"
+                },
+                {
+                  "setNumber": "2",
+                  "weight": "55",
+                  "reps": "13"
+                },
+                {
+                  "setNumber": "3",
+                  "weight": "55",
+                  "reps": "13"
+                }
+              ]
+            },
+            {
+              "name": "dips",
+              "sets": [
+                {
+                  "setNumber": "1",
+                  "weight": "body weight",
+                  "reps": "14"
+                },
+                {
+                  "setNumber": "2",
+                  "weight": "body weight",
+                  "reps": "14"
+                },
+                {
+                  "setNumber": "3",
+                  "weight": "body weight",
+                  "reps": "13"
+                }
+              ]
+            },
+            {
+              "name": "inclined bench",
+              "sets": [
+                {
+                  "setNumber": "1",
+                  "weight": "40",
+                  "reps": "13"
+                },
+                {
+                  "setNumber": "2",
+                  "weight": "40",
+                  "reps": "13"
+                },
+                {
+                  "setNumber": "3",
+                  "weight": "40",
+                  "reps": "12"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+const COOKIE_NAME = 'gymGoer';
+
+const GymTrackerAPI = {
+  getCurrentGymGoer() {
+    return MOCK_TRAINING_SESSION_DATA.gymgoers.find(gGoer => gGoer.email === JSON.parse(Object(__WEBPACK_IMPORTED_MODULE_0__cookies__["a" /* getCookie */])(COOKIE_NAME)).email);
+  },
+  getTodaysSession(trainingSessionType) {
+    return this.getCurrentGymGoer().trainingSessions.find(session => {
+      const trainingDate = new Date(Number.parseInt(session.sessionDate)).toLocaleString().split(',').splice(0, 1)[0];
+      const today = new Date().toLocaleString().split(',').splice(0, 1)[0];
+      return session.sessionType === trainingSessionType && trainingDate === today;
+    });
+  },
+  hasDoneTrainingSessionToday(trainingSessionType) {
+    return this.getTodaysSession(trainingSessionType) !== undefined;
+  },
+  authenticate(emailAddress) {
+    // talk to server and authenticate
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const isExistingGymGoer = MOCK_TRAINING_SESSION_DATA.gymgoers.find(g => g.email === emailAddress) !== undefined;
+        if (!isExistingGymGoer) {
+          const newGymGoer = {
+            email: emailAddress,
+            trainingSessions: []
+          };
+          MOCK_TRAINING_SESSION_DATA.gymgoers.push(newGymGoer);
+        }
+        const cookieData = {
+          email: emailAddress,
+          jwt_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhbGV4QGJhbmRpc2NoLmNvbSJ9.Kt3jE6DLqzqSU8lDC3heeqhLfBfbMV8GOdefU2blZqQ'
+        };
+        // create cookie
+        Object(__WEBPACK_IMPORTED_MODULE_0__cookies__["b" /* setCookie */])(COOKIE_NAME, JSON.stringify(cookieData));
+        resolve({email: emailAddress});
+      }, 1);
+    });
+  },
+  addTrainingSession(trainingSessionType) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+
+        const hasDoneSessionToday = this.hasDoneTrainingSessionToday(trainingSessionType);
+
+        if (!hasDoneSessionToday) {
+          const session = {
+            exercises: [],
+            sessionType: trainingSessionType,
+            sessionDate: new Date().getTime()
+          };
+          this.getCurrentGymGoer().trainingSessions.push(session);
+        }
+
+        resolve({
+          created: true,
+          sessionType: trainingSessionType
+        });
+      }, 1);
+    });
+  },
+  addExercise(trainingSession, exerciseName) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+
+        const isExistingExercise = this.getTodaysSession(trainingSession).exercises.find(exercise => exercise.name === exerciseName) !== undefined;
+        if (!isExistingExercise) {
+          this.getTodaysSession(trainingSession).exercises.push({name: exerciseName, sets: []});
+        }
+        console.log(this.getTodaysSession(trainingSession).exercises);
+        resolve({
+          created: true
+        });
+      }, 1);
+    });
+  },
+  findPreviousTrainingSession(sessionType) {
+    return this.getCurrentGymGoer().trainingSessions
+      .reduce((sessions, current) => {
+        if (current.exercises.length && current.sessionType === sessionType) {
+          sessions.push(current);
+        }
+        return sessions;
+      }, [])
+      .sort((a, b) => Number.parseInt(b.sessionDate) - Number.parseInt(a.sessionDate))[0];
+  },
+  findBestSet(sets) {
+    sets
+      .sort((setA, setB) => setB.reps - setA.reps) // sort by reps
+      .sort((setA, setB) => { // sort by weight
+        if (Number.isNaN(Number.parseInt(setA.weight))) {
+          return 0;
+        }
+        return Number.parseInt(setB.weight) - Number.parseInt(setA.weight);
+      });
+    return sets[0];
+  },
+  getLastTrainingSessionExercises(trainingSession) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const lastSession = this.findPreviousTrainingSession(trainingSession.sessionType);
+
+        const lastSessionExercises = {
+          sessionType: trainingSession.sessionType,
+          exercises: []
+        };
+
+        if (lastSession !== undefined) {
+          lastSessionExercises.exercises =
+            lastSession.exercises
+              .map(exercise => ({
+                sessionDate: Number.parseInt(lastSession.sessionDate),
+                name: exercise.name,
+                bestSet: this.findBestSet(exercise.sets)
+              }));
+        }
+
+        resolve(lastSessionExercises);
+
+      }, 1);
+    })
+  },
+  // Get all training session data
+  // Include JWT in request Authorization header to identify the user
+  // - /training-session/<training session type>, e.g. /training-session/chest
+  getTrainingSessionData(trainingSession) {
+    $.getJSON(GYM_TRACKER_API_URL, (data) => {
+      console.log(data);
+    })
+  },
+  // Get only the last training session data
+  // Include JWT in request Authorization header to identify the user
+  // - /training-session/<training session type>/last, e.g. /training-session/chest/last
+
+};
+/* harmony export (immutable) */ __webpack_exports__["a"] = GymTrackerAPI;
+
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return setCookie; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getCookie; });
+
+function setCookie(cName, cValue, exDays) {
+  let expires = '';
+  if (exDays) {
+    const d = new Date();
+    d.setTime(d.getTime() + (exDays*24*60*60*1000));
+    expires = "expires="+ d.toUTCString();
+  }
+  document.cookie = cName + "=" + cValue + ";" + expires + ";path=/";
+}
+
+function getCookie(name) {
+  const regexp = new RegExp("(?:^" + name + "|;\s*"+ name + ")=(.*?)(?:;|$)", "g");
+  const result = regexp.exec(document.cookie);
+  return (result === null) ? null : result[1];
+}
 
 
 
