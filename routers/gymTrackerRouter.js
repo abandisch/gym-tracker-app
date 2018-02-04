@@ -1,9 +1,12 @@
 const express = require('express');
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
 const router = express.Router();
 
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
 
+const config = require('../config');
 const {GymGoerModel} = new require('../models/GymGoerModel');
 const {routerUtils} = require('./routerUtils');
 
@@ -16,8 +19,8 @@ router.get('/', (req, res) => {
     .limit(limit)
     .then(results => {
       res.json({
-        gymGoers: results.map((gymgGoer) => {
-          return gymgGoer.serialize();
+        gymGoers: results.map((gymGoer) => {
+          return gymGoer.serialize();
         })
       });
     })
@@ -27,14 +30,15 @@ router.get('/', (req, res) => {
     });
 });
 
-router.get('/:id', (req, res) => {
+const jwtAuth = passport.authenticate('jwt', { session: false });
+router.get('/:id', [jwtAuth], (req, res) => {
   GymGoerModel
     .findById(req.params.id)
     .then(gymGoer => {
       if (gymGoer) {
-        res.status(200).json(gymGoer.serialize());
+        res.status(200).json(gymGoer.serializeAll());
       } else {
-        console.log(`Cannot GET gym goer. Invalid id supplied (${req.params.id})`);
+        console.error(`Cannot GET gym goer. Invalid id supplied (${req.params.id})`);
         res.status(400).json({ error: 'Invalid id supplied' });
       }
     })
@@ -42,6 +46,20 @@ router.get('/:id', (req, res) => {
       console.error(err);
       res.status(500).json({message: 'Internal Server Error'});
     });
+});
+
+const createAuthToken = function(gymGoer) {
+  return jwt.sign({gymGoer}, config.JWT_SECRET, {
+    subject: gymGoer.email,
+    expiresIn: config.JWT_EXPIRY,
+    algorithm: 'HS256'
+  });
+};
+const localAuth = passport.authenticate('local', {session: false});
+
+router.post('/login', [jsonParser, localAuth], (req, res) => {
+  const authToken = createAuthToken(req.user.serialize());
+  res.json({authToken});
 });
 
 module.exports = router;

@@ -28,6 +28,13 @@ const gymGoerSchema = mongoose.Schema({
 gymGoerSchema.methods.serialize = function() {
   return {
     id: this._id,
+    email: this.email
+  };
+};
+
+gymGoerSchema.methods.serializeAll = function() {
+  return {
+    id: this._id,
     email: this.email,
     trainingSessions: this.trainingSessions
   };

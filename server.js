@@ -1,14 +1,20 @@
 'use strict';
 
+require('dotenv').config();
 const bodyParser = require('body-parser');
 const express = require('express');
 const morgan = require('morgan');
+const passport = require('passport');
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
+
 const app = express();
 
 const { DATABASE_URL, PORT } = require('./config');
-const { GymGoer } = require('./models/GymGoerModel');
+const { localStrategy, jwtStrategy } = require('./auth/strategies');
+
+passport.use(localStrategy);
+passport.use(jwtStrategy);
 
 // Router
 const gymTrackerRouter = require('./routers/gymTrackerRouter');
@@ -40,10 +46,10 @@ function runServer(databaseUrl, port = PORT) {
         console.log(`\n  === App is listening on port ${port} ===\n`);
         resolve();
       })
-        .on('error', err => {
-          mongoose.disconnect();
-          reject(err);
-        });
+      .on('error', err => {
+        mongoose.disconnect();
+        reject(err);
+      });
     });
   });
 }
