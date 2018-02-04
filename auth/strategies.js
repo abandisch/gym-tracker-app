@@ -27,16 +27,24 @@ const localStrategy = new LocalStrategy({usernameField: 'email'},(email, passwor
       });
 });
 
+const JWTExtractFromCookie = function(req) {
+  let token = null;
+  if (req && req.cookies.gymGoer) {
+    const cookie = JSON.parse(req.cookies.gymGoer);
+    token = cookie.jwt_token;
+  }
+  return token;
+};
+
 const jwtStrategy = new JwtStrategy(
   {
     secretOrKey: JWT_SECRET,
-    // Look for the JWT as a Bearer auth header
-    jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer'),
-    // Only allow HS256 tokens - the same as the ones we issue
+    jwtFromRequest: ExtractJwt.fromExtractors([JWTExtractFromCookie]),
     algorithms: ['HS256']
   },
   (payload, done) => {
-    done(null, payload.user);
+    console.log('payload:', payload);
+    done(null, payload.gymGoer);
   }
 );
 
