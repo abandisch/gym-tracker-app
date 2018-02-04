@@ -10783,6 +10783,7 @@ const EventHandler = {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__cookies__ = __webpack_require__(5);
 
+const $ = __webpack_require__(0);
 
 const MOCK_TRAINING_SESSION_DATA = {
   "gymgoers": [
@@ -11015,25 +11016,23 @@ const GymTrackerAPI = {
     return this.getTodaysSession(trainingSessionType) !== undefined;
   },
   authenticate(emailAddress) {
-    // talk to server and authenticate
     return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const isExistingGymGoer = MOCK_TRAINING_SESSION_DATA.gymgoers.find(g => g.email === emailAddress) !== undefined;
-        if (!isExistingGymGoer) {
-          const newGymGoer = {
-            email: emailAddress,
-            trainingSessions: []
-          };
-          MOCK_TRAINING_SESSION_DATA.gymgoers.push(newGymGoer);
-        }
+      $.ajax({
+        url: 'gym-tracker/login',
+        data: JSON.stringify({email: emailAddress, password: 'null'}),
+        contentType: 'application/json',
+        method: 'POST',
+        dataType: 'json'
+      }).done(result => {
         const cookieData = {
           email: emailAddress,
-          jwt_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhbGV4QGJhbmRpc2NoLmNvbSJ9.Kt3jE6DLqzqSU8lDC3heeqhLfBfbMV8GOdefU2blZqQ'
+          jwt_token: result.authToken
         };
-        // create cookie
         Object(__WEBPACK_IMPORTED_MODULE_0__cookies__["b" /* setCookie */])(COOKIE_NAME, JSON.stringify(cookieData));
         resolve({email: emailAddress});
-      }, 1);
+      }).fail(() => {
+        reject({error: 'Error logging in'});
+      })
     });
   },
   addTrainingSession(trainingSessionType) {
