@@ -2,14 +2,15 @@
 
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const { app, runServer, closeServer } = require('../server');
+const { app, runServer, closeServer } = require('../../server');
 const expect = chai.expect;
+const {TEST_DATABASE_URL} = require('../../config');
 
 chai.use(chaiHttp);
 
 describe('# Static HTML files', function () {
   before(function () {
-    runServer();
+    runServer(TEST_DATABASE_URL);
   });
   after(function () {
     closeServer();

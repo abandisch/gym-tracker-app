@@ -1,144 +1,212 @@
 {
-  "trainingSessions": [
+  "gymgoers": [
     {
-      "id": "2d62be13-0820-45b4-b14f-60453a6a71eb",
-      "sessionType": "chest",
-      "sessionDate": "1517331036931",
-      "exercises": [
+      "email": "alex@bandisch.com",
+      "trainingSessions": [
         {
-          "name": "bench press",
-          "sets": [
+          "sessionType": "chest",
+          "sessionDate": "1517331036931",
+          "exercises": [
             {
-              "setNumber": "1",
-              "weight": "60",
-              "reps": "12"
+              "name": "bench press",
+              "sets": [
+                {
+                  "setNumber": "1",
+                  "weight": "60",
+                  "reps": "12"
+                },
+                {
+                  "setNumber": "2",
+                  "weight": "60",
+                  "reps": "10"
+                },
+                {
+                  "setNumber": "3",
+                  "weight": "60",
+                  "reps": "11"
+                }
+              ]
             },
             {
-              "setNumber": "2",
-              "weight": "60",
-              "reps": "10"
+              "name": "dips",
+              "sets": [
+                {
+                  "setNumber": "1",
+                  "weight": "body weight",
+                  "reps": "11"
+                },
+                {
+                  "setNumber": "2",
+                  "weight": "body weight",
+                  "reps": "12"
+                },
+                {
+                  "setNumber": "3",
+                  "weight": "body weight",
+                  "reps": "11"
+                }
+              ]
             },
             {
-              "setNumber": "3",
-              "weight": "60",
-              "reps": "11"
+              "name": "inclined bench",
+              "sets": [
+                {
+                  "setNumber": "1",
+                  "weight": "45",
+                  "reps": "10"
+                },
+                {
+                  "setNumber": "2",
+                  "weight": "50",
+                  "reps": "10"
+                },
+                {
+                  "setNumber": "3",
+                  "weight": "45",
+                  "reps": "10"
+                }
+              ]
             }
           ]
         },
         {
-          "name": "dips",
-          "sets": [
+          "sessionType": "legs",
+          "sessionDate": "1517158236931",
+          "exercises": [
             {
-              "setNumber": "1",
-              "weight": "body weight",
-              "reps": "11"
+              "name": "leg press",
+              "sets": [
+                {
+                  "setNumber": "1",
+                  "weight": "110",
+                  "reps": "12"
+                },
+                {
+                  "setNumber": "2",
+                  "weight": "110",
+                  "reps": "11"
+                },
+                {
+                  "setNumber": "3",
+                  "weight": "110",
+                  "reps": "12"
+                }
+              ]
             },
             {
-              "setNumber": "2",
-              "weight": "body weight",
-              "reps": "12"
+              "name": "barbell squat",
+              "sets": [
+                {
+                  "setNumber": "1",
+                  "weight": "100",
+                  "reps": "10"
+                },
+                {
+                  "setNumber": "2",
+                  "weight": "100",
+                  "reps": "10"
+                },
+                {
+                  "setNumber": "3",
+                  "weight": "100",
+                  "reps": "9"
+                }
+              ]
             },
             {
-              "setNumber": "3",
-              "weight": "body weight",
-              "reps": "11"
+              "name": "split squats",
+              "sets": [
+                {
+                  "setNumber": "1",
+                  "weight": "12",
+                  "reps": "10"
+                },
+                {
+                  "setNumber": "2",
+                  "weight": "12",
+                  "reps": "10"
+                },
+                {
+                  "setNumber": "3",
+                  "weight": "12",
+                  "reps": "10"
+                }
+              ]
             }
           ]
         },
         {
-          "name": "inclined bench",
-          "sets": [
+          "sessionType": "back",
+          "sessionDate": "1517158394973",
+          "exercises": []
+        },
+        {
+          "sessionType": "chest",
+          "sessionDate": "1516726236931",
+          "exercises": [
             {
-              "setNumber": "1",
-              "weight": "45",
-              "reps": "10"
+              "name": "bench press",
+              "sets": [
+                {
+                  "setNumber": "1",
+                  "weight": "55",
+                  "reps": "14"
+                },
+                {
+                  "setNumber": "2",
+                  "weight": "55",
+                  "reps": "13"
+                },
+                {
+                  "setNumber": "3",
+                  "weight": "55",
+                  "reps": "13"
+                }
+              ]
             },
             {
-              "setNumber": "2",
-              "weight": "45",
-              "reps": "10"
+              "name": "dips",
+              "sets": [
+                {
+                  "setNumber": "1",
+                  "weight": "body weight",
+                  "reps": "14"
+                },
+                {
+                  "setNumber": "2",
+                  "weight": "body weight",
+                  "reps": "14"
+                },
+                {
+                  "setNumber": "3",
+                  "weight": "body weight",
+                  "reps": "13"
+                }
+              ]
             },
             {
-              "setNumber": "3",
-              "weight": "45",
-              "reps": "10"
+              "name": "inclined bench",
+              "sets": [
+                {
+                  "setNumber": "1",
+                  "weight": "40",
+                  "reps": "13"
+                },
+                {
+                  "setNumber": "2",
+                  "weight": "40",
+                  "reps": "13"
+                },
+                {
+                  "setNumber": "3",
+                  "weight": "40",
+                  "reps": "12"
+                }
+              ]
             }
           ]
         }
       ]
-    },
-    {
-      "id": "c1d7ec68-0382-4dfb-ae1b-1b6c8715f8db",
-      "sessionType": "legs",
-      "sessionDate": "1517158236931",
-      "exercises": [
-        {
-          "name": "leg press",
-          "sets": [
-            {
-              "setNumber": "1",
-              "weight": "110",
-              "reps": "12"
-            },
-            {
-              "setNumber": "2",
-              "weight": "110",
-              "reps": "11"
-            },
-            {
-              "setNumber": "3",
-              "weight": "110",
-              "reps": "12"
-            }
-          ]
-        },
-        {
-          "name": "barbell squat",
-          "sets": [
-            {
-              "setNumber": "1",
-              "weight": "100",
-              "reps": "10"
-            },
-            {
-              "setNumber": "2",
-              "weight": "100",
-              "reps": "10"
-            },
-            {
-              "setNumber": "3",
-              "weight": "100",
-              "reps": "9"
-            }
-          ]
-        },
-        {
-          "name": "split squats",
-          "sets": [
-            {
-              "setNumber": "1",
-              "weight": "12",
-              "reps": "10"
-            },
-            {
-              "setNumber": "2",
-              "weight": "12",
-              "reps": "10"
-            },
-            {
-              "setNumber": "3",
-              "weight": "12",
-              "reps": "10"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "27782519-5e78-4369-abba-90d6e46a9d12",
-      "sessionType": "back",
-      "sessionDate": "1517158394973",
-      "exercises": []
     }
   ]
 }

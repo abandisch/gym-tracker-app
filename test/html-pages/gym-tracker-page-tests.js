@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const {TrainingSessionPage} = require('../src/js/gym-tracker-pages');
+//const {TrainingSessionPage} = require('../src/js/gym-tracker-pages');
 
 describe('# Gym Tracker Pages', function () {
   describe('# TrainingSessionPage.sessionHeading', function () {
