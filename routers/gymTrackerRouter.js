@@ -41,6 +41,43 @@ router.get('/', (req, res) => {
     });
 });
 
+router.post('/training-session', [cookieParser(), jsonParser, jwtAuth], (req, res) => {
+  const {id: gymGoerID} = req.user;
+  const sessionType = req.body.sessionType;
+
+  routerUtils.confirmRequiredProperties(req.body, ['sessionType'], (msg) => {
+    console.error(msg);
+    return res.status(400).json({error: msg});
+  });
+
+  let startToday = new Date().setHours(0,0,0,0);
+  let endToday = new Date().setHours(23,59,59,999);
+
+  GymGoerModel
+    .find({
+      "_id": gymGoerID,
+      "trainingSessions.sessionType": sessionType,
+      "trainingSessions.sessionDate": { $gt: startToday, $lt: endToday }
+    })
+    .then(gymGoers => {
+      if (!gymGoers.length) {
+        const newSession = {
+          sessionType: sessionType,
+          exercises: []
+        };
+        return GymGoerModel
+          .findByIdAndUpdate(
+            gymGoerID,
+            { $push: { trainingSessions: newSession }}
+          );
+      }
+      res.json({
+        created: true,
+        sessionType: sessionType
+      });
+    });
+});
+
 router.get('/:id', [cookieParser(), jwtAuth], (req, res) => {
   GymGoerModel
     .findById(req.params.id)

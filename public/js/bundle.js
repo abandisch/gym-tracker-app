@@ -11012,9 +11012,9 @@ const GymTrackerAPI = {
       return session.sessionType === trainingSessionType && trainingDate === today;
     });
   },
-  hasDoneTrainingSessionToday(trainingSessionType) {
-    return this.getTodaysSession(trainingSessionType) !== undefined;
-  },
+  // hasDoneTrainingSessionToday(trainingSessionType) {
+  //   return this.getTodaysSession(trainingSessionType) !== undefined;
+  // },
   authenticate(emailAddress) {
     return new Promise((resolve, reject) => {
       $.ajax({
@@ -11037,24 +11037,17 @@ const GymTrackerAPI = {
   },
   addTrainingSession(trainingSessionType) {
     return new Promise((resolve, reject) => {
-      setTimeout(() => {
-
-        const hasDoneSessionToday = this.hasDoneTrainingSessionToday(trainingSessionType);
-
-        if (!hasDoneSessionToday) {
-          const session = {
-            exercises: [],
-            sessionType: trainingSessionType,
-            sessionDate: new Date().getTime()
-          };
-          this.getCurrentGymGoer().trainingSessions.push(session);
-        }
-
-        resolve({
-          created: true,
-          sessionType: trainingSessionType
-        });
-      }, 1);
+      $.ajax({
+        url: 'gym-tracker/training-session',
+        data: JSON.stringify({sessionType: trainingSessionType}),
+        method: 'POST',
+        dataType: 'json',
+        contentType: 'application/json'
+      }).done(result => {
+        resolve(result);
+      }).fail(() => {
+        reject({error: 'Error adding training session'});
+      });
     });
   },
   addExercise(trainingSession, exerciseName) {
