@@ -4,7 +4,7 @@
   "description": "App to track gym exercises",
   "main": "server.js",
   "scripts": {
-    "test": "mocha --recursive --exit --require babel-register",
+    "test": "nodemon --exec \"mocha --recursive --require babel-polyfill --require babel-register\"",
     "start": "node server.js",
     "devstart": "nodemon server.js",
     "build": "webpack --watch",
@@ -35,10 +35,9 @@
     "uuid": "^3.2.1"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
-    "babel-preset-react": "^6.24.1",
+    "babel-register": "^6.26.0",
     "chai": "^4.1.2",
     "chai-http": "^3.0.0",
     "concurrently": "^3.5.1",

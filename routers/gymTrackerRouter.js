@@ -41,6 +41,42 @@ router.get('/', (req, res) => {
     });
 });
 
+router.get('/last-training-session', [cookieParser(), jsonParser, jwtAuth], (req, res) => {
+  const {id: gymGoerID} = req.user;
+  const {sessionType} = req.query;
+
+  routerUtils.confirmRequiredProperties(req.query, ['sessionType'], (msg) => {
+    if (msg) {
+      console.error(msg);
+      return res.status(400).json({error: msg});
+    }
+  });
+
+  console.log('gymGoerID:', gymGoerID);
+  console.log('req.query:', req.query);
+  console.log('sessionType:', sessionType);
+
+  const today = new Date().setHours(0,0,0,0);
+
+  GymGoerModel
+    .find({
+      "_id": gymGoerID,
+      "trainingSessions.sessionType": sessionType,
+      "trainingSessions.sessionDate": { $lt: today }
+    })
+    .sort('trainingSessions.sessionDate')
+    .limit(1)
+    .then(gymGoer => {
+      console.log('=================');
+      console.log('gymGoer', gymGoer);
+      console.log('=================');
+      res.json({'gymGoer': JSON.stringify(gymGoer)});
+    });
+  // console.log('----------------');
+  // res.json({'its': 'it'});
+  // console.log('----------------');
+});
+
 router.get('/:id', [cookieParser(), jwtAuth], (req, res) => {
   GymGoerModel
     .findById(req.params.id)
@@ -71,32 +107,8 @@ router.post('/training-session', [cookieParser(), jsonParser, jwtAuth], (req, re
     return res.status(400).json({error: msg});
   });
 
-  let startToday = new Date().setHours(0,0,0,0);
-  let endToday = new Date().setHours(23,59,59,999);
-
   GymGoerModel
-    .find({
-      "_id": gymGoerID,
-      "trainingSessions.sessionType": sessionType,
-      "trainingSessions.sessionDate": { $gt: startToday, $lt: endToday }
-    })
-    .then(gymGoers => {
-      if (!gymGoers.length) {
-        const newSession = {
-          sessionType: sessionType,
-          exercises: []
-        };
-        GymGoerModel
-          .findByIdAndUpdate(
-            gymGoerID,
-            { $push: { trainingSessions: newSession }}
-          )
-          .then(() => {
-            return sessionType;
-          });
-      }
-      return sessionType;
-    })
+    .addTrainingSession(gymGoerID, sessionType)
     .then(session => {
       res.json({
         created: true,

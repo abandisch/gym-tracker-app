@@ -6,15 +6,12 @@ const { GymGoerModel } = require('../models/GymGoerModel');
 const { JWT_SECRET } = require('../config');
 
 const localStrategy = new LocalStrategy({usernameField: 'email'},(email, password, callback) => {
-    GymGoerModel.findOne({ email: email })
+    GymGoerModel.findGymGoerByEmail(email)
       .then(gymGoer => {
         if (gymGoer) {
           return callback(null, gymGoer);
         } else {
-          GymGoerModel.create({
-            email: email,
-            trainingSessions: []
-          }).then(_gymGoer => {
+          GymGoerModel.createGymGoer(email).then(_gymGoer => {
             return callback(null, _gymGoer);
           });
         }
