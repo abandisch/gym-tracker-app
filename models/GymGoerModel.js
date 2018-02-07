@@ -52,71 +52,67 @@ gymGoerSchema.methods.serializeAll = function() {
   };
 };
 
-gymGoerSchema.statics.findGymGoerByEmail = function(email) {
-  if (email === undefined) {
-    return new Promise((resolve, reject) => {
-      reject(new Error('Email is required'));
-    });
-  }
-
-  return this.findOne({email: email}).then(gymGoer => {
-    if (gymGoer) {
-      return gymGoer.serializeAll()
-    } else {
-      return null;
+gymGoerSchema.statics.validateParameters = function(parameters, message) {
+  return new Promise((resolve, reject) => {
+    if (parameters.every(parameter => typeof parameter !== 'undefined') === true) {
+      resolve(true);
     }
+    reject(new Error(message));
   });
+};
 
+gymGoerSchema.statics.findGymGoerByEmail = function(email) {
+  return this.validateParameters([email], 'Email is required')
+    .then(() => {
+      return this.findOne({email: email})
+        .then(gymGoer => {
+          if (gymGoer) {
+            return gymGoer.serializeAll()
+          } else {
+            return null;
+          }
+      })
+  });
 };
 
 gymGoerSchema.statics.createGymGoer = function (email) {
-  if (email === undefined) {
-    return new Promise((resolve, reject) => {
-      reject(new Error('Email is required'));
+  return this.validateParameters([email], 'Email is required')
+    .then(() => {
+      return GymGoerModel.create({
+        email: email,
+        trainingSessions: []
+      }).then(gymGoer => gymGoer.serializeAll());
     });
-  }
-  return GymGoerModel.create({
-    email: email,
-    trainingSessions: []
-  }).then(gymGoer => gymGoer.serializeAll());
 };
 
 gymGoerSchema.statics.addTrainingSession = function (gymGoerID, sessionType) {
-
-  if (gymGoerID === undefined || sessionType === undefined) {
-    return new Promise((resolve, reject) => {
-      reject(new Error('Both GymGoer ID and SessionType is required'));
-    });
-  }
-
-  const newSession = {
-    sessionType: sessionType,
-    exercises: []
-  };
-
-  return this.findOne({
-      "_id": gymGoerID
-    })
-    .then(gymGoer => {
-      if (gymGoer !== null) {
-        const hasDoneSessionToday = gymGoer.hasDoneTrainingSessionToday(sessionType);
-        if (hasDoneSessionToday === false) {
-          return this
-            .findOneAndUpdate({ "_id": gymGoerID }, { $push: { trainingSessions: newSession } })
-            .then(gymGoer => {
-              return gymGoer;
-            });
-        }
-        return gymGoer;
-      } else {
-        throw new Error('ID not found');
-      }
-    })
+  return this.validateParameters([gymGoerID, sessionType], 'Both ID and SessionType are required')
     .then(() => {
-      return {
-        created: true,
-        sessionType: sessionType
-      };
+      return this.findOne({
+        "_id": gymGoerID
+      })
+        .then(gymGoer => {
+          if (gymGoer !== null) {
+            const hasDoneSessionToday = gymGoer.hasDoneTrainingSessionToday(sessionType);
+            if (hasDoneSessionToday === false) {
+              const newSession = { sessionType: sessionType, exercises: [] };
+              return this
+                .findOneAndUpdate({ "_id": gymGoerID }, { $push: { trainingSessions: newSession } })
+                .then(gymGoer => {
+                  return gymGoer;
+                });
+            }
+            return gymGoer;
+          } else {
+            throw new Error('ID not found');
+          }
+        })
+        .then(() => {
+          return {
+            created: true,
+            sessionType: sessionType
+          };
+        });
     });
 };
 
