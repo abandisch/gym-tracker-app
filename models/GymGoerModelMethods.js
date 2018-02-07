@@ -8,6 +8,23 @@ const GymGoerModelUtils = {
   },
   hasDoneTrainingSessionToday(sessionType, gymGoer = this) {
     return this.getTodaysSession(sessionType, gymGoer) !== undefined;
+  },
+  serialize() {
+    return {
+      id: this._id,
+      email: this.email
+    };
+  },
+  serializeAll() {
+    return {
+      id: this._id,
+      email: this.email,
+      trainingSessions: this.trainingSessions.map(trainingSession => ({
+        exercises: trainingSession.exercises,
+        sessionDate: trainingSession.sessionDate,
+        sessionType: trainingSession.sessionType
+      }))
+    };
   }
 };
 

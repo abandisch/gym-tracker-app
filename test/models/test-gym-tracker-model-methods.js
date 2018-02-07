@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 
-const GymGoerModelUtils = require('../../models/GymGoerModelUtils');
+const GymGoerModelMethods = require('../../models/GymGoerModelMethods');
 
 let dateToday = new Date();
 let dateYesterday = new Date();
@@ -35,26 +35,26 @@ const TEST_GYM_GOER_2 = {
   ]
 };
 
-describe('# GymGoerModelUtils', function () {
-  describe('# GymGoerModelUtils.getTodaysSession', function () {
+describe('# GymGoerModelMethods', function () {
+  describe('# GymGoerModelMethods.getTodaysSession', function () {
     it('should return the training session for today', function () {
-      const result = GymGoerModelUtils.getTodaysSession('chest', TEST_GYM_GOER);
+      const result = GymGoerModelMethods.getTodaysSession('chest', TEST_GYM_GOER);
       expect(result).to.be.an.instanceOf(Object);
       expect(result).to.have.keys(['exercises', 'sessionDate', 'sessionType']);
       expect(result.sessionType).to.be.equal('chest');
     });
     it('should return undefined if it cannot find the session for today', function () {
-      const result = GymGoerModelUtils.getTodaysSession('legs', TEST_GYM_GOER);
+      const result = GymGoerModelMethods.getTodaysSession('legs', TEST_GYM_GOER);
       expect(result).to.be.equal(undefined);
     });
   });
-  describe('# GymGoerModelUtils.hasDoneTrainingSessionToday', function () {
+  describe('# GymGoerModelMethods.hasDoneTrainingSessionToday', function () {
     it('should return true if there is an existing training session for today', function () {
-      const result = GymGoerModelUtils.hasDoneTrainingSessionToday('chest', TEST_GYM_GOER);
+      const result = GymGoerModelMethods.hasDoneTrainingSessionToday('chest', TEST_GYM_GOER);
       expect(result).to.be.equal(true);
     });
     it('should return false if there is no existing training session for today', function () {
-      const result = GymGoerModelUtils.hasDoneTrainingSessionToday('chest', TEST_GYM_GOER_2);
+      const result = GymGoerModelMethods.hasDoneTrainingSessionToday('chest', TEST_GYM_GOER_2);
       expect(result).to.be.equal(false);
     });
   });

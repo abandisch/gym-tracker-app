@@ -106,7 +106,7 @@ describe('# GymGoerModel', function () {
 
   });
 
-  describe.only('# GymGoerModel.addTrainingSession', function () {
+  describe('# GymGoerModel.addTrainingSession', function () {
 
     it('should throw an Error if the GymGoer ID does not exist in the database', function () {
       return GymGoerModel
