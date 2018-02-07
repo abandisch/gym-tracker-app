@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const {TrainingSessionPage} = require('../../src/js/gym-tracker-pages');
 
-describe.only('# Gym Tracker Pages', function () {
+describe('# Gym Tracker Pages', function () {
   describe('# TrainingSessionPage.noPreviousDataNote', function () {
     it('should return null if the sessionType is not provided', function () {
       const result = TrainingSessionPage.noPreviousDataNote();
