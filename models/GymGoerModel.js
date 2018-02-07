@@ -118,62 +118,6 @@ gymGoerSchema.statics.addTrainingSession = function (gymGoerID, sessionType) {
         sessionType: sessionType
       };
     });
-  // return this
-  //   .findOne({
-  //     "_id": gymGoerID
-  //   })
-  //   .then(gymGoer => {
-  //     if (gymGoer !== null) {
-  //       return this.findOneAndUpdate({
-  //         $and: [
-  //           { "_id": gymGoerID },
-  //           {"trainingSessions.sessionDate": {$not: {$gte: startOfToday, $lt: endOfToday}}},
-  //           {"trainingSessions.sessionType": {$ne: sessionType}}
-  //         ]},
-  //         {
-  //           $push: {
-  //             trainingSessions: newSession
-  //           }
-  //         },
-  //         {
-  //           new: true
-  //         })
-  //         .then(gymGoer => {
-  //           return sessionType;
-  //         })
-  //         .catch(err => {
-  //           throw new Error(err.message);
-  //         });
-  //     } else {
-  //       throw new Error('ID not found');
-  //     }
-  //   });
-
-  // return this.findOneAndUpdate({
-  //   // Find GymGoer by gymGoerID
-  //   "_id": gymGoerID,
-  //   // Find trainingSessions, where sessionDate is NOT today
-  //   "trainingSessions.sessionDate": { $not: { $gte: startOfToday, $lt: endOfToday } },
-  //   // Find trainingSessions, where sessionType is NOT sessionType
-  //   "trainingSessions.sessionType": { $not: { $eq: sessionType } }
-  // },{
-  //   $push: {
-  //     trainingSessions: newSession
-  //   }
-  // },{
-  //   new: true
-  // })
-  // .then(gymGoer => {
-  //   console.log('=====> gymGoer:', gymGoer);
-  //   if (gymGoer === null) {
-  //     return null;
-  //   }
-  //   return sessionType
-  // })
-  // .catch(err => {
-  //   throw new Error(err.message);
-  // });
-
 };
 
 const GymGoerModel = mongoose.model('GymGoer', gymGoerSchema);
