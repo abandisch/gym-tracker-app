@@ -1,19 +1,13 @@
 const GymGoerModelUtils = {
-  checkRequiredFields(fields, message) {
-    let isDefined = true;
-    fields.forEach(field => {
-      if (typeof field === "undefined") {
-        isDefined = false;
-      }
+  getTodaysSession(sessionType, gymGoer = this) {
+    return gymGoer.trainingSessions.find(session => {
+      const trainingDate = new Date(session.sessionDate).toLocaleString().split(',').splice(0, 1)[0];
+      const today = new Date().toLocaleString().split(',').splice(0, 1)[0];
+      return session.sessionType === sessionType && trainingDate === today;
     });
-
-    return new Promise((resolve, reject) => {
-      if (isDefined === false) {
-        console.log('throwing error');
-        reject(new Error(message));
-      }
-      resolve(true);
-    });
+  },
+  hasDoneTrainingSessionToday(sessionType, gymGoer = this) {
+    return this.getTodaysSession(sessionType, gymGoer) !== undefined;
   }
 };
 

@@ -8,7 +8,7 @@ const { JWT_SECRET } = require('../config');
 const localStrategy = new LocalStrategy({usernameField: 'email'},(email, password, callback) => {
     GymGoerModel.findGymGoerByEmail(email)
       .then(gymGoer => {
-        if (gymGoer) {
+        if (gymGoer !== null) {
           return callback(null, gymGoer);
         } else {
           GymGoerModel.createGymGoer(email).then(_gymGoer => {

@@ -30,6 +30,9 @@ const gymGoerSchema = mongoose.Schema({
   ]
 });
 
+// Assign the GymGoerModelUtils to the gymGoerSchema methods
+Object.assign(gymGoerSchema.methods, GymGoerModelUtils);
+
 gymGoerSchema.methods.serialize = function() {
   return {
     id: this._id,
@@ -93,29 +96,85 @@ gymGoerSchema.statics.addTrainingSession = function (gymGoerID, sessionType) {
     exercises: []
   };
 
-  return this.findOneAndUpdate({
-    // Find GymGoer by gymGoerID
-    "_id": gymGoerID,
-    // Find trainingSessions, where sessionDate is NOT today
-    "trainingSessions.sessionDate": { $not: { $gte: startOfToday, $lt: endOfToday } },
-    // Find trainingSessions, where sessionType is NOT sessionType
-    "trainingSessions.sessionType": { $not: { $eq: sessionType } }
-  },{
-    $push: {
-      trainingSessions: newSession
-    }
-  },{
-    new: true
-  })
-  .then(gymGoer => {
-    if (gymGoer === null) {
-      return null;
-    }
-    return gymGoer.serializeAll()
-  })
-  .catch(err => {
-    throw new Error(err.message);
-  });
+  return this.findOne({
+      "_id": gymGoerID
+    })
+    .then(gymGoer => {
+      if (gymGoer !== null) {
+        const hasDoneSessionToday = gymGoer.hasDoneTrainingSessionToday(sessionType);
+        if (hasDoneSessionToday === false) {
+          return this
+            .findOneAndUpdate({ "_id": gymGoerID }, { $push: { trainingSessions: newSession } })
+            .then(gymGoer => {
+              return gymGoer;
+            });
+        }
+        return gymGoer;
+      } else {
+        throw new Error('ID not found');
+      }
+    })
+    .then(() => {
+      return {
+        created: true,
+        sessionType: sessionType
+      };
+    });
+  // return this
+  //   .findOne({
+  //     "_id": gymGoerID
+  //   })
+  //   .then(gymGoer => {
+  //     if (gymGoer !== null) {
+  //       return this.findOneAndUpdate({
+  //         $and: [
+  //           { "_id": gymGoerID },
+  //           {"trainingSessions.sessionDate": {$not: {$gte: startOfToday, $lt: endOfToday}}},
+  //           {"trainingSessions.sessionType": {$ne: sessionType}}
+  //         ]},
+  //         {
+  //           $push: {
+  //             trainingSessions: newSession
+  //           }
+  //         },
+  //         {
+  //           new: true
+  //         })
+  //         .then(gymGoer => {
+  //           return sessionType;
+  //         })
+  //         .catch(err => {
+  //           throw new Error(err.message);
+  //         });
+  //     } else {
+  //       throw new Error('ID not found');
+  //     }
+  //   });
+
+  // return this.findOneAndUpdate({
+  //   // Find GymGoer by gymGoerID
+  //   "_id": gymGoerID,
+  //   // Find trainingSessions, where sessionDate is NOT today
+  //   "trainingSessions.sessionDate": { $not: { $gte: startOfToday, $lt: endOfToday } },
+  //   // Find trainingSessions, where sessionType is NOT sessionType
+  //   "trainingSessions.sessionType": { $not: { $eq: sessionType } }
+  // },{
+  //   $push: {
+  //     trainingSessions: newSession
+  //   }
+  // },{
+  //   new: true
+  // })
+  // .then(gymGoer => {
+  //   console.log('=====> gymGoer:', gymGoer);
+  //   if (gymGoer === null) {
+  //     return null;
+  //   }
+  //   return sessionType
+  // })
+  // .catch(err => {
+  //   throw new Error(err.message);
+  // });
 
 };
 

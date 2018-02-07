@@ -110,15 +110,12 @@ router.post('/training-session', [cookieParser(), jsonParser, jwtAuth], (req, re
   GymGoerModel
     .addTrainingSession(gymGoerID, sessionType)
     .then(session => {
-      res.json({
-        created: true,
-        sessionType: session
-      });
+      res.json(session);
     });
 });
 
 router.post('/login', [jsonParser, localAuth], (req, res) => {
-  const authToken = createAuthToken(req.user.serialize());
+  const authToken = createAuthToken(req.user);
   res.json({authToken});
 });
 

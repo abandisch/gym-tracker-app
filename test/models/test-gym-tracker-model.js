@@ -5,7 +5,7 @@ const {GymGoerModel} = require('../../models/GymGoerModel');
 
 mongoose.Promise = global.Promise;
 
-describe.only('# GymGoerModel', function () {
+describe('# GymGoerModel', function () {
 
   // Connect to the database
   before(function () {
@@ -49,7 +49,12 @@ describe.only('# GymGoerModel', function () {
         });
     });
 
+    // TODO - replace this
+    const createTestGymGoer = (email) => { GymGoerModel.createGymGoer(email, weight)  };
+
     it('should throw an Error if the email address is already in the database', function () {
+      return createTestGymGoer(TEST_EMAIL, undefined)
+
       return GymGoerModel
         .createGymGoer(TEST_EMAIL)
         .then(gymGoer => {
@@ -106,11 +111,11 @@ describe.only('# GymGoerModel', function () {
 
   describe('# GymGoerModel.addTrainingSession', function () {
 
-    it('should return null if the GymGoer ID does not exist in the database', function () {
+    it('should throw an Error if the GymGoer ID does not exist in the database', function () {
       return GymGoerModel
         .addTrainingSession('5a777eed2f47b02f9d01757c', 'chest')
-        .then(result => {
-          expect(result).to.equal(null);
+        .catch(err => {
+          expect(err).to.be.an.instanceOf(Error);
         });
     });
 
@@ -122,16 +127,36 @@ describe.only('# GymGoerModel', function () {
         });
     });
 
-    it('should add a training session to a GymGoer', function () {
+    it.only('should add a training session if it does NOT exist for today and return the session object', function () {
       return GymGoerModel
         .createGymGoer(TEST_EMAIL)
         .then(gymGoer => {
           return GymGoerModel
             .addTrainingSession(gymGoer.id, 'chest')
-            .then(_gymGoper => {
-              expect(_gymGoper.trainingSessions).to.have.lengthOf(1);
-              expect(_gymGoper.trainingSessions[0]).to.have.keys(['sessionDate', 'exercises', 'sessionType']);
+            .then(result => {
+              expect(result).to.be.an.instanceOf(Object);
+              expect(result).to.have.keys(['created', 'sessionType']);
             })
+        })
+    });
+
+    it.only('should not add a training session if one for today already exist and return the session object', function () {
+      return GymGoerModel
+        .createGymGoer(TEST_EMAIL)
+        .then(gymGoer => {
+          return GymGoerModel
+            .addTrainingSession(gymGoer.id, 'chest')
+            .then(addedSession => {
+              return GymGoerModel
+                .addTrainingSession(gymGoer.id, 'chest')
+            })
+            .then(_addedSession => {
+              return GymGoerModel.findById(gymGoer.id)
+                .then(gGoer => { return gGoer.serializeAll() });
+            })
+            .then(dbGymGoer => {
+              expect(dbGymGoer.trainingSessions.length).to.be.equal(1);
+            });
         })
     });
   })
