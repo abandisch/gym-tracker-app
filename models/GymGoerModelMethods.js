@@ -1,4 +1,4 @@
-const GymGoerModelUtils = {
+const GymGoerModelMethods = {
   getTodaysSession(sessionType, gymGoer = this) {
     return gymGoer.trainingSessions.find(session => {
       const trainingDate = new Date(session.sessionDate).toLocaleString().split(',').splice(0, 1)[0];
@@ -28,4 +28,4 @@ const GymGoerModelUtils = {
   }
 };
 
-module.exports = GymGoerModelUtils;
+module.exports = GymGoerModelMethods;
