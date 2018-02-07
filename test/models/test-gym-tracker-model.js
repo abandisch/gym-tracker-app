@@ -31,43 +31,44 @@ describe('# GymGoerModel', function () {
 
   const TEST_EMAIL = 'alex@bandisch.com';
 
+  const createTestGymGoer = (email) => {
+    return GymGoerModel.createGymGoer(email);
+  };
+
+  const findTestGymGoer = (email) => {
+    return GymGoerModel.findGymGoerByEmail(email);
+  };
+
+  const addTestTrainingSession = (gymGoerId, sessionType) => {
+    return GymGoerModel.addTrainingSession(gymGoerId, sessionType);
+  };
+
   describe('# GymGoerModel.createGymGoer', function () {
 
     it('should throw an Error is the email is not provided', function () {
-      return GymGoerModel
-        .createGymGoer()
+      return createTestGymGoer()
         .catch(err => {
           expect(err).to.be.an.instanceOf(Error);
         });
     });
 
     it('should throw an Error is the email is an empty string', function () {
-      return GymGoerModel
-        .createGymGoer("")
+      return createTestGymGoer("")
         .catch(err => {
           expect(err).to.be.an.instanceOf(Error);
         });
     });
 
-    // TODO - replace this
-    const createTestGymGoer = (email) => { GymGoerModel.createGymGoer(email, weight)  };
-
     it('should throw an Error if the email address is already in the database', function () {
-      return createTestGymGoer(TEST_EMAIL, undefined)
-
-      return GymGoerModel
-        .createGymGoer(TEST_EMAIL)
-        .then(gymGoer => {
-          return GymGoerModel.createGymGoer(TEST_EMAIL);
-        })
+      return createTestGymGoer(TEST_EMAIL)
+        .then(() => createTestGymGoer(TEST_EMAIL))
         .catch(err => {
           expect(err).to.be.an.instanceOf(Error);
         });
     });
 
     it('should create and provide the newly created, serialized GymGoer', function () {
-      return GymGoerModel
-        .createGymGoer(TEST_EMAIL)
+      return createTestGymGoer(TEST_EMAIL)
         .then(gymGoer => {
           expect(gymGoer).to.be.an.instanceOf(Object);
           expect(gymGoer).to.have.keys(['id', 'email', 'trainingSessions']);
@@ -79,27 +80,23 @@ describe('# GymGoerModel', function () {
   describe('# GymGoerModel.findGymGoerByEmail', function () {
 
     it('should throw an Error if no email is provided', function () {
-      return GymGoerModel
-        .findGymGoerByEmail()
+      return findTestGymGoer()
         .catch(err => {
           expect(err).to.be.an.instanceOf(Error);
         })
     });
 
     it('should return null if it cannot find the GymGoer by email', function () {
-      return GymGoerModel
-        .findGymGoerByEmail(TEST_EMAIL)
+      return findTestGymGoer(TEST_EMAIL)
         .then(gymGoer => {
           expect(gymGoer).to.be.equal(null);
         });
     });
 
     it('should find GymGoer by email and provide a serialised GymGoer', function () {
-      return GymGoerModel
-        .createGymGoer(TEST_EMAIL)
-        .then(gymGoer => {
-          return GymGoerModel
-            .findGymGoerByEmail(TEST_EMAIL)
+      return createTestGymGoer(TEST_EMAIL)
+        .then(_gymGoer => {
+          return findTestGymGoer(TEST_EMAIL)
             .then(gymGoer => {
               expect(gymGoer).to.be.an.instanceOf(Object);
               expect(gymGoer).to.have.keys(['id', 'email', 'trainingSessions']);
@@ -127,28 +124,28 @@ describe('# GymGoerModel', function () {
         });
     });
 
-    it.only('should add a training session if it does NOT exist for today and return the session object', function () {
-      return GymGoerModel
-        .createGymGoer(TEST_EMAIL)
+    it('should add a training session if it does NOT exist for today and return the session object', function () {
+      return createTestGymGoer(TEST_EMAIL)
         .then(gymGoer => {
-          return GymGoerModel
-            .addTrainingSession(gymGoer.id, 'chest')
+          return addTestTrainingSession(gymGoer.id, 'chest')
             .then(result => {
               expect(result).to.be.an.instanceOf(Object);
               expect(result).to.have.keys(['created', 'sessionType']);
+              return GymGoerModel.findById(gymGoer.id)
+                .then(gGoer => { return gGoer.serializeAll() });
             })
+            .then(dbGymGoer => {
+              expect(dbGymGoer.trainingSessions.length).to.be.equal(1);
+            });
         })
     });
 
-    it.only('should not add a training session if one for today already exist and return the session object', function () {
-      return GymGoerModel
-        .createGymGoer(TEST_EMAIL)
+    it('should not add a training session if one for today already exist and return the session object', function () {
+      return createTestGymGoer(TEST_EMAIL)
         .then(gymGoer => {
-          return GymGoerModel
-            .addTrainingSession(gymGoer.id, 'chest')
+          return addTestTrainingSession(gymGoer.id, 'chest')
             .then(addedSession => {
-              return GymGoerModel
-                .addTrainingSession(gymGoer.id, 'chest')
+              return addTestTrainingSession(gymGoer.id, 'chest')
             })
             .then(_addedSession => {
               return GymGoerModel.findById(gymGoer.id)

@@ -89,8 +89,6 @@ gymGoerSchema.statics.addTrainingSession = function (gymGoerID, sessionType) {
     });
   }
 
-  const startOfToday = new Date().setHours(0,0,0,0);
-  const endOfToday = new Date().setHours(23,59,59,999);
   const newSession = {
     sessionType: sessionType,
     exercises: []
