@@ -2,10 +2,16 @@ const $ = require("jquery");
 
 const TrainingSessionPage = {
   sessionHeading(session) {
+    if (session === undefined) {
+      return null;
+    }
     let trainingDate = new Date(session.sessionDate).toLocaleString().split(',').splice(0, 1)[0];
     return `<h2 class="training-session-type type-${session.sessionType}"><i class="fa ${session.sessionIcon}"></i> ${session.sessionType.toUpperCase()} - ${trainingDate}</h2>`;
   },
   noPreviousDataNote(session) {
+    if (session === undefined) {
+      return null;
+    }
     return `<p class="text-center">No previous data - this is the first time you're tracking ${session.sessionType}. Add a new exercise to begin.</p>`
   },
   changeSessionForm() {
@@ -23,7 +29,7 @@ const TrainingSessionPage = {
               <button class="btn btn-green btn-small"><i class="fa fa-plus" aria-hidden="true"></i> Add Exercise</button>
             </form>`;
   },
-  addExerciseBigButtonForm(session) {
+  addExerciseBigButtonForm() {
     return `<form role="form" id="add-exercise-button-form">
               <button id="addBigExerciseButton" class="btn btn-big-round btn-green"><i class="fa fa-plus" aria-hidden="true"></i></button>
               <label for="addBigExerciseButton">Add a new Exercise</label>
