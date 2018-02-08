@@ -99,20 +99,35 @@ gymGoerSchema.statics.addTrainingSession = function (gymGoerID, sessionType) {
 };
 
 gymGoerSchema.statics.initSessionExercises = function(gymGoerID, sessionType) {
+  let previousSession;
   return GymGoerModel.findById(gymGoerID)
     .then(gymGoer => {
       const sessionForToday = gymGoer.getSessionForToday(sessionType);
-      const previousSessionExercises = gymGoer.findPreviousTrainingSessionWithExercises(sessionType);
+      previousSession = gymGoer.findPreviousTrainingSessionWithExercises(sessionType);
 
       // if no previously saved exercises for today's session, but there is a previous session with exercises then use those
-      if (sessionForToday.exercises.length === 0 && previousSessionExercises !== undefined) {
-        sessionForToday.exercises = previousSessionExercises;
+      if (sessionForToday.exercises.length === 0 && previousSession !== undefined) {
+        sessionForToday.exercises = previousSession.exercises;
       }
-
-      // find the last best set for each exercise - exercise.lastBestSet = { sessionDate: date, weight: 12, reps: 10 }
 
       // return the exercises array
       return sessionForToday.exercises;
+    })
+    .then(sessionExercises => {
+      sessionExercises = sessionExercises.map(sessionExercise => {
+        const previousSessionExercise = previousSession.exercises.find(ex => ex.name === sessionExercise.name);
+        const exercise = { sets: sessionExercise.sets, name: sessionExercise.name, lastBestSet: null };
+        if (previousSessionExercise !== undefined) {
+          const bestSet = GymGoerModelMethods.findBestSet(previousSessionExercise.sets);
+          exercise.lastBestSet = {
+            sessionDate: previousSession.sessionDate,
+            weight: bestSet.weight,
+            reps: bestSet.reps
+          }
+        }
+        return exercise;
+      });
+      return sessionExercises;
     });
 };
 

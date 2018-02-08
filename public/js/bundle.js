@@ -10616,7 +10616,7 @@ const TrainingSessionPage = {
   exercisesLiElement(exercise) {
     let lastSessionResults = '<div class="last-session-results"><p class="last-session-date"></p><p class="last-session-stats">First time tracking this exercise</p></div>';
 
-    if (exercise.lastBestSet !== undefined) {
+    if (exercise.lastBestSet !== undefined && exercise.lastBestSet !== null) {
       const lastSessionDate = new Date(exercise.lastBestSet.sessionDate).toLocaleString().split(',').splice(0, 1)[0];
       lastSessionResults = `<div class="last-session-results">
                               <p class="last-session-date">Last Session [${lastSessionDate}]</p>
@@ -10624,9 +10624,7 @@ const TrainingSessionPage = {
                             </div>`;
     }
 
-    let exerciseSets = `<div class="table-cell"></div><div class="table-cell"></div><div class="table-cell"></div>`;
-
-    exerciseSets = exercise.sets.map(set => {
+    const exerciseSets = exercise.sets.map(set => {
       return `<div class="table-cell">${set.setNumber}</div>
               <div class="table-cell">${set.weight}</div>
               <div class="table-cell">${set.reps}</div>`
