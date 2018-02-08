@@ -1,13 +1,13 @@
 const GymGoerModelMethods = {
-  getTodaysSession(sessionType, gymGoer = this) {
+  getSessionForToday(sessionType, gymGoer = this) {
     return gymGoer.trainingSessions.find(session => {
-      const trainingDate = new Date(session.sessionDate).toLocaleString().split(',').splice(0, 1)[0];
-      const today = new Date().toLocaleString().split(',').splice(0, 1)[0];
+      const trainingDate = new Date(session.sessionDate).toISOString().split('T')[0];
+      const today = new Date().toISOString().split('T')[0];
       return session.sessionType === sessionType && trainingDate === today;
     });
   },
-  hasDoneTrainingSessionToday(sessionType, gymGoer = this) {
-    return this.getTodaysSession(sessionType, gymGoer) !== undefined;
+  hasExistingTrainingSessionToday(sessionType, gymGoer = this) {
+    return this.getSessionForToday(sessionType, gymGoer) !== undefined;
   },
   serialize() {
     return {
@@ -27,9 +27,13 @@ const GymGoerModelMethods = {
     };
   },
   findPreviousTrainingSessionWithExercises(sessionType, gymGoer = this) {
+    const today = new Date().toISOString().split('T')[0];
     return gymGoer.trainingSessions
       .reduce((sessions, current) => {
-        if (current.exercises.length && current.sessionType === sessionType) {
+        const trainingDate = new Date(current.sessionDate).toISOString().split('T')[0];
+        if (current.exercises.length &&
+            current.sessionType === sessionType &&
+            trainingDate !== today) {
           sessions.push(current);
         }
         return sessions;

@@ -74,23 +74,25 @@ gymGoerSchema.statics.addTrainingSession = function (gymGoerID, sessionType) {
       })
         .then(gymGoer => {
           if (gymGoer !== null) {
-            const hasDoneSessionToday = gymGoer.hasDoneTrainingSessionToday(sessionType);
+            const hasDoneSessionToday = gymGoer.hasExistingTrainingSessionToday(sessionType);
             if (hasDoneSessionToday === false) {
               const newSession = { sessionType: sessionType, exercises: [] };
               return this
-                .findOneAndUpdate({ "_id": gymGoerID }, { $push: { trainingSessions: newSession } })
+                .findOneAndUpdate({ "_id": gymGoerID }, { $push: { trainingSessions: newSession } }, { new: true })
                 .then(gymGoer => {
-                  return gymGoer;
+                  return gymGoer.getSessionForToday(sessionType);
                 });
             }
-            return gymGoer;
+            return gymGoer.getSessionForToday(sessionType);
           } else {
             throw new Error('ID not found');
           }
         })
-        .then(() => {
+        .then((session) => {
           return {
-            sessionType: sessionType
+            sessionDate: session.sessionDate,
+            exercises: session.exercises,
+            sessionType: session.sessionType
           };
         });
     });
@@ -102,7 +104,7 @@ gymGoerSchema.statics.getLastTrainingSessionExercises = function (gymGoerID, ses
       return GymGoerModel.findById(gymGoerID)
         .then(gymGoer => {
           const lastSessionWithExercises = gymGoer.findPreviousTrainingSessionWithExercises(sessionType);
-          const resultsOfLastSessionExercises = { sessionType: sessionType, previousExercises: [] };
+          const resultsOfLastSessionExercises = { sessionType: sessionType, exercises: [] };
           if (lastSessionWithExercises !== undefined) {
             resultsOfLastSessionExercises.exercises =
               lastSessionWithExercises.exercises.map(exercise => ({
@@ -113,6 +115,38 @@ gymGoerSchema.statics.getLastTrainingSessionExercises = function (gymGoerID, ses
           }
           return resultsOfLastSessionExercises;
         })
+    });
+};
+
+gymGoerSchema.statics.initSessionExercises = function(gymGoerID, sessionType) {
+  return GymGoerModel.findById(gymGoerID)
+    .then(gymGoer => {
+      const sessionForToday = gymGoer.getSessionForToday(sessionType);
+      const previousSessionExercises = gymGoer.findPreviousTrainingSessionWithExercises(sessionType);
+
+      // if no previously saved exercises for today's session, but there is a previous session with exercises then use those
+      if (sessionForToday.exercises.length === 0 && previousSessionExercises !== undefined) {
+        sessionForToday.exercises = previousSessionExercises;
+      }
+
+      // find the last best set for each exercise - exercise.lastBestSet = { sessionDate: date, weight: 12, reps: 10 }
+
+      // return the exercises array
+      return sessionForToday.exercises;
+    });
+};
+
+gymGoerSchema.statics.initTrainingSession = function (gymGoerID, sessionType) {
+  return this.validateParameters([gymGoerID, sessionType], 'Both GymGoerID and SessionType are required')
+    .then(() => {
+      return this.addTrainingSession(gymGoerID, sessionType)
+        .then(session => {
+          return this.initSessionExercises(gymGoerID, sessionType)
+            .then(exercises => {
+              session.exercises = exercises;
+              return session;
+            });
+        });
     });
 };
 

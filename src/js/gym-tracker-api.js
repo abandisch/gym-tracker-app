@@ -255,18 +255,18 @@ export const GymTrackerAPI = {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
 
-        const isExistingExercise = this.getTodaysSession(trainingSession).exercises.find(exercise => exercise.name === exerciseName) !== undefined;
-        if (!isExistingExercise) {
-          this.getTodaysSession(trainingSession).exercises.push({name: exerciseName, sets: []});
-        }
-        console.log(this.getTodaysSession(trainingSession).exercises);
+        // const isExistingExercise = this.getTodaysSession(trainingSession).exercises.find(exercise => exercise.name === exerciseName) !== undefined;
+        // if (!isExistingExercise) {
+        //   this.getTodaysSession(trainingSession).exercises.push({name: exerciseName, sets: []});
+        // }
+        // console.log(this.getTodaysSession(trainingSession).exercises);
         resolve({
           created: true
         });
       }, 1);
     });
   },
-  initTrainingSession(trainingSession) {
+  initGymGoerTrainingSession(trainingSession) {
     return new Promise((resolve, reject) => {
       $.ajax({
         url: 'gym-tracker/init-training-session',

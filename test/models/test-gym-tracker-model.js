@@ -128,9 +128,9 @@ describe('# GymGoerModel', function () {
       return createTestGymGoer(TEST_EMAIL)
         .then(gymGoer => {
           return addTestTrainingSession(gymGoer.id, 'chest')
-            .then(result => {
-              expect(result).to.be.an.instanceOf(Object);
-              expect(result).to.have.keys(['sessionType']);
+            .then(session => {
+              expect(session).to.be.an.instanceOf(Object);
+              expect(session).to.have.keys(['sessionDate', 'exercises', 'sessionType']);
               return GymGoerModel.findById(gymGoer.id)
                 .then(gGoer => { return gGoer.serializeAll() });
             })

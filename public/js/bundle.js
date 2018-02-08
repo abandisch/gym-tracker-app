@@ -10461,7 +10461,7 @@ const State = {
     {exercise: 'legs', icon: 'fa-male'},
     {exercise: 'back', icon: 'fa-heart'}
   ],
-  previousTrainingSessionExercises: {},
+  trainingSessionExercises: {},
   render() {
     const main = $('main');
     let sessionDetails = { };
@@ -10528,7 +10528,7 @@ const State = {
       }
       // TODO: this is not right - previousTrainingSessionExercises - need to display the current added exercises, not the previous ones
       //       call it currentTrainingSessionExercioses
-      const exercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].exercisesForm, session: State.previousTrainingSessionExercises });
+      const exercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].exercisesForm, session: State.trainingSessionExercises });
       formsContainer.append(exercisesForm);
       main.html(pageHeadingHtml);
       main.append(formsContainer);
@@ -10614,13 +10614,27 @@ const TrainingSessionPage = {
             </form>`;
   },
   exercisesLiElement(exercise) {
-    let lastSessionDate = new Date(exercise.sessionDate).toLocaleString().split(',').splice(0, 1)[0];
+    let lastSessionResults = '<div class="last-session-results"><p class="last-session-date"></p><p class="last-session-stats">First time tracking this exercise</p></div>';
+
+    if (exercise.lastBestSet !== undefined) {
+      const lastSessionDate = new Date(exercise.lastBestSet.sessionDate).toLocaleString().split(',').splice(0, 1)[0];
+      lastSessionResults = `<div class="last-session-results">
+                              <p class="last-session-date">Last Session [${lastSessionDate}]</p>
+                              <p class="last-session-stats"><span class="stats-weight">Weight: ${exercise.lastBestSet.weight}</span> - <span class="stats-reps">Max Reps: ${exercise.lastBestSet.reps}</span></p>
+                            </div>`;
+    }
+
+    let exerciseSets = `<div class="table-cell"></div><div class="table-cell"></div><div class="table-cell"></div>`;
+
+    exerciseSets = exercise.sets.map(set => {
+      return `<div class="table-cell">${set.setNumber}</div>
+              <div class="table-cell">${set.weight}</div>
+              <div class="table-cell">${set.reps}</div>`
+    });
+
     return `<li>
               <h3>${exercise.name.toUpperCase()}</h3>
-              <div class="last-session-results">
-                <p class="last-session-date">Last Session [${lastSessionDate}]</p>
-                <p class="last-session-stats"><span class="stats-weight">Weight: ${exercise.bestSet.weight}</span> - <span class="stats-reps">Max Reps: ${exercise.bestSet.reps}</span></p>
-              </div>
+              ${lastSessionResults}
               <div class="set-table">
                 <div class="table-row">
                   <div class="table-cell">Set #</div>
@@ -10628,16 +10642,14 @@ const TrainingSessionPage = {
                   <div class="table-cell">Reps</div>
                 </div>
                 <div class="table-row">
-                  <div class="table-cell"></div>
-                  <div class="table-cell"></div>
-                  <div class="table-cell"></div>
+                  ${exerciseSets}
                 </div>
               </div>
               <button class="btn btn-small btn-aqua"><i class="fa fa-plus-square-o"></i> Add Set</button>
             </li>`;
   },
-  exercisesForm(session) {
-    const liElements = session.exercises.map(exercise => TrainingSessionPage.exercisesLiElement(exercise)).join('');
+  exercisesForm(exercises) {
+    const liElements = exercises.map(exercise => TrainingSessionPage.exercisesLiElement(exercise)).join('');
     return `<form role="form" id="exercises-form">
               <ul class="exercise-list">
                 ${liElements}
@@ -10725,7 +10737,7 @@ const EventHandler = {
         __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showSelectTrainingSessionPage();
       })
       .catch(err => {
-        console.log('error:', err);
+        console.error('error:', err);
       });
   },
   onSelectTrainingSessionFormSubmit: function (event) {
@@ -10734,21 +10746,18 @@ const EventHandler = {
     // display the training session page with the previous exercises on it
     const selectedTrainingSession = $(event.currentTarget).data('session');
     __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */]
-      .initTrainingSession(selectedTrainingSession)
+      .initGymGoerTrainingSession(selectedTrainingSession)
       .then(result => {
         __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionType = result.sessionType;
-        if (result.previousExercises.length !== 0) {  // if there are previous exercises from the last session
-          result.previousExercises.forEach(exercise => {
-            __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */].addExercise(__WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionType, exercise.name);
-          });
-          __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].previousTrainingSessionExercises = result.previousExercises;
+        if (result.exercises.length !== 0) {  // if there are previous exercises from the last session
+          __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionExercises = result.exercises;
           __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showTrainingSessionPage();
         } else { // if there are no previous exercises, show empty training session page
           __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showEmptyTrainingSessionPage();
         }
       })
       .catch(err => {
-        console.error('There has been a problem. Please try again later');
+        console.error('There has been a problem. Please try again later (' + JSON.stringify(err, null, 2) + ')');
       });
 
     // GymTrackerAPI
@@ -10758,11 +10767,11 @@ const EventHandler = {
     //     return GymTrackerAPI.getLastTrainingSessionExercises(trainingSession.sessionType);
     //   })
     //   .then(previousExercises => {
-    //     if (previousExercises.exercises.length) { // if there are previous exercises, show previous exercises page
-    //       previousExercises.exercises.forEach(exercise => {
+    //     if (exercisesv.length) { // if there are previous exercises, show previous exercises page
+    //       exercises.forEach(exercise => {
     //         GymTrackerAPI.addExercise(State.trainingSessionType, exercise.name);
     //       });
-    //       State.previousTrainingSessionExercises = previousExercises;
+    //       State.previousTrainingSessionExercises = exercises;
     //       GymTrackerClient.showTrainingSessionPage();
     //     } else { // if there are no previous exercises, show empty training session page
     //       GymTrackerClient.showEmptyTrainingSessionPage();
@@ -11066,18 +11075,18 @@ const GymTrackerAPI = {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
 
-        const isExistingExercise = this.getTodaysSession(trainingSession).exercises.find(exercise => exercise.name === exerciseName) !== undefined;
-        if (!isExistingExercise) {
-          this.getTodaysSession(trainingSession).exercises.push({name: exerciseName, sets: []});
-        }
-        console.log(this.getTodaysSession(trainingSession).exercises);
+        // const isExistingExercise = this.getTodaysSession(trainingSession).exercises.find(exercise => exercise.name === exerciseName) !== undefined;
+        // if (!isExistingExercise) {
+        //   this.getTodaysSession(trainingSession).exercises.push({name: exerciseName, sets: []});
+        // }
+        // console.log(this.getTodaysSession(trainingSession).exercises);
         resolve({
           created: true
         });
       }, 1);
     });
   },
-  initTrainingSession(trainingSession) {
+  initGymGoerTrainingSession(trainingSession) {
     return new Promise((resolve, reject) => {
       $.ajax({
         url: 'gym-tracker/init-training-session',

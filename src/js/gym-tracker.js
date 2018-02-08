@@ -15,7 +15,7 @@ const State = {
     {exercise: 'legs', icon: 'fa-male'},
     {exercise: 'back', icon: 'fa-heart'}
   ],
-  previousTrainingSessionExercises: {},
+  trainingSessionExercises: {},
   render() {
     const main = $('main');
     let sessionDetails = { };
@@ -82,7 +82,7 @@ const State = {
       }
       // TODO: this is not right - previousTrainingSessionExercises - need to display the current added exercises, not the previous ones
       //       call it currentTrainingSessionExercioses
-      const exercisesForm = TrainingSessionPage.render({ template: TrainingSessionPage.exercisesForm, session: State.previousTrainingSessionExercises });
+      const exercisesForm = TrainingSessionPage.render({ template: TrainingSessionPage.exercisesForm, session: State.trainingSessionExercises });
       formsContainer.append(exercisesForm);
       main.html(pageHeadingHtml);
       main.append(formsContainer);

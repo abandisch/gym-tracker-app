@@ -43,13 +43,27 @@ const TrainingSessionPage = {
             </form>`;
   },
   exercisesLiElement(exercise) {
-    let lastSessionDate = new Date(exercise.sessionDate).toLocaleString().split(',').splice(0, 1)[0];
+    let lastSessionResults = '<div class="last-session-results"><p class="last-session-date"></p><p class="last-session-stats">First time tracking this exercise</p></div>';
+
+    if (exercise.lastBestSet !== undefined) {
+      const lastSessionDate = new Date(exercise.lastBestSet.sessionDate).toLocaleString().split(',').splice(0, 1)[0];
+      lastSessionResults = `<div class="last-session-results">
+                              <p class="last-session-date">Last Session [${lastSessionDate}]</p>
+                              <p class="last-session-stats"><span class="stats-weight">Weight: ${exercise.lastBestSet.weight}</span> - <span class="stats-reps">Max Reps: ${exercise.lastBestSet.reps}</span></p>
+                            </div>`;
+    }
+
+    let exerciseSets = `<div class="table-cell"></div><div class="table-cell"></div><div class="table-cell"></div>`;
+
+    exerciseSets = exercise.sets.map(set => {
+      return `<div class="table-cell">${set.setNumber}</div>
+              <div class="table-cell">${set.weight}</div>
+              <div class="table-cell">${set.reps}</div>`
+    });
+
     return `<li>
               <h3>${exercise.name.toUpperCase()}</h3>
-              <div class="last-session-results">
-                <p class="last-session-date">Last Session [${lastSessionDate}]</p>
-                <p class="last-session-stats"><span class="stats-weight">Weight: ${exercise.bestSet.weight}</span> - <span class="stats-reps">Max Reps: ${exercise.bestSet.reps}</span></p>
-              </div>
+              ${lastSessionResults}
               <div class="set-table">
                 <div class="table-row">
                   <div class="table-cell">Set #</div>
@@ -57,16 +71,14 @@ const TrainingSessionPage = {
                   <div class="table-cell">Reps</div>
                 </div>
                 <div class="table-row">
-                  <div class="table-cell"></div>
-                  <div class="table-cell"></div>
-                  <div class="table-cell"></div>
+                  ${exerciseSets}
                 </div>
               </div>
               <button class="btn btn-small btn-aqua"><i class="fa fa-plus-square-o"></i> Add Set</button>
             </li>`;
   },
-  exercisesForm(session) {
-    const liElements = session.exercises.map(exercise => TrainingSessionPage.exercisesLiElement(exercise)).join('');
+  exercisesForm(exercises) {
+    const liElements = exercises.map(exercise => TrainingSessionPage.exercisesLiElement(exercise)).join('');
     return `<form role="form" id="exercises-form">
               <ul class="exercise-list">
                 ${liElements}
