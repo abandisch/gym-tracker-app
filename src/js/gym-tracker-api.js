@@ -281,51 +281,20 @@ export const GymTrackerAPI = {
       }, 1);
     });
   },
-  findPreviousTrainingSession(sessionType) {
-    return this.getCurrentGymGoer().trainingSessions
-      .reduce((sessions, current) => {
-        if (current.exercises.length && current.sessionType === sessionType) {
-          sessions.push(current);
-        }
-        return sessions;
-      }, [])
-      .sort((a, b) => Number.parseInt(b.sessionDate) - Number.parseInt(a.sessionDate))[0];
-  },
-  findBestSet(sets) {
-    sets
-      .sort((setA, setB) => setB.reps - setA.reps) // sort by reps
-      .sort((setA, setB) => { // sort by weight
-        if (Number.isNaN(Number.parseInt(setA.weight))) {
-          return 0;
-        }
-        return Number.parseInt(setB.weight) - Number.parseInt(setA.weight);
-      });
-    return sets[0];
-  },
   getLastTrainingSessionExercises(trainingSession) {
     return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const lastSession = this.findPreviousTrainingSession(trainingSession.sessionType);
-
-        const lastSessionExercises = {
-          sessionType: trainingSession.sessionType,
-          exercises: []
-        };
-
-        if (lastSession !== undefined) {
-          lastSessionExercises.exercises =
-            lastSession.exercises
-              .map(exercise => ({
-                sessionDate: Number.parseInt(lastSession.sessionDate),
-                name: exercise.name,
-                bestSet: this.findBestSet(exercise.sets)
-              }));
-        }
-
-        resolve(lastSessionExercises);
-
-      }, 1);
-    })
+      $.ajax({
+        url: 'gym-tracker/last-training-session-exercises',
+        data: {sessionType: trainingSession},
+        method: 'GET',
+        dataType: 'json',
+        contentType: 'application/json'
+      }).done(result => {
+        resolve(result);
+      }).fail(() => {
+        reject({error: 'Error adding training session'});
+      });
+    });
   },
   // Get all training session data
   // Include JWT in request Authorization header to identify the user

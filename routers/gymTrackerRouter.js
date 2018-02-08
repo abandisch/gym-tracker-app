@@ -41,10 +41,9 @@ router.get('/', (req, res) => {
     });
 });
 
-router.get('/last-training-session', [cookieParser(), jsonParser, jwtAuth], (req, res) => {
+router.get('/last-training-session-exercises', [cookieParser(), jsonParser, jwtAuth], (req, res) => {
   const {id: gymGoerID} = req.user;
   const {sessionType} = req.query;
-
   routerUtils.confirmRequiredProperties(req.query, ['sessionType'], (msg) => {
     if (msg) {
       console.error(msg);
@@ -52,29 +51,15 @@ router.get('/last-training-session', [cookieParser(), jsonParser, jwtAuth], (req
     }
   });
 
-  console.log('gymGoerID:', gymGoerID);
-  console.log('req.query:', req.query);
-  console.log('sessionType:', sessionType);
-
-  const today = new Date().setHours(0,0,0,0);
-
   GymGoerModel
-    .find({
-      "_id": gymGoerID,
-      "trainingSessions.sessionType": sessionType,
-      "trainingSessions.sessionDate": { $lt: today }
+    .getLastTrainingSessionExercises(gymGoerID, sessionType)
+    .then(lastSessionExercises => {
+      res.json(lastSessionExercises);
     })
-    .sort('trainingSessions.sessionDate')
-    .limit(1)
-    .then(gymGoer => {
-      console.log('=================');
-      console.log('gymGoer', gymGoer);
-      console.log('=================');
-      res.json({'gymGoer': JSON.stringify(gymGoer)});
+    .catch(err => {
+      console.error('Error getting last training session exercises:', err);
     });
-  // console.log('----------------');
-  // res.json({'its': 'it'});
-  // console.log('----------------');
+
 });
 
 router.get('/:id', [cookieParser(), jwtAuth], (req, res) => {
@@ -111,6 +96,9 @@ router.post('/training-session', [cookieParser(), jsonParser, jwtAuth], (req, re
     .addTrainingSession(gymGoerID, sessionType)
     .then(session => {
       res.json(session);
+    })
+    .catch(err => {
+      console.error('Error adding training session: ', err);
     });
 });
 

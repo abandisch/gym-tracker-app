@@ -10573,10 +10573,16 @@ const $ = __webpack_require__(0);
 
 const TrainingSessionPage = {
   sessionHeading(session) {
+    if (session === undefined) {
+      return null;
+    }
     let trainingDate = new Date(session.sessionDate).toLocaleString().split(',').splice(0, 1)[0];
     return `<h2 class="training-session-type type-${session.sessionType}"><i class="fa ${session.sessionIcon}"></i> ${session.sessionType.toUpperCase()} - ${trainingDate}</h2>`;
   },
   noPreviousDataNote(session) {
+    if (session === undefined) {
+      return null;
+    }
     return `<p class="text-center">No previous data - this is the first time you're tracking ${session.sessionType}. Add a new exercise to begin.</p>`
   },
   changeSessionForm() {
@@ -10594,7 +10600,7 @@ const TrainingSessionPage = {
               <button class="btn btn-green btn-small"><i class="fa fa-plus" aria-hidden="true"></i> Add Exercise</button>
             </form>`;
   },
-  addExerciseBigButtonForm(session) {
+  addExerciseBigButtonForm() {
     return `<form role="form" id="add-exercise-button-form">
               <button id="addBigExerciseButton" class="btn btn-big-round btn-green"><i class="fa fa-plus" aria-hidden="true"></i></button>
               <label for="addBigExerciseButton">Add a new Exercise</label>
@@ -10731,7 +10737,7 @@ const EventHandler = {
       .addTrainingSession(selectedTrainingSession)
       .then((trainingSession) => {
         __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionType = trainingSession.sessionType;
-        return __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */].getLastTrainingSessionExercises(trainingSession);
+        return __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */].getLastTrainingSessionExercises(trainingSession.sessionType);
       })
       .then(previousExercises => {
         if (previousExercises.exercises.length) { // if there are previous exercises, show previous exercises page
@@ -10743,6 +10749,9 @@ const EventHandler = {
         } else { // if there are no previous exercises, show empty training session page
           __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showEmptyTrainingSessionPage();
         }
+      })
+      .catch(err => {
+        console.error('There has been a problem. Please try again later');
       });
   },
   onChangeSessionFormSubmit: function (event) {
@@ -11065,51 +11074,20 @@ const GymTrackerAPI = {
       }, 1);
     });
   },
-  findPreviousTrainingSession(sessionType) {
-    return this.getCurrentGymGoer().trainingSessions
-      .reduce((sessions, current) => {
-        if (current.exercises.length && current.sessionType === sessionType) {
-          sessions.push(current);
-        }
-        return sessions;
-      }, [])
-      .sort((a, b) => Number.parseInt(b.sessionDate) - Number.parseInt(a.sessionDate))[0];
-  },
-  findBestSet(sets) {
-    sets
-      .sort((setA, setB) => setB.reps - setA.reps) // sort by reps
-      .sort((setA, setB) => { // sort by weight
-        if (Number.isNaN(Number.parseInt(setA.weight))) {
-          return 0;
-        }
-        return Number.parseInt(setB.weight) - Number.parseInt(setA.weight);
-      });
-    return sets[0];
-  },
   getLastTrainingSessionExercises(trainingSession) {
     return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const lastSession = this.findPreviousTrainingSession(trainingSession.sessionType);
-
-        const lastSessionExercises = {
-          sessionType: trainingSession.sessionType,
-          exercises: []
-        };
-
-        if (lastSession !== undefined) {
-          lastSessionExercises.exercises =
-            lastSession.exercises
-              .map(exercise => ({
-                sessionDate: Number.parseInt(lastSession.sessionDate),
-                name: exercise.name,
-                bestSet: this.findBestSet(exercise.sets)
-              }));
-        }
-
-        resolve(lastSessionExercises);
-
-      }, 1);
-    })
+      $.ajax({
+        url: 'gym-tracker/last-training-session-exercises',
+        data: {sessionType: trainingSession},
+        method: 'GET',
+        dataType: 'json',
+        contentType: 'application/json'
+      }).done(result => {
+        resolve(result);
+      }).fail(() => {
+        reject({error: 'Error adding training session'});
+      });
+    });
   },
   // Get all training session data
   // Include JWT in request Authorization header to identify the user

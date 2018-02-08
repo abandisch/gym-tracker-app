@@ -130,7 +130,7 @@ describe('# GymGoerModel', function () {
           return addTestTrainingSession(gymGoer.id, 'chest')
             .then(result => {
               expect(result).to.be.an.instanceOf(Object);
-              expect(result).to.have.keys(['created', 'sessionType']);
+              expect(result).to.have.keys(['sessionType']);
               return GymGoerModel.findById(gymGoer.id)
                 .then(gGoer => { return gGoer.serializeAll() });
             })
@@ -187,7 +187,7 @@ describe('# GymGoerModel', function () {
     });
   });
 
-  describe.only('# GymGoerModel.getLastTrainingSessionExercises', function () {
+  describe('# GymGoerModel.getLastTrainingSessionExercises', function () {
     // it('should return an object with the exercises of the last training session before today');
     it('should return an object with an empty exercises array for the last training session before today', function () {
       return createTestGymGoer(TEST_EMAIL)

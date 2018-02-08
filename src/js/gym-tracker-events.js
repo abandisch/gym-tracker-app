@@ -24,7 +24,7 @@ const EventHandler = {
       .addTrainingSession(selectedTrainingSession)
       .then((trainingSession) => {
         State.trainingSessionType = trainingSession.sessionType;
-        return GymTrackerAPI.getLastTrainingSessionExercises(trainingSession);
+        return GymTrackerAPI.getLastTrainingSessionExercises(trainingSession.sessionType);
       })
       .then(previousExercises => {
         if (previousExercises.exercises.length) { // if there are previous exercises, show previous exercises page
@@ -36,6 +36,9 @@ const EventHandler = {
         } else { // if there are no previous exercises, show empty training session page
           GymTrackerClient.showEmptyTrainingSessionPage();
         }
+      })
+      .catch(err => {
+        console.error('There has been a problem. Please try again later');
       });
   },
   onChangeSessionFormSubmit: function (event) {

@@ -90,7 +90,6 @@ gymGoerSchema.statics.addTrainingSession = function (gymGoerID, sessionType) {
         })
         .then(() => {
           return {
-            created: true,
             sessionType: sessionType
           };
         });
@@ -98,8 +97,7 @@ gymGoerSchema.statics.addTrainingSession = function (gymGoerID, sessionType) {
 };
 
 gymGoerSchema.statics.getLastTrainingSessionExercises = function (gymGoerID, sessionType) {
-
-  return this.validateParameters([sessionType], 'SessionType is required')
+  return this.validateParameters([gymGoerID, sessionType], 'Both GymGoerID and SessionType are required')
     .then(() => {
       return GymGoerModel.findById(gymGoerID)
         .then(gymGoer => {
