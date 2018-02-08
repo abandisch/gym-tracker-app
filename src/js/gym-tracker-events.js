@@ -21,17 +21,14 @@ const EventHandler = {
     // display the training session page with the previous exercises on it
     const selectedTrainingSession = $(event.currentTarget).data('session');
     GymTrackerAPI
-      .addTrainingSession(selectedTrainingSession)
-      .then((trainingSession) => {
-        State.trainingSessionType = trainingSession.sessionType;
-        return GymTrackerAPI.getLastTrainingSessionExercises(trainingSession.sessionType);
-      })
-      .then(previousExercises => {
-        if (previousExercises.exercises.length) { // if there are previous exercises, show previous exercises page
-          previousExercises.exercises.forEach(exercise => {
+      .initTrainingSession(selectedTrainingSession)
+      .then(result => {
+        State.trainingSessionType = result.sessionType;
+        if (result.previousExercises.length !== 0) {  // if there are previous exercises from the last session
+          result.previousExercises.forEach(exercise => {
             GymTrackerAPI.addExercise(State.trainingSessionType, exercise.name);
           });
-          State.previousTrainingSessionExercises = previousExercises;
+          State.previousTrainingSessionExercises = result.previousExercises;
           GymTrackerClient.showTrainingSessionPage();
         } else { // if there are no previous exercises, show empty training session page
           GymTrackerClient.showEmptyTrainingSessionPage();
@@ -40,6 +37,27 @@ const EventHandler = {
       .catch(err => {
         console.error('There has been a problem. Please try again later');
       });
+
+    // GymTrackerAPI
+    //   .addTrainingSession(selectedTrainingSession)
+    //   .then((trainingSession) => {
+    //     State.trainingSessionType = trainingSession.sessionType;
+    //     return GymTrackerAPI.getLastTrainingSessionExercises(trainingSession.sessionType);
+    //   })
+    //   .then(previousExercises => {
+    //     if (previousExercises.exercises.length) { // if there are previous exercises, show previous exercises page
+    //       previousExercises.exercises.forEach(exercise => {
+    //         GymTrackerAPI.addExercise(State.trainingSessionType, exercise.name);
+    //       });
+    //       State.previousTrainingSessionExercises = previousExercises;
+    //       GymTrackerClient.showTrainingSessionPage();
+    //     } else { // if there are no previous exercises, show empty training session page
+    //       GymTrackerClient.showEmptyTrainingSessionPage();
+    //     }
+    //   })
+    //   .catch(err => {
+    //     console.error('There has been a problem. Please try again later');
+    //   });
   },
   onChangeSessionFormSubmit: function (event) {
     event.preventDefault();

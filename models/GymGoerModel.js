@@ -102,7 +102,7 @@ gymGoerSchema.statics.getLastTrainingSessionExercises = function (gymGoerID, ses
       return GymGoerModel.findById(gymGoerID)
         .then(gymGoer => {
           const lastSessionWithExercises = gymGoer.findPreviousTrainingSessionWithExercises(sessionType);
-          const resultsOfLastSessionExercises = { sessionType: sessionType, exercises: [] };
+          const resultsOfLastSessionExercises = { sessionType: sessionType, previousExercises: [] };
           if (lastSessionWithExercises !== undefined) {
             resultsOfLastSessionExercises.exercises =
               lastSessionWithExercises.exercises.map(exercise => ({

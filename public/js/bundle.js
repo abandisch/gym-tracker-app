@@ -10734,17 +10734,14 @@ const EventHandler = {
     // display the training session page with the previous exercises on it
     const selectedTrainingSession = $(event.currentTarget).data('session');
     __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */]
-      .addTrainingSession(selectedTrainingSession)
-      .then((trainingSession) => {
-        __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionType = trainingSession.sessionType;
-        return __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */].getLastTrainingSessionExercises(trainingSession.sessionType);
-      })
-      .then(previousExercises => {
-        if (previousExercises.exercises.length) { // if there are previous exercises, show previous exercises page
-          previousExercises.exercises.forEach(exercise => {
+      .initTrainingSession(selectedTrainingSession)
+      .then(result => {
+        __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionType = result.sessionType;
+        if (result.previousExercises.length !== 0) {  // if there are previous exercises from the last session
+          result.previousExercises.forEach(exercise => {
             __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */].addExercise(__WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionType, exercise.name);
           });
-          __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].previousTrainingSessionExercises = previousExercises;
+          __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].previousTrainingSessionExercises = result.previousExercises;
           __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showTrainingSessionPage();
         } else { // if there are no previous exercises, show empty training session page
           __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showEmptyTrainingSessionPage();
@@ -10753,6 +10750,27 @@ const EventHandler = {
       .catch(err => {
         console.error('There has been a problem. Please try again later');
       });
+
+    // GymTrackerAPI
+    //   .addTrainingSession(selectedTrainingSession)
+    //   .then((trainingSession) => {
+    //     State.trainingSessionType = trainingSession.sessionType;
+    //     return GymTrackerAPI.getLastTrainingSessionExercises(trainingSession.sessionType);
+    //   })
+    //   .then(previousExercises => {
+    //     if (previousExercises.exercises.length) { // if there are previous exercises, show previous exercises page
+    //       previousExercises.exercises.forEach(exercise => {
+    //         GymTrackerAPI.addExercise(State.trainingSessionType, exercise.name);
+    //       });
+    //       State.previousTrainingSessionExercises = previousExercises;
+    //       GymTrackerClient.showTrainingSessionPage();
+    //     } else { // if there are no previous exercises, show empty training session page
+    //       GymTrackerClient.showEmptyTrainingSessionPage();
+    //     }
+    //   })
+    //   .catch(err => {
+    //     console.error('There has been a problem. Please try again later');
+    //   });
   },
   onChangeSessionFormSubmit: function (event) {
     event.preventDefault();
@@ -11044,21 +11062,6 @@ const GymTrackerAPI = {
       })
     });
   },
-  addTrainingSession(trainingSessionType) {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: 'gym-tracker/training-session',
-        data: JSON.stringify({sessionType: trainingSessionType}),
-        method: 'POST',
-        dataType: 'json',
-        contentType: 'application/json'
-      }).done(result => {
-        resolve(result);
-      }).fail(() => {
-        reject({error: 'Error adding training session'});
-      });
-    });
-  },
   addExercise(trainingSession, exerciseName) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -11074,18 +11077,18 @@ const GymTrackerAPI = {
       }, 1);
     });
   },
-  getLastTrainingSessionExercises(trainingSession) {
+  initTrainingSession(trainingSession) {
     return new Promise((resolve, reject) => {
       $.ajax({
-        url: 'gym-tracker/last-training-session-exercises',
-        data: {sessionType: trainingSession},
-        method: 'GET',
+        url: 'gym-tracker/init-training-session',
+        data: JSON.stringify({sessionType: trainingSession}),
+        method: 'POST',
         dataType: 'json',
         contentType: 'application/json'
-      }).done(result => {
-        resolve(result);
+      }).done(lastTrainingSessionExercises => {
+        resolve(lastTrainingSessionExercises);
       }).fail(() => {
-        reject({error: 'Error adding training session'});
+        reject({error: 'Error initialising training session'});
       });
     });
   },

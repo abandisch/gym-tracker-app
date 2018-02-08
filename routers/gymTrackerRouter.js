@@ -41,27 +41,6 @@ router.get('/', (req, res) => {
     });
 });
 
-router.get('/last-training-session-exercises', [cookieParser(), jsonParser, jwtAuth], (req, res) => {
-  const {id: gymGoerID} = req.user;
-  const {sessionType} = req.query;
-  routerUtils.confirmRequiredProperties(req.query, ['sessionType'], (msg) => {
-    if (msg) {
-      console.error(msg);
-      return res.status(400).json({error: msg});
-    }
-  });
-
-  GymGoerModel
-    .getLastTrainingSessionExercises(gymGoerID, sessionType)
-    .then(lastSessionExercises => {
-      res.json(lastSessionExercises);
-    })
-    .catch(err => {
-      console.error('Error getting last training session exercises:', err);
-    });
-
-});
-
 router.get('/:id', [cookieParser(), jwtAuth], (req, res) => {
   GymGoerModel
     .findById(req.params.id)
@@ -83,7 +62,7 @@ router.get('/:id', [cookieParser(), jwtAuth], (req, res) => {
     });
 });
 
-router.post('/training-session', [cookieParser(), jsonParser, jwtAuth], (req, res) => {
+router.post('/init-training-session', [cookieParser(), jsonParser, jwtAuth], (req, res) => {
   const {id: gymGoerID} = req.user;
   const sessionType = req.body.sessionType;
 
@@ -94,11 +73,15 @@ router.post('/training-session', [cookieParser(), jsonParser, jwtAuth], (req, re
 
   GymGoerModel
     .addTrainingSession(gymGoerID, sessionType)
-    .then(session => {
-      res.json(session);
+    .then(addedSession => {
+      return GymGoerModel
+        .getLastTrainingSessionExercises(gymGoerID, sessionType)
+        .then(lastSessionExercises => {
+          res.json(lastSessionExercises);
+        });
     })
     .catch(err => {
-      console.error('Error adding training session: ', err);
+      console.error('Error initialising training session: ', err);
     });
 });
 

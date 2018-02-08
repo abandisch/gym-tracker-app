@@ -251,21 +251,6 @@ export const GymTrackerAPI = {
       })
     });
   },
-  addTrainingSession(trainingSessionType) {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: 'gym-tracker/training-session',
-        data: JSON.stringify({sessionType: trainingSessionType}),
-        method: 'POST',
-        dataType: 'json',
-        contentType: 'application/json'
-      }).done(result => {
-        resolve(result);
-      }).fail(() => {
-        reject({error: 'Error adding training session'});
-      });
-    });
-  },
   addExercise(trainingSession, exerciseName) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -281,18 +266,18 @@ export const GymTrackerAPI = {
       }, 1);
     });
   },
-  getLastTrainingSessionExercises(trainingSession) {
+  initTrainingSession(trainingSession) {
     return new Promise((resolve, reject) => {
       $.ajax({
-        url: 'gym-tracker/last-training-session-exercises',
-        data: {sessionType: trainingSession},
-        method: 'GET',
+        url: 'gym-tracker/init-training-session',
+        data: JSON.stringify({sessionType: trainingSession}),
+        method: 'POST',
         dataType: 'json',
         contentType: 'application/json'
-      }).done(result => {
-        resolve(result);
+      }).done(lastTrainingSessionExercises => {
+        resolve(lastTrainingSessionExercises);
       }).fail(() => {
-        reject({error: 'Error adding training session'});
+        reject({error: 'Error initialising training session'});
       });
     });
   },
