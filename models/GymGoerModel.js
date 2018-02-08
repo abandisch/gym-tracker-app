@@ -97,6 +97,27 @@ gymGoerSchema.statics.addTrainingSession = function (gymGoerID, sessionType) {
     });
 };
 
+gymGoerSchema.statics.getLastTrainingSessionExercises = function (gymGoerID, sessionType) {
+
+  return this.validateParameters([sessionType], 'SessionType is required')
+    .then(() => {
+      return GymGoerModel.findById(gymGoerID)
+        .then(gymGoer => {
+          const lastSessionWithExercises = gymGoer.findPreviousTrainingSessionWithExercises(sessionType);
+          const resultsOfLastSessionExercises = { sessionType: sessionType, exercises: [] };
+          if (lastSessionWithExercises !== undefined) {
+            resultsOfLastSessionExercises.exercises =
+              lastSessionWithExercises.exercises.map(exercise => ({
+                sessionDate: lastSessionWithExercises.sessionDate,
+                name: exercise.name,
+                bestSet: gymGoer.findBestSet(exercise.sets)
+              }));
+          }
+          return resultsOfLastSessionExercises;
+        })
+    });
+};
+
 const GymGoerModel = mongoose.model('GymGoer', gymGoerSchema);
 
 module.exports = {GymGoerModel};

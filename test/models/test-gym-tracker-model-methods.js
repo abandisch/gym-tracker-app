@@ -28,12 +28,109 @@ const TEST_GYM_GOER_2 = {
   email: 'alex@bandisch.com',
   trainingSessions: [
     {
-      exercises: [],
       sessionDate: dateYesterday,
-      sessionType: 'chest'
+      sessionType: 'chest',
+      exercises: [
+        {
+          name: "bench press",
+          sets: [
+            {
+              setNumber: 1,
+              weight: "60",
+              reps: 12
+            },
+            {
+              setNumber: 2,
+              weight: "60",
+              reps: 10
+            },
+            {
+              setNumber: 3,
+              weight: "60",
+              reps: 11
+            }
+          ]
+        },
+        {
+          name: "dips",
+          sets: [
+            {
+              setNumber: 1,
+              weight: "body weight",
+              reps: 11
+            },
+            {
+              setNumber: 2,
+              weight: "body weight",
+              reps: 12
+            },
+            {
+              setNumber: 3,
+              weight: "body weight",
+              reps: 11
+            }
+          ]
+        },
+        {
+          name: "inclined bench",
+          sets: [
+            {
+              setNumber: 1,
+              weight: "45",
+              reps: 10
+            },
+            {
+              setNumber: 2,
+              weight: "50",
+              reps: 10
+            },
+            {
+              setNumber: 3,
+              weight: "45",
+              reps: 10
+            }
+          ]
+        }
+      ]
     }
   ]
 };
+
+const TEST_SETS_NUMERIC = [
+  {
+    setNumber: "1",
+    weight: "110",
+    reps: "12"
+  },
+  {
+    setNumber: "2",
+    weight: "110",
+    reps: "11"
+  },
+  {
+    setNumber: "3",
+    weight: "110",
+    reps: "12"
+  }
+];
+
+const TEST_SETS_STRING = [
+  {
+    setNumber: "1",
+    weight: "body weight",
+    reps: "12"
+  },
+  {
+    setNumber: "2",
+    weight: "body weight",
+    reps: "11"
+  },
+  {
+    setNumber: "3",
+    weight: "body weight",
+    reps: "12"
+  }
+];
 
 describe('# GymGoerModelMethods', function () {
   describe('# GymGoerModelMethods.getTodaysSession', function () {
@@ -56,6 +153,32 @@ describe('# GymGoerModelMethods', function () {
     it('should return false if there is no existing training session for today', function () {
       const result = GymGoerModelMethods.hasDoneTrainingSessionToday('chest', TEST_GYM_GOER_2);
       expect(result).to.be.equal(false);
+    });
+  });
+  describe('# GymGoerModelMethods.findBestSet', function () {
+    it('should return an object that has the best reps and weight out of the set, where weight is numeric', function () {
+      const result = GymGoerModelMethods.findBestSet(TEST_SETS_NUMERIC);
+      expect(result).to.be.an.instanceOf(Object);
+      expect(result.weight).to.be.equal("110");
+      expect(result.reps).to.be.equal("12");
+    });
+    it('should return an object that has the best reps and weight out of the set, where weight is a string', function () {
+      const result = GymGoerModelMethods.findBestSet(TEST_SETS_STRING);
+      expect(result).to.be.an.instanceOf(Object);
+      expect(result.weight).to.be.equal("body weight");
+      expect(result.reps).to.be.equal("12");
+    });
+  });
+  describe('# GymGoerModelMethods.findPreviousTrainingSessionWithExercises', function () {
+    it('should return the previous training session where there is one', function () {
+      const result = GymGoerModelMethods.findPreviousTrainingSessionWithExercises('chest', TEST_GYM_GOER_2);
+      expect(result).to.be.a('object');
+      expect(result).to.have.keys(['sessionType', 'sessionDate', 'exercises']);
+      expect(result.exercises.length).to.be.at.least(1);
+    });
+    it('should return undefined where there is no previous training session with exercises', function () {
+      const result = GymGoerModelMethods.findPreviousTrainingSessionWithExercises('legs', TEST_GYM_GOER_2);
+      expect(result).to.be.equal(undefined);
     });
   });
 });

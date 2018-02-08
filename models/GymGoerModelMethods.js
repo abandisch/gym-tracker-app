@@ -25,6 +25,27 @@ const GymGoerModelMethods = {
         sessionType: trainingSession.sessionType
       }))
     };
+  },
+  findPreviousTrainingSessionWithExercises(sessionType, gymGoer = this) {
+    return gymGoer.trainingSessions
+      .reduce((sessions, current) => {
+        if (current.exercises.length && current.sessionType === sessionType) {
+          sessions.push(current);
+        }
+        return sessions;
+      }, [])
+      .sort((a, b) => Number.parseInt(b.sessionDate) - Number.parseInt(a.sessionDate))[0];
+  },
+  findBestSet(sets) {
+    sets
+      .sort((setA, setB) => setB.reps - setA.reps) // sort by reps
+      .sort((setA, setB) => { // sort by weight
+        if (Number.isNaN(Number.parseInt(setA.weight))) {
+          return 0;
+        }
+        return Number.parseInt(setB.weight) - Number.parseInt(setA.weight);
+      });
+    return sets[0];
   }
 };
 
