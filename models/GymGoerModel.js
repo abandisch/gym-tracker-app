@@ -98,26 +98,6 @@ gymGoerSchema.statics.addTrainingSession = function (gymGoerID, sessionType) {
     });
 };
 
-gymGoerSchema.statics.getLastTrainingSessionExercises = function (gymGoerID, sessionType) {
-  return this.validateParameters([gymGoerID, sessionType], 'Both GymGoerID and SessionType are required')
-    .then(() => {
-      return GymGoerModel.findById(gymGoerID)
-        .then(gymGoer => {
-          const lastSessionWithExercises = gymGoer.findPreviousTrainingSessionWithExercises(sessionType);
-          const resultsOfLastSessionExercises = { sessionType: sessionType, exercises: [] };
-          if (lastSessionWithExercises !== undefined) {
-            resultsOfLastSessionExercises.exercises =
-              lastSessionWithExercises.exercises.map(exercise => ({
-                sessionDate: lastSessionWithExercises.sessionDate,
-                name: exercise.name,
-                bestSet: gymGoer.findBestSet(exercise.sets)
-              }));
-          }
-          return resultsOfLastSessionExercises;
-        })
-    });
-};
-
 gymGoerSchema.statics.initSessionExercises = function(gymGoerID, sessionType) {
   return GymGoerModel.findById(gymGoerID)
     .then(gymGoer => {

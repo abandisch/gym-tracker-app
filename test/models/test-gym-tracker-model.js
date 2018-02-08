@@ -187,20 +187,4 @@ describe('# GymGoerModel', function () {
     });
   });
 
-  describe('# GymGoerModel.getLastTrainingSessionExercises', function () {
-    // it('should return an object with the exercises of the last training session before today');
-    it('should return an object with an empty exercises array for the last training session before today', function () {
-      return createTestGymGoer(TEST_EMAIL)
-        .then(gymGoer => {
-          return GymGoerModel.getLastTrainingSessionExercises(gymGoer.id, 'chest')
-            .then(lastTrainingSessionExercises => {
-              expect(lastTrainingSessionExercises).to.be.a('object');
-              expect(lastTrainingSessionExercises).to.have.keys('sessionType', 'exercises');
-              expect(lastTrainingSessionExercises.sessionType).to.equal('chest');
-              expect(lastTrainingSessionExercises.exercises.length).to.equal(0);
-
-            })
-        })
-    });
-  });
 });

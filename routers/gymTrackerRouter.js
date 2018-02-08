@@ -76,23 +76,6 @@ router.post('/init-training-session', [cookieParser(), jsonParser, jwtAuth], (re
     .then(session => {
       res.json(session);
     });
-
-  /*GymGoerModel
-    .addTrainingSession(gymGoerID, sessionType)
-    .then(addedSession => {
-      return GymGoerModel
-        .initTrainingSession(gymGoerID, sessionType)
-        .then(() => {
-          return GymGoerModel
-            .getLastTrainingSessionExercises(gymGoerID, sessionType)
-            .then(lastSessionExercises => {
-              res.json(lastSessionExercises);
-            });
-        });
-    })
-    .catch(err => {
-      console.error('Error initialising training session: ', err);
-    });*/
 });
 
 router.post('/login', [jsonParser, localAuth], (req, res) => {

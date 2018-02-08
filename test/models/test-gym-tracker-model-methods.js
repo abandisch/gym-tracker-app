@@ -284,13 +284,13 @@ describe('# GymGoerModelMethods', function () {
       expect(result).to.be.equal(undefined);
     });
   });
-  describe('# GymGoerModelMethods.hasDoneTrainingSessionToday', function () {
+  describe('# GymGoerModelMethods.hasExistingTrainingSessionToday', function () {
     it('should return true if there is an existing training session for today', function () {
-      const result = GymGoerModelMethods.hasDoneTrainingSessionToday('chest', TEST_GYM_GOER);
+      const result = GymGoerModelMethods.hasExistingTrainingSessionToday('chest', TEST_GYM_GOER);
       expect(result).to.be.equal(true);
     });
     it('should return false if there is no existing training session for today', function () {
-      const result = GymGoerModelMethods.hasDoneTrainingSessionToday('chest', TEST_GYM_GOER_3);
+      const result = GymGoerModelMethods.hasExistingTrainingSessionToday('chest', TEST_GYM_GOER_3);
       expect(result).to.be.equal(false);
     });
   });

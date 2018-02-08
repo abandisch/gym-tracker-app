@@ -10759,27 +10759,6 @@ const EventHandler = {
       .catch(err => {
         console.error('There has been a problem. Please try again later (' + JSON.stringify(err, null, 2) + ')');
       });
-
-    // GymTrackerAPI
-    //   .addTrainingSession(selectedTrainingSession)
-    //   .then((trainingSession) => {
-    //     State.trainingSessionType = trainingSession.sessionType;
-    //     return GymTrackerAPI.getLastTrainingSessionExercises(trainingSession.sessionType);
-    //   })
-    //   .then(previousExercises => {
-    //     if (exercisesv.length) { // if there are previous exercises, show previous exercises page
-    //       exercises.forEach(exercise => {
-    //         GymTrackerAPI.addExercise(State.trainingSessionType, exercise.name);
-    //       });
-    //       State.previousTrainingSessionExercises = exercises;
-    //       GymTrackerClient.showTrainingSessionPage();
-    //     } else { // if there are no previous exercises, show empty training session page
-    //       GymTrackerClient.showEmptyTrainingSessionPage();
-    //     }
-    //   })
-    //   .catch(err => {
-    //     console.error('There has been a problem. Please try again later');
-    //   });
   },
   onChangeSessionFormSubmit: function (event) {
     event.preventDefault();
