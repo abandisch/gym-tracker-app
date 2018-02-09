@@ -7,3 +7,5 @@ deploy:
   app: murmuring-thicket-55410
   on:
     repo: abandisch/gym-tracker-app
+services:
+- mongodb
