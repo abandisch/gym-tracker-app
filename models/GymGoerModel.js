@@ -50,13 +50,11 @@ gymGoerSchema.statics.findGymGoerByEmail = function(email) {
 };
 
 gymGoerSchema.statics.createGymGoer = function (email) {
+  const newGymGoer = { email: email, trainingSessions: [] };
+
   return this.validateParameters([email], 'Email is required')
-    .then(() => {
-      return GymGoerModel.create({
-        email: email,
-        trainingSessions: []
-      }).then(gymGoer => gymGoer.serializeAll());
-    });
+    .then(() => GymGoerModel.create(newGymGoer))
+    .then(gymGoer => gymGoer.serializeAll());
 };
 
 gymGoerSchema.statics.addTrainingSession = function (gymGoerID, sessionType) {

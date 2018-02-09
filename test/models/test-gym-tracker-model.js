@@ -51,28 +51,22 @@ describe('# GymGoerModel', function () {
     return GymGoerModel.initTrainingSession(gymGoerId, sessionType);
   };
 
-  describe('# GymGoerModel.createGymGoer', function () {
+  describe.only('# GymGoerModel.createGymGoer', function () {
 
     it('should throw an Error is the email is not provided', function () {
       return createTestGymGoer()
-        .catch(err => {
-          expect(err).to.be.an.instanceOf(Error);
-        });
+        .catch(err => expect(err).to.be.an.instanceOf(Error));
     });
 
     it('should throw an Error is the email is an empty string', function () {
       return createTestGymGoer("")
-        .catch(err => {
-          expect(err).to.be.an.instanceOf(Error);
-        });
+        .catch(err => expect(err).to.be.an.instanceOf(Error));
     });
 
     it('should throw an Error if the email address is already in the database', function () {
       return createTestGymGoer(TEST_EMAIL)
         .then(() => createTestGymGoer(TEST_EMAIL))
-        .catch(err => {
-          expect(err).to.be.an.instanceOf(Error);
-        });
+        .catch(err => expect(err).to.be.an.instanceOf(Error));
     });
 
     it('should create and provide the newly created, serialized GymGoer', function () {
