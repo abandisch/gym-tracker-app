@@ -144,13 +144,18 @@ describe('# GymGoerModel', function () {
         })
     });
 
+    const addTestSessionForGymGoer = (sessionType) => {
+      return (gymGoer) => addTestTrainingSession(gymGoer.id, sessionType).then(() => gymGoer);
+    };
+
     it('should not add a training session if one for today already exist and return the session object', function () {
-      let gymGoer;
       return createTestGymGoer(TEST_EMAIL)
-        .then(_gymGoer => gymGoer = _gymGoer)
-        .then(() => addTestTrainingSession(gymGoer.id, 'chest'))
-        .then(() => addTestTrainingSession(gymGoer.id, 'chest'))
-        .then(() => GymGoerModel.findById(gymGoer.id))
+        // .then(_gymGoer => gymGoer = _gymGoer)
+        // .then(() => addTestTrainingSession(gymGoer.id, 'chest'))
+        // .then(() => addTestTrainingSession(gymGoer.id, 'chest'))
+        .then(addTestSessionForGymGoer('chest'))
+        .then(addTestSessionForGymGoer('chest'))
+        .then((gymGoer) => GymGoerModel.findById(gymGoer.id))
         .then(gGoer => gGoer.serializeAll())
         .then(dbGymGoer => {
               expect(dbGymGoer.trainingSessions.length).to.be.equal(1);
