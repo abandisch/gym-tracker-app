@@ -187,4 +187,34 @@ describe('# GymGoerModel', function () {
     });
   });
 
+  describe('# GymGoerModel.initSessionExercises', function () {
+    it('should provide empty exercises session', function () {
+      return createTestGymGoer(TEST_EMAIL)
+        .then(gymGoer => {
+          return addTestTrainingSession(gymGoer.id, 'chest')
+            .then(() => {
+              return GymGoerModel.initSessionExercises(gymGoer.id, 'chest')
+                .then(sessionExercises => {
+                  expect(sessionExercises.length).to.equal(0);
+                });
+            })
+        })
+    })
+  });
+
+  describe.only('# GymGoerModel.initTrainingSession', function () {
+    it('should initialise a training session for a gym goer', function () {
+      return createTestGymGoer(TEST_EMAIL)
+        .then(gymGoer => {
+          return GymGoerModel.initTrainingSession(gymGoer.id, 'chest')
+            .then(initialisedSession => {
+              const dateToday = new Date().toISOString().split('T')[0];
+              const dateSession = new Date(initialisedSession.sessionDate).toISOString().split('T')[0];
+              expect(initialisedSession).to.be.a('object');
+              expect(initialisedSession).to.have.keys(['sessionDate', 'exercises', 'sessionType']);
+              expect(dateSession).to.equal(dateToday);
+            })
+        })
+    })
+  })
 });
