@@ -51,7 +51,7 @@ describe('# GymGoerModel', function () {
     return GymGoerModel.initTrainingSession(gymGoerId, sessionType);
   };
 
-  describe.only('# GymGoerModel.createGymGoer', function () {
+  describe('# GymGoerModel.createGymGoer', function () {
 
     it('should throw an Error is the email is not provided', function () {
       return createTestGymGoer()

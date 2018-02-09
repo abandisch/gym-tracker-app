@@ -42,6 +42,10 @@ gymGoerSchema.statics.validateParameters = function(parameters, message) {
   });
 };
 
+gymGoerSchema.statics.findGymGoerByID = function (gymGoerID) {
+  return this.findOne({"_id": gymGoerID});
+};
+
 gymGoerSchema.statics.findGymGoerByEmail = function(email) {
   return this.validateParameters([email], 'Email is required')
     .then(() => this.findOne({email: email}))
@@ -59,6 +63,25 @@ gymGoerSchema.statics.createGymGoer = function (email) {
 
 gymGoerSchema.statics.addTrainingSession = function (gymGoerID, sessionType) {
   return this.validateParameters([gymGoerID, sessionType], 'Both ID and SessionType are required')
+    .then(() => this.findGymGoerByID(gymGoerID))
+    .then(gymGoer => {
+      if (gymGoer === null) {
+        throw new Error('Gym Goer ID not found');
+      }
+      if (gymGoer.hasExistingTrainingSessionToday(sessionType) === false) {
+        const newSession = { sessionType: sessionType, exercises: [] };
+        return this.findOneAndUpdate({ "_id": gymGoerID }, { $push: { trainingSessions: newSession } }, { new: true })
+          .then(gymGoer => gymGoer.getSessionForToday(sessionType));
+      }
+      return gymGoer.getSessionForToday(sessionType);
+    })
+    .then((session) => ({
+      sessionDate: session.sessionDate,
+      exercises: session.exercises,
+      sessionType: session.sessionType
+    }));
+
+  /*return this.validateParameters([gymGoerID, sessionType], 'Both ID and SessionType are required')
     .then(() => {
       return this.findOne({
         "_id": gymGoerID
@@ -86,7 +109,7 @@ gymGoerSchema.statics.addTrainingSession = function (gymGoerID, sessionType) {
             sessionType: session.sessionType
           };
         });
-    });
+    });*/
 };
 
 gymGoerSchema.statics.addExercises = function(gymGoerID, sessionType, newExercises) {
