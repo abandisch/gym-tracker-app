@@ -43,7 +43,7 @@ const TrainingSessionPage = {
             </form>`;
   },
   exercisesLiElement(exercise) {
-    let lastSessionResults = '<div class="last-session-results"><p class="last-session-date"></p><p class="last-session-stats">First time tracking this exercise</p></div>';
+    let lastSessionResults = '<div class="last-session-results"><p class="last-session-date"></p><p class="last-session-stats">No stats from a previous session</p></div>';
 
     if (exercise.lastBestSet !== undefined && exercise.lastBestSet !== null) {
       const lastSessionDate = new Date(exercise.lastBestSet.sessionDate).toLocaleString().split(',').splice(0, 1)[0];
@@ -53,12 +53,14 @@ const TrainingSessionPage = {
                             </div>`;
     }
 
-    const exerciseSets = exercise.sets.map(set => {
-      return `<div class="table-cell">${set.setNumber}</div>
+    let exerciseSets = `<div class="table-cell"></div><div class="table-cell"></div><div class="table-cell"></div>`;
+    if (exercise.sets.length > 0) {
+      exerciseSets = exercise.sets.map(set => {
+        return `<div class="table-cell">${set.setNumber}</div>
               <div class="table-cell">${set.weight}</div>
-              <div class="table-cell">${set.reps}</div>`
-    });
-
+              <div class="table-cell">${set.reps}</div>`;
+      });
+    }
     return `<li>
               <h3>${exercise.name.toUpperCase()}</h3>
               ${lastSessionResults}
