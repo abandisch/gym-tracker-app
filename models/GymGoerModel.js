@@ -44,16 +44,9 @@ gymGoerSchema.statics.validateParameters = function(parameters, message) {
 
 gymGoerSchema.statics.findGymGoerByEmail = function(email) {
   return this.validateParameters([email], 'Email is required')
-    .then(() => {
-      return this.findOne({email: email})
-        .then(gymGoer => {
-          if (gymGoer) {
-            return gymGoer.serializeAll()
-          } else {
-            return null;
-          }
-      })
-  });
+    .then(() => this.findOne({email: email}))
+    .then(gymGoer => gymGoer !== null ? gymGoer.serializeAll() : null)
+    .catch(Error => {throw Error});
 };
 
 gymGoerSchema.statics.createGymGoer = function (email) {
@@ -98,34 +91,56 @@ gymGoerSchema.statics.addTrainingSession = function (gymGoerID, sessionType) {
     });
 };
 
+gymGoerSchema.statics.addExercises = function(gymGoerID, sessionType, newExercises) {
+  const startToday = new Date().setHours(0,0,0,0);
+  const endToday = new Date().setHours(23,59,59,999);
+
+  return this.findOneAndUpdate(
+    {
+      $and : [
+        {"_id": gymGoerID},
+        {trainingSessions: {
+            $elemMatch: {
+              sessionType: sessionType,
+              sessionDate: {$gte: startToday, $lt: endToday}
+            }
+          }
+        }
+      ]
+    },
+    {
+      $addToSet: { "trainingSessions.$.exercises": { $each: newExercises } }
+    }, { new: true }
+  ).then(gymGoer => {
+    return gymGoer.trainingSessions[0].exercises;
+  });
+
+};
+
 gymGoerSchema.statics.initSessionExercises = function(gymGoerID, sessionType) {
-  let previousSession;
+  let previousSessionWithExercises;
   return GymGoerModel.findById(gymGoerID)
     .then(gymGoer => {
       const sessionForToday = gymGoer.getSessionForToday(sessionType);
-      previousSession = gymGoer.findPreviousTrainingSessionWithExercises(sessionType);
+      previousSessionWithExercises = gymGoer.findPreviousTrainingSessionWithExercises(sessionType);
       // if no previously saved exercises for today's session, but there is a previous session with exercises then use those
-      if (sessionForToday.exercises.length === 0 && previousSession !== undefined) {
+      if (sessionForToday.exercises.length === 0 && previousSessionWithExercises !== undefined) {
         // Just keep the exercise names, zero out the previous sets, so the user can add new sets
-        sessionForToday.exercises = previousSession.exercises.map(exercise => {
-          return {
-            sets: [],
-            name: exercise.name
-          }
+        sessionForToday.exercises = previousSessionWithExercises.exercises.map(ex => {
+          return { sets: [], name: ex.name };
         });
-        // TODO: Save these new exercises to the database
       }
       // return the exercises array
       return sessionForToday.exercises;
     })
     .then(sessionExercises => {
       sessionExercises = sessionExercises.map(sessionExercise => {
-        const previousSessionExercise = previousSession.exercises.find(ex => ex.name === sessionExercise.name);
+        const previousSessionExercise = previousSessionWithExercises.exercises.find(ex => ex.name === sessionExercise.name);
         const exercise = { sets: sessionExercise.sets, name: sessionExercise.name, lastBestSet: null };
         if (previousSessionExercise !== undefined && previousSessionExercise.sets.length > 0) {
           const bestSet = GymGoerModelMethods.findBestSet(previousSessionExercise.sets);
           exercise.lastBestSet = {
-            sessionDate: previousSession.sessionDate,
+            sessionDate: previousSessionWithExercises.sessionDate,
             weight: bestSet.weight,
             reps: bestSet.reps
           }
@@ -143,6 +158,7 @@ gymGoerSchema.statics.initTrainingSession = function (gymGoerID, sessionType) {
         .then(session => {
           return this.initSessionExercises(gymGoerID, sessionType)
             .then(exercises => {
+              //return GymGoerModel.addExercises(gymGoerID, sessionType, exercises);
               session.exercises = exercises;
               return session;
             });

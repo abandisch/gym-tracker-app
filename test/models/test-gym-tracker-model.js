@@ -89,16 +89,12 @@ describe('# GymGoerModel', function () {
 
     it('should throw an Error if no email is provided', function () {
       return findTestGymGoer()
-        .catch(err => {
-          expect(err).to.be.an.instanceOf(Error);
-        })
+        .catch(err => expect(err).to.be.an.instanceOf(Error));
     });
 
     it('should return null if it cannot find the GymGoer by email', function () {
       return findTestGymGoer(TEST_EMAIL)
-        .then(gymGoer => {
-          expect(gymGoer).to.be.equal(null);
-        });
+        .then(gymGoer => expect(gymGoer).to.be.equal(null));
     });
 
     it('should find GymGoer by email and provide a serialised GymGoer', function () {
