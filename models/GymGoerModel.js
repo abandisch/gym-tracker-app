@@ -113,30 +113,18 @@ gymGoerSchema.statics.addTrainingSession = function (gymGoerID, sessionType) {
     });*/
 };
 
-gymGoerSchema.statics.addExercises = function(gymGoerID, sessionType, newExercises) {
-  const startToday = new Date().setHours(0,0,0,0);
-  const endToday = new Date().setHours(23,59,59,999);
-
-  return this.findOneAndUpdate(
-    {
-      $and : [
-        {"_id": gymGoerID},
-        {trainingSessions: {
-            $elemMatch: {
-              sessionType: sessionType,
-              sessionDate: {$gte: startToday, $lt: endToday}
-            }
-          }
-        }
-      ]
+gymGoerSchema.statics.addExercisesToSession = function(sessionId, newExercises) {
+  return this.findOneAndUpdate({
+      "trainingSessions": {
+        $elemMatch : { _id: sessionId }
+      }
     },
     {
-      $addToSet: { "trainingSessions.$.exercises": { $each: newExercises } }
-    }, { new: true }
-  ).then(gymGoer => {
-    return gymGoer.trainingSessions[0].exercises;
-  });
-
+     $addToSet: { "trainingSessions.$.exercises": { $each: newExercises } }
+    },
+    {  new: true, projection: { "trainingSessions": 1 }
+    })
+    .then(projection => projection.trainingSessions.find(s => (s._id).toString() === (sessionId).toString()));
 };
 
 gymGoerSchema.statics.initSessionExercises = function(gymGoerID, sessionType) {
@@ -182,7 +170,7 @@ gymGoerSchema.statics.initTrainingSession = function (gymGoerID, sessionType) {
     .then(exercises => {
       // console.log('====> session', session);
       // add exercises to a session
-      //return this.addExercises(gymGoerID, sessionType, exercises);
+      //return this.addExercisesToSession(session.sessionID, exercises);
       session.exercises = exercises;
       return session;
     });

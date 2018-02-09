@@ -210,8 +210,6 @@ describe('# GymGoerModel', function () {
     it('should add the exercises to the Gym Goer and return the added exercises', function () {
       let gymGoer;
       const TEST_SESSION_TYPE = 'legs';
-      const startToday = new Date().setHours(0,0,0,0);
-      const endToday = new Date().setHours(23,59,59,999);
       const TEST_EXERCISES = [ {
           name: "leg press",
           sets: []
@@ -222,13 +220,23 @@ describe('# GymGoerModel', function () {
           name: "split squats",
           sets: []
         } ];
+      let initialisedSession;
       return createTestGymGoer(TEST_EMAIL)
         .then(_gymGoer => gymGoer = _gymGoer)
         .then(() => initTestTrainingSession(gymGoer.id, TEST_SESSION_TYPE))
-        .then(initialisedSession => GymGoerModel.addExercises(gymGoer.id, initialisedSession.sessionType, TEST_EXERCISES))
+        .then(_initialisedSession => initialisedSession = _initialisedSession)
+        .then(() => GymGoerModel.addExercisesToSession(initialisedSession.sessionID, TEST_EXERCISES))
+        .then(updatedSession => {
+          expect(updatedSession.exercises.length).to.equal(3);
+          expect((updatedSession._id).toString()).to.equal((initialisedSession.sessionID).toString());
+        })
         .then(() => GymGoerModel.findOne({
             $and : [
-              {"_id": gymGoer.id}, {trainingSessions: { $elemMatch: { sessionType: TEST_SESSION_TYPE, sessionDate: {$gte: startToday, $lt: endToday} } } }
+              {"_id": gymGoer.id},
+              {"trainingSessions": {
+                  $elemMatch : { _id: initialisedSession.sessionID }
+                }
+              }
             ]
           }))
         .then((gymGoer) => {
