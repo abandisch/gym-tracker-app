@@ -43,6 +43,10 @@ describe('# GymGoerModel', function () {
     return GymGoerModel.addTrainingSession(gymGoerId, sessionType);
   };
 
+  const addTestSessionForGymGoer = (sessionType) => {
+    return (gymGoer) => addTestTrainingSession(gymGoer.id, sessionType).then(() => gymGoer);
+  };
+
   const initTestTrainingSession = (gymGoerId, sessionType) => {
     return GymGoerModel.initTrainingSession(gymGoerId, sessionType);
   };
@@ -98,13 +102,13 @@ describe('# GymGoerModel', function () {
     });
 
     it('should find GymGoer by email and provide a serialised GymGoer', function () {
+      let gymGoerID;
       return createTestGymGoer(TEST_EMAIL)
-        .then(_gymGoer => {
-          return findTestGymGoer(TEST_EMAIL)
-            .then(gymGoer => {
-              expect(gymGoer).to.be.an.instanceOf(Object);
-              expect(gymGoer).to.have.keys(['id', 'email', 'trainingSessions']);
-            });
+        .then(_gymGoer => gymGoerID = _gymGoer.id)
+        .then(() => findTestGymGoer(TEST_EMAIL))
+        .then(gymGoer => {
+          expect(gymGoer).to.be.an.instanceOf(Object);
+          expect(gymGoer).to.have.keys(['id', 'email', 'trainingSessions']);
         });
     });
 
@@ -129,24 +133,17 @@ describe('# GymGoerModel', function () {
     });
 
     it('should add a training session if it does NOT exist for today and return the session object', function () {
+      let gymGoer;
       return createTestGymGoer(TEST_EMAIL)
-        .then(gymGoer => {
-          return addTestTrainingSession(gymGoer.id, 'chest')
-            .then(session => {
-              expect(session).to.be.an.instanceOf(Object);
-              expect(session).to.have.keys(['sessionDate', 'exercises', 'sessionType']);
-              return GymGoerModel.findById(gymGoer.id)
-                .then(gGoer => { return gGoer.serializeAll() });
-            })
-            .then(dbGymGoer => {
-              expect(dbGymGoer.trainingSessions.length).to.be.equal(1);
-            });
+        .then(_gymGoer => gymGoer = _gymGoer)
+        .then(() => addTestTrainingSession(gymGoer.id, 'chest'))
+        .then(session => {
+          expect(session).to.be.an.instanceOf(Object);
+          expect(session).to.have.keys(['sessionDate', 'exercises', 'sessionType']);
+          return GymGoerModel.findById(gymGoer.id)
         })
+        .then(dbGymGoer => expect(dbGymGoer.trainingSessions.length).to.be.equal(1));
     });
-
-    const addTestSessionForGymGoer = (sessionType) => {
-      return (gymGoer) => addTestTrainingSession(gymGoer.id, sessionType).then(() => gymGoer);
-    };
 
     it('should not add a training session if one for today already exist and return the session object', function () {
       return createTestGymGoer(TEST_EMAIL)
@@ -194,67 +191,63 @@ describe('# GymGoerModel', function () {
 
   describe('# GymGoerModel.initSessionExercises', function () {
     it('should provide empty exercises session', function () {
+      let gymGoer;
       return createTestGymGoer(TEST_EMAIL)
-        .then(gymGoer => {
-          return addTestTrainingSession(gymGoer.id, 'chest')
-            .then(() => {
-              return GymGoerModel.initSessionExercises(gymGoer.id, 'chest')
-                .then(sessionExercises => {
-                  expect(sessionExercises.length).to.equal(0);
-                });
-            })
-        })
-    })
+        .then(_gymGoer => gymGoer = _gymGoer)
+        .then(() => addTestTrainingSession(gymGoer.id, 'chest'))
+        .then(() => GymGoerModel.initSessionExercises(gymGoer.id, 'chest'))
+        .then(sessionExercises => expect(sessionExercises.length).to.equal(0));
+    });
   });
 
   describe('# GymGoerModel.initTrainingSession', function () {
     it('should initialise a training session for a gym goer', function () {
-      return createTestGymGoer(TEST_EMAIL)
-        .then(gymGoer => {
-          return initTestTrainingSession(gymGoer.id, 'chest')
-            .then(initialisedSession => {
-              const dateToday = new Date().toISOString().split('T')[0];
-              const dateSession = new Date(initialisedSession.sessionDate).toISOString().split('T')[0];
-              expect(initialisedSession).to.be.a('object');
-              expect(initialisedSession).to.have.keys(['sessionDate', 'exercises', 'sessionType']);
-              expect(dateSession).to.equal(dateToday);
-            })
-        })
-    })
-  })
-
-  describe.skip('# GymGoerModel.addExercises', function () {
-    it('should add the exercises to the Gym Goer and return true', function () {
       let gymGoer;
-      const TEST_EXERCISES = [
-        {
-          name: "leg press",
-          sets: []
-        },
-        {
-          name: "barbell squat",
-          sets: []
-        },
-        {
-          name: "split squats",
-          sets: []
-        }
-      ];
-      const TEST_EXERCISE = {
-        name: "split squats",
-        sets: []
-      };
       return createTestGymGoer(TEST_EMAIL)
-        .then(_gymGoer => {
-          gymGoer = _gymGoer;
-          return initTestTrainingSession(gymGoer.id, 'legs')
-            .then(initialisedSession => {
-              return GymGoerModel.addExercises(gymGoer.id, initialisedSession.sessionType, TEST_EXERCISES)
-                .then(result => {
-                  console.log('====> result:', result);
-                })
-            })
-        })
+        .then(_gymGoer => gymGoer = _gymGoer)
+        .then(() => initTestTrainingSession(gymGoer.id, 'chest'))
+        .then(initialisedSession => {
+          const dateToday = new Date().toISOString().split('T')[0];
+          const dateSession = new Date(initialisedSession.sessionDate).toISOString().split('T')[0];
+          expect(initialisedSession).to.be.a('object');
+          expect(initialisedSession).to.have.keys(['sessionDate', 'exercises', 'sessionType']);
+          expect(dateSession).to.equal(dateToday);
+        });
     })
   });
-});
+
+  describe('# GymGoerModel.addExercises', function () {
+    it('should add the exercises to the Gym Goer and return the added exercises', function () {
+      let gymGoer;
+      const TEST_SESSION_TYPE = 'legs';
+      const startToday = new Date().setHours(0,0,0,0);
+      const endToday = new Date().setHours(23,59,59,999);
+      const TEST_EXERCISES = [ {
+          name: "leg press",
+          sets: []
+        }, {
+          name: "barbell squat",
+          sets: []
+        }, {
+          name: "split squats",
+          sets: []
+        } ];
+      return createTestGymGoer(TEST_EMAIL)
+        .then(_gymGoer => gymGoer = _gymGoer)
+        .then(() => initTestTrainingSession(gymGoer.id, TEST_SESSION_TYPE))
+        .then(initialisedSession => GymGoerModel.addExercises(gymGoer.id, initialisedSession.sessionType, TEST_EXERCISES))
+        .then(() => GymGoerModel.findOne({
+            $and : [
+              {"_id": gymGoer.id}, {trainingSessions: { $elemMatch: { sessionType: TEST_SESSION_TYPE, sessionDate: {$gte: startToday, $lt: endToday} } } }
+            ]
+          }))
+        .then((gymGoer) => {
+          gymGoer.trainingSessions[0].exercises.forEach((exercise, index) => {
+            expect(exercise.sets.length).to.equal(0);
+            expect(exercise.name).to.equal(TEST_EXERCISES[index].name);
+          });
+          expect(gymGoer.trainingSessions[0].exercises.length).to.equal(3);
+        })
+      });
+    });
+  });
