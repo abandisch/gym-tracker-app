@@ -43,6 +43,10 @@ describe('# GymGoerModel', function () {
     return GymGoerModel.addTrainingSession(gymGoerId, sessionType);
   };
 
+  const initTestTrainingSession = (gymGoerId, sessionType) => {
+    return GymGoerModel.initTrainingSession(gymGoerId, sessionType);
+  };
+
   describe('# GymGoerModel.createGymGoer', function () {
 
     it('should throw an Error is the email is not provided', function () {
@@ -141,20 +145,16 @@ describe('# GymGoerModel', function () {
     });
 
     it('should not add a training session if one for today already exist and return the session object', function () {
+      let gymGoer;
       return createTestGymGoer(TEST_EMAIL)
-        .then(gymGoer => {
-          return addTestTrainingSession(gymGoer.id, 'chest')
-            .then(addedSession => {
-              return addTestTrainingSession(gymGoer.id, 'chest')
-            })
-            .then(_addedSession => {
-              return GymGoerModel.findById(gymGoer.id)
-                .then(gGoer => { return gGoer.serializeAll() });
-            })
-            .then(dbGymGoer => {
+        .then(_gymGoer => gymGoer = _gymGoer)
+        .then(() => addTestTrainingSession(gymGoer.id, 'chest'))
+        .then(() => addTestTrainingSession(gymGoer.id, 'chest'))
+        .then(() => GymGoerModel.findById(gymGoer.id))
+        .then(gGoer => gGoer.serializeAll())
+        .then(dbGymGoer => {
               expect(dbGymGoer.trainingSessions.length).to.be.equal(1);
-            });
-        })
+        });
     });
   });
 
@@ -202,11 +202,11 @@ describe('# GymGoerModel', function () {
     })
   });
 
-  describe.only('# GymGoerModel.initTrainingSession', function () {
+  describe('# GymGoerModel.initTrainingSession', function () {
     it('should initialise a training session for a gym goer', function () {
       return createTestGymGoer(TEST_EMAIL)
         .then(gymGoer => {
-          return GymGoerModel.initTrainingSession(gymGoer.id, 'chest')
+          return initTestTrainingSession(gymGoer.id, 'chest')
             .then(initialisedSession => {
               const dateToday = new Date().toISOString().split('T')[0];
               const dateSession = new Date(initialisedSession.sessionDate).toISOString().split('T')[0];
@@ -217,4 +217,39 @@ describe('# GymGoerModel', function () {
         })
     })
   })
+
+  describe.skip('# GymGoerModel.addExercises', function () {
+    it('should add the exercises to the Gym Goer and return true', function () {
+      let gymGoer;
+      const TEST_EXERCISES = [
+        {
+          name: "leg press",
+          sets: []
+        },
+        {
+          name: "barbell squat",
+          sets: []
+        },
+        {
+          name: "split squats",
+          sets: []
+        }
+      ];
+      const TEST_EXERCISE = {
+        name: "split squats",
+        sets: []
+      };
+      return createTestGymGoer(TEST_EMAIL)
+        .then(_gymGoer => {
+          gymGoer = _gymGoer;
+          return initTestTrainingSession(gymGoer.id, 'legs')
+            .then(initialisedSession => {
+              return GymGoerModel.addExercises(gymGoer.id, initialisedSession.sessionType, TEST_EXERCISES)
+                .then(result => {
+                  console.log('====> result:', result);
+                })
+            })
+        })
+    })
+  });
 });
