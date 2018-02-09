@@ -76,6 +76,7 @@ gymGoerSchema.statics.addTrainingSession = function (gymGoerID, sessionType) {
       return gymGoer.getSessionForToday(sessionType);
     })
     .then((session) => ({
+      sessionID: session['_id'],
       sessionDate: session.sessionDate,
       exercises: session.exercises,
       sessionType: session.sessionType
@@ -173,17 +174,17 @@ gymGoerSchema.statics.initSessionExercises = function(gymGoerID, sessionType) {
 };
 
 gymGoerSchema.statics.initTrainingSession = function (gymGoerID, sessionType) {
+  let session;
   return this.validateParameters([gymGoerID, sessionType], 'Both GymGoerID and SessionType are required')
-    .then(() => {
-      return this.addTrainingSession(gymGoerID, sessionType)
-        .then(session => {
-          return this.initSessionExercises(gymGoerID, sessionType)
-            .then(exercises => {
-              //return GymGoerModel.addExercises(gymGoerID, sessionType, exercises);
-              session.exercises = exercises;
-              return session;
-            });
-        });
+    .then(() => this.addTrainingSession(gymGoerID, sessionType))
+    .then(_session => session = _session)
+    .then(() => this.initSessionExercises(gymGoerID, sessionType))
+    .then(exercises => {
+      // console.log('====> session', session);
+      // add exercises to a session
+      //return this.addExercises(gymGoerID, sessionType, exercises);
+      session.exercises = exercises;
+      return session;
     });
 };
 

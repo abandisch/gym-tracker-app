@@ -129,7 +129,7 @@ describe('# GymGoerModel', function () {
         .then(() => addTestTrainingSession(gymGoer.id, 'chest'))
         .then(session => {
           expect(session).to.be.an.instanceOf(Object);
-          expect(session).to.have.keys(['sessionDate', 'exercises', 'sessionType']);
+          expect(session).to.have.keys(['sessionID', 'sessionDate', 'exercises', 'sessionType']);
           return GymGoerModel.findById(gymGoer.id)
         })
         .then(dbGymGoer => expect(dbGymGoer.trainingSessions.length).to.be.equal(1));
@@ -200,7 +200,7 @@ describe('# GymGoerModel', function () {
           const dateToday = new Date().toISOString().split('T')[0];
           const dateSession = new Date(initialisedSession.sessionDate).toISOString().split('T')[0];
           expect(initialisedSession).to.be.a('object');
-          expect(initialisedSession).to.have.keys(['sessionDate', 'exercises', 'sessionType']);
+          expect(initialisedSession).to.have.keys(['sessionID', 'sessionDate', 'exercises', 'sessionType']);
           expect(dateSession).to.equal(dateToday);
         });
     })
