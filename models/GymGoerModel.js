@@ -33,6 +33,12 @@ const gymGoerSchema = mongoose.Schema({
 // Assign the GymGoerModelMethods to the gymGoerSchema methods
 Object.assign(gymGoerSchema.methods, GymGoerModelMethods);
 
+/**
+ * Validate the parameters
+ * @param {Object[]} parameters - Array of parameters
+ * @param {string} message - Error message to return if not all all parameters are defined
+ * @returns {Promise} - resolved or rejected Promise
+ */
 gymGoerSchema.statics.validateParameters = function(parameters, message) {
   return new Promise((resolve, reject) => {
     if (parameters.every(parameter => typeof parameter !== 'undefined') === true) {
@@ -42,10 +48,20 @@ gymGoerSchema.statics.validateParameters = function(parameters, message) {
   });
 };
 
+/**
+ * Find a GymGoer by ID
+ * @param {string} gymGoerID - String of the ID to search for
+ * @returns {Promise|null} - Promise containing GymGoer or null if not found
+ */
 gymGoerSchema.statics.findGymGoerByID = function (gymGoerID) {
   return this.findOne({"_id": gymGoerID});
 };
 
+/**
+ * Find a GymGoer by email address
+ * @param {string} email - String of the email to search for
+ * @returns {Promise|null} - Promise containing GymGoer or null if not found
+ */
 gymGoerSchema.statics.findGymGoerByEmail = function(email) {
   return this.validateParameters([email], 'Email is required')
     .then(() => this.findOne({email: email}))
@@ -53,6 +69,11 @@ gymGoerSchema.statics.findGymGoerByEmail = function(email) {
     .catch(Error => {throw Error});
 };
 
+/**
+ * Create a GymGoer
+ * @param {string} email - Email of the Gym Goer
+ * @returns {Promise|null} - Promise containing the created GymGoer
+ */
 gymGoerSchema.statics.createGymGoer = function (email) {
   const newGymGoer = { email: email, trainingSessions: [] };
 
@@ -61,6 +82,12 @@ gymGoerSchema.statics.createGymGoer = function (email) {
     .then(gymGoer => gymGoer.serializeAll());
 };
 
+/**
+ * Create a GymGoer
+ * @param {string} gymGoerID - ID of Gym Goer
+ * @param {string} sessionType - Name of the session (chest, legs, back, arms etc)
+ * @returns {Promise} - GymGoer's session
+ */
 gymGoerSchema.statics.addTrainingSession = function (gymGoerID, sessionType) {
   return this.validateParameters([gymGoerID, sessionType], 'Both ID and SessionType are required')
     .then(() => this.findGymGoerByID(gymGoerID))
@@ -81,43 +108,13 @@ gymGoerSchema.statics.addTrainingSession = function (gymGoerID, sessionType) {
       exercises: session.exercises,
       sessionType: session.sessionType
     }));
-
-  /*return this.validateParameters([gymGoerID, sessionType], 'Both ID and SessionType are required')
-    .then(() => {
-      return this.findOne({
-        "_id": gymGoerID
-      })
-        .then(gymGoer => {
-          if (gymGoer !== null) {
-            const hasDoneSessionToday = gymGoer.hasExistingTrainingSessionToday(sessionType);
-            if (hasDoneSessionToday === false) {
-              const newSession = { sessionType: sessionType, exercises: [] };
-              return this
-                .findOneAndUpdate({ "_id": gymGoerID }, { $push: { trainingSessions: newSession } }, { new: true })
-                .then(gymGoer => {
-                  return gymGoer.getSessionForToday(sessionType);
-                });
-            }
-            return gymGoer.getSessionForToday(sessionType);
-          } else {
-            throw new Error('ID not found');
-          }
-        })
-        .then((session) => {
-          return {
-            sessionDate: session.sessionDate,
-            exercises: session.exercises,
-            sessionType: session.sessionType
-          };
-        });
-    });*/
 };
 
 /**
  * Adds an array of exercises to a session and saves that to the database
  * @param {string} sessionId - Id of the session
  * @param {Object[]} newExercises - Array of exercises to add
- * @returns {Object} - Updated session with new exercises added
+ * @returns {Promise} - Updated session with new exercises added
  */
 gymGoerSchema.statics.addExercisesToSession = function(sessionId, newExercises) {
   return this.findOneAndUpdate(
@@ -148,6 +145,15 @@ gymGoerSchema.statics.findBestSets = function () {
   });
 };
 
+/**
+ * Initialised session exercises, by getting previous set of exercises
+ * for the given session (if any), and then adding those exercises to
+ * the session (via addExercisesToSession call)
+ * @param {string} gymGoerID - Id of the GymGoer
+ * @param {string} sessionID - Id of the session
+ * @param {string} sessionType - Type of session
+ * @returns {Promise} - Updated session with new exercises added
+ */
 gymGoerSchema.statics.initSessionExercises = function(gymGoerID, sessionID, sessionType) {
   let previousSessionWithExercises;
   return GymGoerModel.findById(gymGoerID)
@@ -167,6 +173,13 @@ gymGoerSchema.statics.initSessionExercises = function(gymGoerID, sessionID, sess
     .then(exercises => this.addExercisesToSession(sessionID, exercises));
 };
 
+/**
+ * Initialises training session for a GymGoer, by adding the training session to the database,
+ * and initialising the exercises (via initSessionExercises call)
+ * @param {string} gymGoerID - Id of the GymGoer
+ * @param {string} sessionType - Type of session
+ * @returns {Promise} - Training session with exercises (if any)
+ */
 gymGoerSchema.statics.initGymGoerTrainingSession = function (gymGoerID, sessionType) {
   let session;
   return this.validateParameters([gymGoerID, sessionType], 'Both GymGoerID and SessionType are required')
