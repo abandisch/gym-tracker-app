@@ -10613,9 +10613,8 @@ const TrainingSessionPage = {
               <button class="btn btn-green"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Save New Exercise</button>
             </form>`;
   },
-  exercisesLiElement(exercise) {
+  getLastSessionResultsHTML(exercise) {
     let lastSessionResults = '<div class="last-session-results"><p class="last-session-date"></p><p class="last-session-stats">No stats from a previous session</p></div>';
-
     if (exercise.lastBestSet !== undefined && exercise.lastBestSet !== null) {
       const lastSessionDate = new Date(exercise.lastBestSet.sessionDate).toLocaleString().split(',').splice(0, 1)[0];
       lastSessionResults = `<div class="last-session-results">
@@ -10623,18 +10622,27 @@ const TrainingSessionPage = {
                               <p class="last-session-stats"><span class="stats-weight">Weight: ${exercise.lastBestSet.weight}</span> - <span class="stats-reps">Max Reps: ${exercise.lastBestSet.reps}</span></p>
                             </div>`;
     }
-
+    return lastSessionResults;
+  },
+  getExerciseSetsHTML(exercise) {
     let exerciseSets = `<div class="table-cell"></div><div class="table-cell"></div><div class="table-cell"></div>`;
     if (exercise.sets.length > 0) {
       exerciseSets = exercise.sets.map(set => {
         return `<div class="table-cell">${set.setNumber}</div>
-              <div class="table-cell">${set.weight}</div>
-              <div class="table-cell">${set.reps}</div>`;
+                <div class="table-cell">${set.weight}</div>
+                <div class="table-cell">${set.reps}</div>`;
       });
     }
+    return exerciseSets;
+  },
+  exercisesLiElement(exercise) {
+    const lastSessionResultsHTML = TrainingSessionPage.getLastSessionResultsHTML(exercise);
+
+    const exerciseSetsHTML = TrainingSessionPage.getExerciseSetsHTML(exercise);
+
     return `<li>
               <h3>${exercise.name.toUpperCase()}</h3>
-              ${lastSessionResults}
+              ${lastSessionResultsHTML}
               <div class="set-table">
                 <div class="table-row">
                   <div class="table-cell">Set #</div>
@@ -10642,7 +10650,7 @@ const TrainingSessionPage = {
                   <div class="table-cell">Reps</div>
                 </div>
                 <div class="table-row">
-                  ${exerciseSets}
+                  ${exerciseSetsHTML}
                 </div>
               </div>
               <button class="btn btn-small btn-aqua"><i class="fa fa-plus-square-o"></i> Add Set</button>

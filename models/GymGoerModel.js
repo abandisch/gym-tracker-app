@@ -113,18 +113,39 @@ gymGoerSchema.statics.addTrainingSession = function (gymGoerID, sessionType) {
     });*/
 };
 
+/**
+ * Adds an array of exercises to a session and saves that to the database
+ * @param {string} sessionId - Id of the session
+ * @param {Object[]} newExercises - Array of exercises to add
+ * @returns {Object} - Updated session with new exercises added
+ */
 gymGoerSchema.statics.addExercisesToSession = function(sessionId, newExercises) {
-  return this.findOneAndUpdate({
-      "trainingSessions": {
-        $elemMatch : { _id: sessionId }
+  return this.findOneAndUpdate(
+      { "trainingSessions": { $elemMatch : { _id: sessionId } } },
+      { $addToSet: { "trainingSessions.$.exercises": { $each: newExercises } } },
+      { new: true }
+    )
+    .then(updatedGymGoer => updatedGymGoer.serializeAll().trainingSessions.find(s => (s.sessionID).toString() === (sessionId).toString()));
+};
+
+gymGoerSchema.statics.findBestSets = function () {
+  return this.validateParameters()
+.then(sessionExercises => {
+    sessionExercises = sessionExercises.map(sessionExercise => {
+      const previousSessionExercise = previousSessionWithExercises.exercises.find(ex => ex.name === sessionExercise.name);
+      const exercise = { sets: sessionExercise.sets, name: sessionExercise.name, lastBestSet: null };
+      if (previousSessionExercise !== undefined && previousSessionExercise.sets.length > 0) {
+        const bestSet = GymGoerModelMethods.findBestSet(previousSessionExercise.sets);
+        exercise.lastBestSet = {
+          sessionDate: previousSessionWithExercises.sessionDate,
+          weight: bestSet.weight,
+          reps: bestSet.reps
+        }
       }
-    },
-    {
-     $addToSet: { "trainingSessions.$.exercises": { $each: newExercises } }
-    },
-    {  new: true, projection: { "trainingSessions": 1 }
-    })
-    .then(projection => projection.trainingSessions.find(s => (s._id).toString() === (sessionId).toString()));
+      return exercise;
+    });
+    return sessionExercises;
+  });
 };
 
 gymGoerSchema.statics.initSessionExercises = function(gymGoerID, sessionType) {
@@ -142,22 +163,6 @@ gymGoerSchema.statics.initSessionExercises = function(gymGoerID, sessionType) {
       }
       // return the exercises array
       return sessionForToday.exercises;
-    })
-    .then(sessionExercises => {
-      sessionExercises = sessionExercises.map(sessionExercise => {
-        const previousSessionExercise = previousSessionWithExercises.exercises.find(ex => ex.name === sessionExercise.name);
-        const exercise = { sets: sessionExercise.sets, name: sessionExercise.name, lastBestSet: null };
-        if (previousSessionExercise !== undefined && previousSessionExercise.sets.length > 0) {
-          const bestSet = GymGoerModelMethods.findBestSet(previousSessionExercise.sets);
-          exercise.lastBestSet = {
-            sessionDate: previousSessionWithExercises.sessionDate,
-            weight: bestSet.weight,
-            reps: bestSet.reps
-          }
-        }
-        return exercise;
-      });
-      return sessionExercises;
     });
 };
 
@@ -167,11 +172,10 @@ gymGoerSchema.statics.initTrainingSession = function (gymGoerID, sessionType) {
     .then(() => this.addTrainingSession(gymGoerID, sessionType))
     .then(_session => session = _session)
     .then(() => this.initSessionExercises(gymGoerID, sessionType))
-    .then(exercises => {
-      // console.log('====> session', session);
-      // add exercises to a session
-      //return this.addExercisesToSession(session.sessionID, exercises);
-      session.exercises = exercises;
+    .then(exercises => this.addExercisesToSession(session.sessionID, exercises))
+    .then(_session => {
+      // TODO: find last best set for each exercise right now
+      session.exercises = _session.exercises;
       return session;
     });
 };

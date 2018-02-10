@@ -206,8 +206,8 @@ describe('# GymGoerModel', function () {
     })
   });
 
-  describe('# GymGoerModel.addExercises', function () {
-    it('should add the exercises to the Gym Goer and return the added exercises', function () {
+  describe('# GymGoerModel.addExercisesToSession', function () {
+    it('should add the exercises to the Gym Goer training session and return the updated session', function () {
       let gymGoer;
       const TEST_SESSION_TYPE = 'legs';
       const TEST_EXERCISES = [ {
@@ -223,26 +223,25 @@ describe('# GymGoerModel', function () {
       let initialisedSession;
       return createTestGymGoer(TEST_EMAIL)
         .then(_gymGoer => gymGoer = _gymGoer)
-        .then(() => initTestTrainingSession(gymGoer.id, TEST_SESSION_TYPE))
+        .then(() => addTestTrainingSession(gymGoer.id, TEST_SESSION_TYPE))
         .then(_initialisedSession => initialisedSession = _initialisedSession)
+        .then(() => GymGoerModel.initSessionExercises(gymGoer.id, TEST_SESSION_TYPE))
         .then(() => GymGoerModel.addExercisesToSession(initialisedSession.sessionID, TEST_EXERCISES))
         .then(updatedSession => {
           expect(updatedSession.exercises.length).to.equal(3);
-          expect((updatedSession._id).toString()).to.equal((initialisedSession.sessionID).toString());
+          expect(updatedSession.sessionType).to.equal(TEST_SESSION_TYPE);
+          expect((updatedSession.sessionID).toString()).to.equal((initialisedSession.sessionID).toString());
         })
         .then(() => GymGoerModel.findOne({
-            $and : [
-              {"_id": gymGoer.id},
-              {"trainingSessions": {
-                  $elemMatch : { _id: initialisedSession.sessionID }
-                }
-              }
-            ]
+            $and : [ {"_id": gymGoer.id}, {"trainingSessions": { $elemMatch : { _id: initialisedSession.sessionID } } } ]
           }))
         .then((gymGoer) => {
-          gymGoer.trainingSessions[0].exercises.forEach((exercise, index) => {
-            expect(exercise.sets.length).to.equal(0);
-            expect(exercise.name).to.equal(TEST_EXERCISES[index].name);
+          gymGoer.trainingSessions
+            .find(session => (session._id).toString() === (initialisedSession.sessionID).toString())
+            .exercises
+            .forEach((exercise, index) => {
+              expect(exercise.sets.length).to.equal(0);
+              expect(exercise.name).to.equal(TEST_EXERCISES[index].name);
           });
           expect(gymGoer.trainingSessions[0].exercises.length).to.equal(3);
         })

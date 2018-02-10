@@ -20,7 +20,8 @@ const GymGoerModelMethods = {
       id: this._id,
       email: this.email,
       trainingSessions: this.trainingSessions.map(trainingSession => ({
-        exercises: trainingSession.exercises,
+        sessionID: trainingSession._id,
+        exercises: trainingSession.exercises.map(exercise => ({sets: exercise.sets, name: exercise.name})),
         sessionDate: trainingSession.sessionDate,
         sessionType: trainingSession.sessionType
       }))
