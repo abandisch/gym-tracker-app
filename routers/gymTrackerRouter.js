@@ -72,7 +72,7 @@ router.post('/init-training-session', [cookieParser(), jsonParser, jwtAuth], (re
   });
 
   GymGoerModel
-    .initTrainingSession(gymGoerID, sessionType)
+    .initGymGoerTrainingSession(gymGoerID, sessionType)
     .then(session => {
       res.json(session);
     });

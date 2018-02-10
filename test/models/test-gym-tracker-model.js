@@ -47,8 +47,8 @@ describe('# GymGoerModel', function () {
     return (gymGoer) => addTestTrainingSession(gymGoer.id, sessionType).then(() => gymGoer);
   };
 
-  const initTestTrainingSession = (gymGoerId, sessionType) => {
-    return GymGoerModel.initTrainingSession(gymGoerId, sessionType);
+  const initTestGymGoerTrainingSession = (gymGoerId, sessionType) => {
+    return GymGoerModel.initGymGoerTrainingSession(gymGoerId, sessionType);
   };
 
   describe('# GymGoerModel.createGymGoer', function () {
@@ -180,22 +180,22 @@ describe('# GymGoerModel', function () {
   });
 
   describe('# GymGoerModel.initSessionExercises', function () {
-    it('should provide empty exercises session', function () {
+    it('should provide a session with empty exercises array', function () {
       let gymGoer;
       return createTestGymGoer(TEST_EMAIL)
         .then(_gymGoer => gymGoer = _gymGoer)
         .then(() => addTestTrainingSession(gymGoer.id, 'chest'))
-        .then(() => GymGoerModel.initSessionExercises(gymGoer.id, 'chest'))
-        .then(sessionExercises => expect(sessionExercises.length).to.equal(0));
+        .then((session) => GymGoerModel.initSessionExercises(gymGoer.id, session.sessionID, 'chest'))
+        .then(session => expect(session.exercises.length).to.equal(0));
     });
   });
 
-  describe('# GymGoerModel.initTrainingSession', function () {
+  describe('# GymGoerModel.initGymGoerTrainingSession', function () {
     it('should initialise a training session for a gym goer', function () {
       let gymGoer;
       return createTestGymGoer(TEST_EMAIL)
         .then(_gymGoer => gymGoer = _gymGoer)
-        .then(() => initTestTrainingSession(gymGoer.id, 'chest'))
+        .then(() => initTestGymGoerTrainingSession(gymGoer.id, 'chest'))
         .then(initialisedSession => {
           const dateToday = new Date().toISOString().split('T')[0];
           const dateSession = new Date(initialisedSession.sessionDate).toISOString().split('T')[0];
@@ -225,7 +225,6 @@ describe('# GymGoerModel', function () {
         .then(_gymGoer => gymGoer = _gymGoer)
         .then(() => addTestTrainingSession(gymGoer.id, TEST_SESSION_TYPE))
         .then(_initialisedSession => initialisedSession = _initialisedSession)
-        .then(() => GymGoerModel.initSessionExercises(gymGoer.id, TEST_SESSION_TYPE))
         .then(() => GymGoerModel.addExercisesToSession(initialisedSession.sessionID, TEST_EXERCISES))
         .then(updatedSession => {
           expect(updatedSession.exercises.length).to.equal(3);

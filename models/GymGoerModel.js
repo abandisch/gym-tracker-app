@@ -148,7 +148,7 @@ gymGoerSchema.statics.findBestSets = function () {
   });
 };
 
-gymGoerSchema.statics.initSessionExercises = function(gymGoerID, sessionType) {
+gymGoerSchema.statics.initSessionExercises = function(gymGoerID, sessionID, sessionType) {
   let previousSessionWithExercises;
   return GymGoerModel.findById(gymGoerID)
     .then(gymGoer => {
@@ -163,16 +163,16 @@ gymGoerSchema.statics.initSessionExercises = function(gymGoerID, sessionType) {
       }
       // return the exercises array
       return sessionForToday.exercises;
-    });
+    })
+    .then(exercises => this.addExercisesToSession(sessionID, exercises));
 };
 
-gymGoerSchema.statics.initTrainingSession = function (gymGoerID, sessionType) {
+gymGoerSchema.statics.initGymGoerTrainingSession = function (gymGoerID, sessionType) {
   let session;
   return this.validateParameters([gymGoerID, sessionType], 'Both GymGoerID and SessionType are required')
     .then(() => this.addTrainingSession(gymGoerID, sessionType))
     .then(_session => session = _session)
-    .then(() => this.initSessionExercises(gymGoerID, sessionType))
-    .then(exercises => this.addExercisesToSession(session.sessionID, exercises))
+    .then(() => this.initSessionExercises(gymGoerID, session.sessionID, sessionType))
     .then(_session => {
       // TODO: find last best set for each exercise right now
       session.exercises = _session.exercises;
