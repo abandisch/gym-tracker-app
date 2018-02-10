@@ -116,7 +116,7 @@ gymGoerSchema.statics.addTrainingSession = function (gymGoerID, sessionType) {
  * @param {Object[]} newExercises - Array of exercises to add
  * @returns {Promise} - Updated session with new exercises added
  */
-gymGoerSchema.statics.addExercisesToSession = function(sessionId, newExercises) {
+gymGoerSchema.statics.saveExercisesToSession = function(sessionId, newExercises) {
   return this.findOneAndUpdate(
       { "trainingSessions": { $elemMatch : { _id: sessionId } } },
       { $addToSet: { "trainingSessions.$.exercises": { $each: newExercises } } },
@@ -125,30 +125,48 @@ gymGoerSchema.statics.addExercisesToSession = function(sessionId, newExercises) 
     .then(updatedGymGoer => updatedGymGoer.serializeAll().trainingSessions.find(s => (s.sessionID).toString() === (sessionId).toString()));
 };
 
-gymGoerSchema.statics.findBestSets = function () {
-  return this.validateParameters()
-.then(sessionExercises => {
-    sessionExercises = sessionExercises.map(sessionExercise => {
-      const previousSessionExercise = previousSessionWithExercises.exercises.find(ex => ex.name === sessionExercise.name);
-      const exercise = { sets: sessionExercise.sets, name: sessionExercise.name, lastBestSet: null };
-      if (previousSessionExercise !== undefined && previousSessionExercise.sets.length > 0) {
-        const bestSet = GymGoerModelMethods.findBestSet(previousSessionExercise.sets);
-        exercise.lastBestSet = {
-          sessionDate: previousSessionWithExercises.sessionDate,
-          weight: bestSet.weight,
-          reps: bestSet.reps
-        }
+/**
+ * Finds the last best set from the previous session exercise sets
+ * @param {Object} currentSession - current training session
+ * @param {Object} previousSession - previous training session
+ * @returns {Promise} - Updated session with new last best sets added to each exercise
+ */
+gymGoerSchema.statics.findLastBestSetsForSession = function (currentSession, previousSession) {
+  return new Promise((resolve, reject) => {
+    currentSession.exercises = currentSession.exercises.map(exercise => {
+      const prevSession = previousSession.exercises.find(ex => ex.name === exercise.name);
+      if (prevSession !== undefined) {
+        const lastBest = GymGoerModelMethods.getLastBestSet(prevSession.sets, previousSession.sessionDate);
+        return { sets: exercise.sets, name: exercise.name, lastBestSet: lastBest };
+      } else {
+        return exercise;
       }
-      return exercise;
     });
-    return sessionExercises;
-  });
+    resolve(currentSession);
+  })
+};
+
+/**
+ * Get the exercises from the previous session, if there are no current exercises
+ * @param {Object[]} currentExercises - current training session exercises
+ * @param {Object} previousSessionWithExercises - previous training session
+ * @returns {Promise} - Array of exercise objects
+ */
+gymGoerSchema.statics.getExercisesFromPreviousSession = function (currentExercises, previousSessionWithExercises) {
+  return new Promise((resolve, reject) => {
+    if (currentExercises.length === 0 && previousSessionWithExercises !== undefined) {
+      currentExercises = previousSessionWithExercises.exercises.map(ex => {
+        return { sets: [], name: ex.name };
+      });
+    }
+    resolve(currentExercises);
+  })
 };
 
 /**
  * Initialised session exercises, by getting previous set of exercises
  * for the given session (if any), and then adding those exercises to
- * the session (via addExercisesToSession call)
+ * the session (via saveExercisesToSession call)
  * @param {string} gymGoerID - Id of the GymGoer
  * @param {string} sessionID - Id of the session
  * @param {string} sessionType - Type of session
@@ -156,21 +174,17 @@ gymGoerSchema.statics.findBestSets = function () {
  */
 gymGoerSchema.statics.initSessionExercises = function(gymGoerID, sessionID, sessionType) {
   let previousSessionWithExercises;
+  let sessionForToday;
+  let gymGoer;
   return GymGoerModel.findById(gymGoerID)
-    .then(gymGoer => {
-      const sessionForToday = gymGoer.getSessionForToday(sessionType);
-      previousSessionWithExercises = gymGoer.findPreviousTrainingSessionWithExercises(sessionType);
-      // if no previously saved exercises for today's session, but there is a previous session with exercises then use those
-      if (sessionForToday.exercises.length === 0 && previousSessionWithExercises !== undefined) {
-        // Just keep the exercise names, zero out the previous sets, so the user can add new sets
-        sessionForToday.exercises = previousSessionWithExercises.exercises.map(ex => {
-          return { sets: [], name: ex.name };
-        });
-      }
-      // return the exercises array
-      return sessionForToday.exercises;
-    })
-    .then(exercises => this.addExercisesToSession(sessionID, exercises));
+    .then(_gymGoer => gymGoer = _gymGoer)
+    .then(gymGoer => gymGoer.getSessionForToday(sessionType))
+    .then(_sessionForToday => sessionForToday = _sessionForToday)
+    .then(() => gymGoer.findPreviousTrainingSessionWithExercises(sessionType))
+    .then(_previousSessionWithExercises => previousSessionWithExercises = _previousSessionWithExercises)
+    .then(() => this.getExercisesFromPreviousSession(sessionForToday.exercises, previousSessionWithExercises))
+    .then(exercises => this.saveExercisesToSession(sessionForToday._id, exercises))
+    .then(session => this.findLastBestSetsForSession(session, previousSessionWithExercises));
 };
 
 /**

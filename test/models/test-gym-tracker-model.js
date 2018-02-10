@@ -206,7 +206,7 @@ describe('# GymGoerModel', function () {
     })
   });
 
-  describe('# GymGoerModel.addExercisesToSession', function () {
+  describe('# GymGoerModel.saveExercisesToSession', function () {
     it('should add the exercises to the Gym Goer training session and return the updated session', function () {
       let gymGoer;
       const TEST_SESSION_TYPE = 'legs';
@@ -225,7 +225,7 @@ describe('# GymGoerModel', function () {
         .then(_gymGoer => gymGoer = _gymGoer)
         .then(() => addTestTrainingSession(gymGoer.id, TEST_SESSION_TYPE))
         .then(_initialisedSession => initialisedSession = _initialisedSession)
-        .then(() => GymGoerModel.addExercisesToSession(initialisedSession.sessionID, TEST_EXERCISES))
+        .then(() => GymGoerModel.saveExercisesToSession(initialisedSession.sessionID, TEST_EXERCISES))
         .then(updatedSession => {
           expect(updatedSession.exercises.length).to.equal(3);
           expect(updatedSession.sessionType).to.equal(TEST_SESSION_TYPE);
@@ -246,4 +246,19 @@ describe('# GymGoerModel', function () {
         })
       });
     });
+
+  describe('# GymGoerModel.findLastBestSetsForSession', function () {
+    it('should add the last best sets object to each exercise');
+
+    /*
+    CONST TEST_SESSION =
+    { sessionID: 5a7f477946919c291114e6ff,
+  exercises:
+   [ { sets: [], name: 'leg press' },
+     { sets: [], name: 'barbell squat' },
+     { sets: [], name: 'split squats' } ],
+  sessionDate: 2018-02-10T19:26:49.390Z,
+  sessionType: 'legs' }
+     */
+    })
   });

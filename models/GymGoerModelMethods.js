@@ -51,6 +51,17 @@ const GymGoerModelMethods = {
         return Number.parseInt(setB.weight) - Number.parseInt(setA.weight);
       });
     return sets[0];
+  },
+  getLastBestSet(sets, setSessionDate) {
+    const bestSet = this.findBestSet(sets);
+    if (bestSet !== undefined) {
+      return {
+        sessionDate: setSessionDate,
+        weight: bestSet.weight,
+        reps: bestSet.reps
+      };
+    }
+    return {};
   }
 };
 
