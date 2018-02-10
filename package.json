@@ -4,7 +4,7 @@
   "description": "App to track gym exercises",
   "main": "server.js",
   "scripts": {
-    "test": "mocha --recursive --require babel-polyfill --require babel-register",
+    "test": "mocha --recursive --require babel-polyfill --require babel-register --exit",
     "start": "node server.js",
     "devstart": "nodemon server.js",
     "devtest": "nodemon --exec \"mocha --recursive --require babel-polyfill --require babel-register\"",
