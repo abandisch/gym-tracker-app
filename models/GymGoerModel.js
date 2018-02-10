@@ -201,7 +201,6 @@ gymGoerSchema.statics.initGymGoerTrainingSession = function (gymGoerID, sessionT
     .then(_session => session = _session)
     .then(() => this.initSessionExercises(gymGoerID, session.sessionID, sessionType))
     .then(_session => {
-      // TODO: find last best set for each exercise right now
       session.exercises = _session.exercises;
       return session;
     });

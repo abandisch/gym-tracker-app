@@ -246,19 +246,4 @@ describe('# GymGoerModel', function () {
         })
       });
     });
-
-  describe('# GymGoerModel.findLastBestSetsForSession', function () {
-    it('should add the last best sets object to each exercise');
-
-    /*
-    CONST TEST_SESSION =
-    { sessionID: 5a7f477946919c291114e6ff,
-  exercises:
-   [ { sets: [], name: 'leg press' },
-     { sets: [], name: 'barbell squat' },
-     { sets: [], name: 'split squats' } ],
-  sessionDate: 2018-02-10T19:26:49.390Z,
-  sessionType: 'legs' }
-     */
-    })
   });
