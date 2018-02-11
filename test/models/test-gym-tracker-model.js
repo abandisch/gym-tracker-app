@@ -207,7 +207,7 @@ describe('# GymGoerModel', function () {
   });
 
   describe('# GymGoerModel.saveExercisesToSession', function () {
-    it('should add the exercises to the Gym Goer training session and return the updated session', function () {
+    it('should save the array of exercises to the Gym Goer training session and return the updated session', function () {
       let gymGoer;
       const TEST_SESSION_TYPE = 'legs';
       const TEST_EXERCISES = [ {
@@ -246,4 +246,36 @@ describe('# GymGoerModel', function () {
         })
       });
     });
+
+  describe('# GymGoerModel.addNewExercise', function () {
+    it('should add a single new exercise to the Gym Goer\'s session and return the session', function () {
+      let gymGoer;
+      const TEST_SESSION_TYPE = 'legs';
+      const TEST_EXERCISE_NAME = "leg press";
+      let initialisedSession;
+      return createTestGymGoer(TEST_EMAIL)
+        .then(_gymGoer => gymGoer = _gymGoer)
+        .then(() => addTestTrainingSession(gymGoer.id, TEST_SESSION_TYPE))
+        .then(_initialisedSession => initialisedSession = _initialisedSession)
+        .then(() => GymGoerModel.addNewExercise(gymGoer.id, TEST_SESSION_TYPE, TEST_EXERCISE_NAME))
+        .then(updatedSession => {
+          expect(updatedSession.exercises.length).to.equal(1);
+          expect(updatedSession.sessionType).to.equal(TEST_SESSION_TYPE);
+          expect((updatedSession.sessionID).toString()).to.equal((initialisedSession.sessionID).toString());
+        })
+        .then(() => GymGoerModel.findOne({
+          $and : [ {"_id": gymGoer.id}, {"trainingSessions": { $elemMatch : { _id: initialisedSession.sessionID } } } ]
+        }))
+        .then((gymGoer) => {
+          gymGoer.trainingSessions
+            .find(session => (session._id).toString() === (initialisedSession.sessionID).toString())
+            .exercises
+            .forEach((exercise, index) => {
+              expect(exercise.sets.length).to.equal(0);
+              expect(exercise.name).to.equal(TEST_EXERCISE_NAME);
+            });
+          expect(gymGoer.trainingSessions[0].exercises.length).to.equal(1);
+        })
+    });
   });
+});

@@ -218,16 +218,16 @@ const MOCK_TRAINING_SESSION_DATA = {
 const COOKIE_NAME = 'gymGoer';
 
 export const GymTrackerAPI = {
-  getCurrentGymGoer() {
-    return MOCK_TRAINING_SESSION_DATA.gymgoers.find(gGoer => gGoer.email === JSON.parse(getCookie(COOKIE_NAME)).email);
-  },
-  getTodaysSession(trainingSessionType) {
-    return this.getCurrentGymGoer().trainingSessions.find(session => {
-      const trainingDate = new Date(Number.parseInt(session.sessionDate)).toLocaleString().split(',').splice(0, 1)[0];
-      const today = new Date().toLocaleString().split(',').splice(0, 1)[0];
-      return session.sessionType === trainingSessionType && trainingDate === today;
-    });
-  },
+  // getCurrentGymGoer() {
+  //   return MOCK_TRAINING_SESSION_DATA.gymgoers.find(gGoer => gGoer.email === JSON.parse(getCookie(COOKIE_NAME)).email);
+  // },
+  // getTodaysSession(trainingSessionType) {
+  //   return this.getCurrentGymGoer().trainingSessions.find(session => {
+  //     const trainingDate = new Date(Number.parseInt(session.sessionDate)).toLocaleString().split(',').splice(0, 1)[0];
+  //     const today = new Date().toLocaleString().split(',').splice(0, 1)[0];
+  //     return session.sessionType === trainingSessionType && trainingDate === today;
+  //   });
+  // },
   // hasDoneTrainingSessionToday(trainingSessionType) {
   //   return this.getTodaysSession(trainingSessionType) !== undefined;
   // },
@@ -253,17 +253,17 @@ export const GymTrackerAPI = {
   },
   addExercise(trainingSession, exerciseName) {
     return new Promise((resolve, reject) => {
-      setTimeout(() => {
-
-        // const isExistingExercise = this.getTodaysSession(trainingSession).exercises.find(exercise => exercise.name === exerciseName) !== undefined;
-        // if (!isExistingExercise) {
-        //   this.getTodaysSession(trainingSession).exercises.push({name: exerciseName, sets: []});
-        // }
-        // console.log(this.getTodaysSession(trainingSession).exercises);
-        resolve({
-          created: true
-        });
-      }, 1);
+      $.ajax({
+        url: 'gym-tracker/add-exercise',
+        data: JSON.stringify({sessionType: trainingSession, exerciseName: exerciseName}),
+        method: 'POST',
+        dataType: 'json',
+        contentType: 'application/json'
+      }).done(updatedSessionExercises => {
+        resolve(updatedSessionExercises);
+      }).fail(() => {
+        reject({error: 'Error adding exercise to training session'});
+      });
     });
   },
   initGymGoerTrainingSession(trainingSession) {
@@ -274,8 +274,8 @@ export const GymTrackerAPI = {
         method: 'POST',
         dataType: 'json',
         contentType: 'application/json'
-      }).done(lastTrainingSessionExercises => {
-        resolve(lastTrainingSessionExercises);
+      }).done(initialisedTrainingSession => {
+        resolve(initialisedTrainingSession);
       }).fail(() => {
         reject({error: 'Error initialising training session'});
       });

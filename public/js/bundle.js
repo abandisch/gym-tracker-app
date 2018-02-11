@@ -10526,8 +10526,6 @@ const State = {
         const addExercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].addExerciseSmallButtonForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseSmallButtonFormSubmit });
         formsContainer.append(addExercisesForm);
       }
-      // TODO: this is not right - previousTrainingSessionExercises - need to display the current added exercises, not the previous ones
-      //       call it currentTrainingSessionExercioses
       const exercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].exercisesForm, session: State.trainingSessionExercises });
       formsContainer.append(exercisesForm);
       main.html(pageHeadingHtml);
@@ -10765,7 +10763,7 @@ const EventHandler = {
         }
       })
       .catch(err => {
-        console.error('There has been a problem. Please try again later (' + JSON.stringify(err, null, 2) + ')');
+        console.error('(1) There has been a problem. Please try again later (' + JSON.stringify(err, null, 2) + ')');
       });
   },
   onChangeSessionFormSubmit: function (event) {
@@ -10785,10 +10783,18 @@ const EventHandler = {
   onAddExerciseInputFormSubmit: function (event) {
     event.preventDefault();
     const exerciseName = $(event.currentTarget).find('input[name=exerciseName]').val();
-    console.log('new exercise is:', exerciseName);
-    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */].addExercise(__WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionType, exerciseName)
-      .then(() => {
-        __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showTrainingSessionPage();
+    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */]
+      .addExercise(__WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionType, exerciseName)
+      .then(session => {
+        __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionExercises = session.exercises;
+        if (session.exercises.length !== 0) {
+          __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showTrainingSessionPage();
+        } else {
+          __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showEmptyTrainingSessionPage();
+        }
+      })
+      .catch(err => {
+        console.error('(2) There has been a problem. Please try again later (' + JSON.stringify(err, null, 2) + ')');
       });
   },
   onCancelAddExerciseButtonFormSubmit: function (event) {
@@ -11025,16 +11031,16 @@ const MOCK_TRAINING_SESSION_DATA = {
 const COOKIE_NAME = 'gymGoer';
 
 const GymTrackerAPI = {
-  getCurrentGymGoer() {
-    return MOCK_TRAINING_SESSION_DATA.gymgoers.find(gGoer => gGoer.email === JSON.parse(Object(__WEBPACK_IMPORTED_MODULE_0__cookies__["a" /* getCookie */])(COOKIE_NAME)).email);
-  },
-  getTodaysSession(trainingSessionType) {
-    return this.getCurrentGymGoer().trainingSessions.find(session => {
-      const trainingDate = new Date(Number.parseInt(session.sessionDate)).toLocaleString().split(',').splice(0, 1)[0];
-      const today = new Date().toLocaleString().split(',').splice(0, 1)[0];
-      return session.sessionType === trainingSessionType && trainingDate === today;
-    });
-  },
+  // getCurrentGymGoer() {
+  //   return MOCK_TRAINING_SESSION_DATA.gymgoers.find(gGoer => gGoer.email === JSON.parse(getCookie(COOKIE_NAME)).email);
+  // },
+  // getTodaysSession(trainingSessionType) {
+  //   return this.getCurrentGymGoer().trainingSessions.find(session => {
+  //     const trainingDate = new Date(Number.parseInt(session.sessionDate)).toLocaleString().split(',').splice(0, 1)[0];
+  //     const today = new Date().toLocaleString().split(',').splice(0, 1)[0];
+  //     return session.sessionType === trainingSessionType && trainingDate === today;
+  //   });
+  // },
   // hasDoneTrainingSessionToday(trainingSessionType) {
   //   return this.getTodaysSession(trainingSessionType) !== undefined;
   // },
@@ -11051,7 +11057,7 @@ const GymTrackerAPI = {
           email: emailAddress,
           jwt_token: result.authToken
         };
-        Object(__WEBPACK_IMPORTED_MODULE_0__cookies__["b" /* setCookie */])(COOKIE_NAME, JSON.stringify(cookieData));
+        Object(__WEBPACK_IMPORTED_MODULE_0__cookies__["a" /* setCookie */])(COOKIE_NAME, JSON.stringify(cookieData));
         resolve({email: emailAddress});
       }).fail(() => {
         reject({error: 'Error logging in'});
@@ -11060,17 +11066,17 @@ const GymTrackerAPI = {
   },
   addExercise(trainingSession, exerciseName) {
     return new Promise((resolve, reject) => {
-      setTimeout(() => {
-
-        // const isExistingExercise = this.getTodaysSession(trainingSession).exercises.find(exercise => exercise.name === exerciseName) !== undefined;
-        // if (!isExistingExercise) {
-        //   this.getTodaysSession(trainingSession).exercises.push({name: exerciseName, sets: []});
-        // }
-        // console.log(this.getTodaysSession(trainingSession).exercises);
-        resolve({
-          created: true
-        });
-      }, 1);
+      $.ajax({
+        url: 'gym-tracker/add-exercise',
+        data: JSON.stringify({sessionType: trainingSession, exerciseName: exerciseName}),
+        method: 'POST',
+        dataType: 'json',
+        contentType: 'application/json'
+      }).done(updatedSessionExercises => {
+        resolve(updatedSessionExercises);
+      }).fail(() => {
+        reject({error: 'Error adding exercise to training session'});
+      });
     });
   },
   initGymGoerTrainingSession(trainingSession) {
@@ -11081,8 +11087,8 @@ const GymTrackerAPI = {
         method: 'POST',
         dataType: 'json',
         contentType: 'application/json'
-      }).done(lastTrainingSessionExercises => {
-        resolve(lastTrainingSessionExercises);
+      }).done(initialisedTrainingSession => {
+        resolve(initialisedTrainingSession);
       }).fail(() => {
         reject({error: 'Error initialising training session'});
       });
@@ -11110,8 +11116,8 @@ const GymTrackerAPI = {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return setCookie; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getCookie; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return setCookie; });
+/* unused harmony export getCookie */
 
 function setCookie(cName, cValue, exDays) {
   let expires = '';

@@ -32,7 +32,7 @@ const EventHandler = {
         }
       })
       .catch(err => {
-        console.error('There has been a problem. Please try again later (' + JSON.stringify(err, null, 2) + ')');
+        console.error('(1) There has been a problem. Please try again later (' + JSON.stringify(err, null, 2) + ')');
       });
   },
   onChangeSessionFormSubmit: function (event) {
@@ -52,10 +52,18 @@ const EventHandler = {
   onAddExerciseInputFormSubmit: function (event) {
     event.preventDefault();
     const exerciseName = $(event.currentTarget).find('input[name=exerciseName]').val();
-    console.log('new exercise is:', exerciseName);
-    GymTrackerAPI.addExercise(State.trainingSessionType, exerciseName)
-      .then(() => {
-        GymTrackerClient.showTrainingSessionPage();
+    GymTrackerAPI
+      .addExercise(State.trainingSessionType, exerciseName)
+      .then(session => {
+        State.trainingSessionExercises = session.exercises;
+        if (session.exercises.length !== 0) {
+          GymTrackerClient.showTrainingSessionPage();
+        } else {
+          GymTrackerClient.showEmptyTrainingSessionPage();
+        }
+      })
+      .catch(err => {
+        console.error('(2) There has been a problem. Please try again later (' + JSON.stringify(err, null, 2) + ')');
       });
   },
   onCancelAddExerciseButtonFormSubmit: function (event) {

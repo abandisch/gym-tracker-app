@@ -126,6 +126,27 @@ gymGoerSchema.statics.saveExercisesToSession = function(sessionId, newExercises)
 };
 
 /**
+ * Adds a new exercise with no sets to the session for the given GymGoer
+ * @param {string} gymGoerId - GymGoer ID
+ * @param {string} sessionType - Type of training session (chest, legs, back, arms etc)
+ * @param {string} exerciseName - Name of the new exercise
+ * @returns {Promise} - Updated session with new exercise added
+ */
+gymGoerSchema.statics.addNewExercise = function(gymGoerId, sessionType, exerciseName) {
+  const newExercise = { name: exerciseName, sets: [] };
+  let previousSessionWithExercises;
+  let gymGoer;
+  return this.validateParameters([gymGoerId, sessionType, exerciseName], 'gymGoerId, sessionType, exerciseName are all required')
+    .then(() => this.findGymGoerByID(gymGoerId))
+    .then(_gymGoer => gymGoer = _gymGoer)
+    .then(() => gymGoer.findPreviousTrainingSessionWithExercises(sessionType))
+    .then(_previousSessionWithExercises => previousSessionWithExercises = _previousSessionWithExercises)
+    .then(() => gymGoer.getSessionForToday(sessionType))
+    .then(session => this.saveExercisesToSession(session._id, [newExercise]))
+    .then(session => this.findLastBestSetsForSession(session, previousSessionWithExercises));
+};
+
+/**
  * Finds the last best set from the previous session exercise sets
  * @param {Object} currentSession - current training session
  * @param {Object} previousSession - previous training session
@@ -134,11 +155,12 @@ gymGoerSchema.statics.saveExercisesToSession = function(sessionId, newExercises)
 gymGoerSchema.statics.findLastBestSetsForSession = function (currentSession, previousSession) {
   return new Promise((resolve, reject) => {
     currentSession.exercises = currentSession.exercises.map(exercise => {
-      const prevSession = previousSession.exercises.find(ex => ex.name === exercise.name);
+      const prevSession = previousSession ? previousSession.exercises.find(ex => ex.name === exercise.name) : undefined;
       if (prevSession !== undefined) {
         const lastBest = GymGoerModelMethods.getLastBestSet(prevSession.sets, previousSession.sessionDate);
         return { sets: exercise.sets, name: exercise.name, lastBestSet: lastBest };
       } else {
+        exercise.lastBestSet = {};
         return exercise;
       }
     });

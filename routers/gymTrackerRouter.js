@@ -62,6 +62,20 @@ router.get('/:id', [cookieParser(), jwtAuth], (req, res) => {
     });
 });
 
+router.post('/add-exercise', [cookieParser(), jsonParser, jwtAuth], (req, res) => {
+  const {id: gymGoerID} = req.user;
+  const {sessionType, exerciseName} = req.body;
+
+  routerUtils.confirmRequiredProperties(req.body, ['sessionType', 'exerciseName'], (msg) => {
+    console.error(msg);
+    return res.status(400).json({error: msg});
+  });
+
+  GymGoerModel
+    .addNewExercise(gymGoerID, sessionType, exerciseName)
+    .then(session => res.json(session));
+});
+
 router.post('/init-training-session', [cookieParser(), jsonParser, jwtAuth], (req, res) => {
   const {id: gymGoerID} = req.user;
   const sessionType = req.body.sessionType;
