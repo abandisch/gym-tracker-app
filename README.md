@@ -20,6 +20,7 @@ This continues week after week, and over time the gym goer can see how the weigh
 - As a gym goer, I want to add exercises to a training session, so I can track the weight lifted, number of sets completed and my max reps for that exercise
 - As a gym goer, I want to see the results of my last training session (if any), so that I can set my goals (max reps and weight increase) for my current training session
 - As a gym goer, I want to view all exercises for a training session, so I can see my results (max reps and weight lifted) for each exercise at a glance
+- As a gym goer, I want to record my a set (weight and reps) for an exercise
 - As a gym goer/app user, I want to remove an exercise from my training session
 - As a gym goer/app user, I want to remove a training session (including any recorded exercises under that training session)
 - As a gym goer/app user, I want to update a training session details, so that I can fix mistakes
@@ -30,6 +31,7 @@ This continues week after week, and over time the gym goer can see how the weigh
 - As a gym goer, I want to create a training session, so that I can record my exercises for that training session
 - As a gym goer, I want to add exercises to a training session, so I can track the weight lifted, number of sets and my max reps
 - As a gym goer, I want to see the results of my last training session (if any), so that I can set my goals (max reps and weight increase) for my current training session
+- As a gym goer, I want to record my a set (weight and reps) for an exercise
 
 ## App Screen List
 
