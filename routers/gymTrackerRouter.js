@@ -8,7 +8,7 @@ const jsonParser = bodyParser.json();
 const cookieParser = require('cookie-parser');
 
 const config = require('../config');
-const {GymGoerModel} = new require('../models/GymGoerModel');
+const {GymGoerModel, GymGoerExercisesModel} = new require('../models/GymGoerModel');
 const {routerUtils} = require('./routerUtils');
 
 const createAuthToken = function(gymGoer) {
@@ -71,7 +71,7 @@ router.post('/add-exercise', [cookieParser(), jsonParser, jwtAuth], (req, res) =
     return res.status(400).json({error: msg});
   });
 
-  GymGoerModel
+  GymGoerExercisesModel
     .addNewExercise(gymGoerID, sessionType, exerciseName)
     .then(session => res.json(session));
 });

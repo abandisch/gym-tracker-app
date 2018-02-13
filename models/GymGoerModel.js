@@ -2,50 +2,45 @@
 
 const mongoose = require('mongoose');
 mongoose.promise = global.Promise;
-const GymGoerModelMethods = require('./GymGoerModelMethods');
+const GymGoerExercisesMethods = require('./GymGoerExercisesMethods');
+const {validateParameters, toReadableISODate} = require('./GymGoerUtils');
+
+const gymGoerExercisesSchema = mongoose.Schema({
+  gymGoerId: {type: mongoose.Schema.Types.ObjectId, required: true},
+  sessionType: {type: String, required: true},
+  sessionDate: {type: Date, default: Date.now},
+  exerciseName: {type: String, default: ''},
+  sets: [
+    {
+      setNumber: {type: Number, required: true},
+      weight: {type: String, required: true},
+      reps: {type: Number, required: true}
+    }
+  ]
+});
 
 const gymGoerSchema = mongoose.Schema({
   email: {type: String,
           required: true,
           index: true,
           unique: true
-  },
-  trainingSessions: [
-    {
-      sessionType: {type: String, required: true},
-      sessionDate: {type: Date, default: Date.now},
-      exercises: [
-        {
-          name: {type: String, required: true},
-          sets: [
-            {
-              setNumber: {type: Number, required: true},
-              weight: {type: String, required: true},
-              reps: {type: Number, required: true}
-            }
-          ]
-        }
-      ]
-    }
-  ]
+  }
 });
 
-// Assign the GymGoerModelMethods to the gymGoerSchema methods
-Object.assign(gymGoerSchema.methods, GymGoerModelMethods);
+// Assign the GymGoerExercisesMethods to the gymGoerSchema methods
+Object.assign(gymGoerExercisesSchema.statics, GymGoerExercisesMethods);
 
-/**
- * Validate the parameters
- * @param {Object[]} parameters - Array of parameters
- * @param {string} message - Error message to return if not all all parameters are defined
- * @returns {Promise} - resolved or rejected Promise
- */
-gymGoerSchema.statics.validateParameters = function(parameters, message) {
-  return new Promise((resolve, reject) => {
-    if (parameters.every(parameter => typeof parameter !== 'undefined') === true) {
-      resolve(true);
-    }
-    reject(new Error(message));
-  });
+gymGoerSchema.methods.serializeAll = function() {
+  return {
+    id: this._id,
+    email: this.email/*,
+      trainingSessions: this.trainingSessions.map(trainingSession => ({
+        sessionID: trainingSession._id,
+        exercises: trainingSession.exercises.map(exercise => ({sets: exercise.sets, name: exercise.name, exerciseID: exercise._id})),
+        sessionDate: trainingSession.sessionDate,
+        sessionType: trainingSession.sessionType
+      }))*/
+  };
 };
 
 /**
@@ -63,7 +58,7 @@ gymGoerSchema.statics.findGymGoerByID = function (gymGoerID) {
  * @returns {Promise|null} - Promise containing GymGoer or null if not found
  */
 gymGoerSchema.statics.findGymGoerByEmail = function(email) {
-  return this.validateParameters([email], 'Email is required')
+  return validateParameters([email], 'Email is required')
     .then(() => this.findOne({email: email}))
     .then(gymGoer => gymGoer !== null ? gymGoer.serializeAll() : null)
     .catch(Error => {throw Error});
@@ -77,73 +72,84 @@ gymGoerSchema.statics.findGymGoerByEmail = function(email) {
 gymGoerSchema.statics.createGymGoer = function (email) {
   const newGymGoer = { email: email, trainingSessions: [] };
 
-  return this.validateParameters([email], 'Email is required')
+  return validateParameters([email], 'Email is required')
     .then(() => GymGoerModel.create(newGymGoer))
     .then(gymGoer => gymGoer.serializeAll());
 };
 
 /**
- * Create a GymGoer
- * @param {string} gymGoerID - ID of Gym Goer
- * @param {string} sessionType - Name of the session (chest, legs, back, arms etc)
- * @returns {Promise} - GymGoer's session
+ * Find the exercises from the last session for the given GymGoer
+ * @param {string} sessionType - Type of training session (chest, legs, back, arms etc)
+ * @param {string} gymGoerId - GymGoer ID
+ * @returns {Object[]} - Array of previous exercise objects
  */
-gymGoerSchema.statics.addTrainingSession = function (gymGoerID, sessionType) {
-  return this.validateParameters([gymGoerID, sessionType], 'Both ID and SessionType are required')
-    .then(() => this.findGymGoerByID(gymGoerID))
-    .then(gymGoer => {
-      if (gymGoer === null) {
-        throw new Error('Gym Goer ID not found');
-      }
-      if (gymGoer.hasExistingTrainingSessionToday(sessionType) === false) {
-        const newSession = { sessionType: sessionType, exercises: [] };
-        return this.findOneAndUpdate({ "_id": gymGoerID }, { $push: { trainingSessions: newSession } }, { new: true })
-          .then(gymGoer => gymGoer.getSessionForToday(sessionType));
-      }
-      return gymGoer.getSessionForToday(sessionType);
+gymGoerExercisesSchema.statics.findPreviousExercises = function(sessionType, gymGoerId) {
+  const startToday = new Date().setHours(0,0,0,0);
+
+  return this.find({ // find previous exercises for sessionType
+      gymGoerId: gymGoerId,
+      sessionType: sessionType,
+      sessionDate: { $lt: startToday }
     })
-    .then((session) => ({
-      sessionID: session['_id'],
-      sessionDate: session.sessionDate,
-      exercises: session.exercises,
-      sessionType: session.sessionType
-    }));
+    .sort({sessionDate: -1}) // sort in descending sessionDate order, so the 0th element will be the most recent
+    .then(previousExercises => GymGoerExercisesModel.extractExercisesFromLastSession(previousExercises));
 };
 
 /**
- * Adds an array of exercises to a session and saves that to the database
- * @param {string} sessionId - Id of the session
- * @param {Object[]} newExercises - Array of exercises to add
- * @returns {Promise} - Updated session with new exercises added
- */
-gymGoerSchema.statics.saveExercisesToSession = function(sessionId, newExercises) {
-  return this.findOneAndUpdate(
-      { "trainingSessions": { $elemMatch : { _id: sessionId } } },
-      { $addToSet: { "trainingSessions.$.exercises": { $each: newExercises } } },
-      { new: true }
-    )
-    .then(updatedGymGoer => updatedGymGoer.serializeAll().trainingSessions.find(s => (s.sessionID).toString() === (sessionId).toString()));
-};
-
-/**
- * Adds a new exercise with no sets to the session for the given GymGoer
+ * Adds a single new exercise with no sets to the session for the given GymGoer
  * @param {string} gymGoerId - GymGoer ID
  * @param {string} sessionType - Type of training session (chest, legs, back, arms etc)
  * @param {string} exerciseName - Name of the new exercise
  * @returns {Promise} - Updated session with new exercise added
  */
-gymGoerSchema.statics.addNewExercise = function(gymGoerId, sessionType, exerciseName) {
-  const newExercise = { name: exerciseName, sets: [] };
-  let previousSessionWithExercises;
-  let gymGoer;
-  return this.validateParameters([gymGoerId, sessionType, exerciseName], 'gymGoerId, sessionType, exerciseName are all required')
-    .then(() => this.findGymGoerByID(gymGoerId))
-    .then(_gymGoer => gymGoer = _gymGoer)
-    .then(() => gymGoer.findPreviousTrainingSessionWithExercises(sessionType))
-    .then(_previousSessionWithExercises => previousSessionWithExercises = _previousSessionWithExercises)
-    .then(() => gymGoer.getSessionForToday(sessionType))
-    .then(session => this.saveExercisesToSession(session._id, [newExercise]))
-    .then(session => this.findLastBestSetsForSession(session, previousSessionWithExercises));
+gymGoerExercisesSchema.statics.addNewExercise = function(gymGoerId, sessionType, exerciseName) {
+  return this.create({
+      gymGoerId: gymGoerId,
+      sessionType: sessionType,
+      exerciseName: exerciseName,
+      sets: []
+    })
+    .then(() => GymGoerExercisesModel.findExercisesForToday(gymGoerId, sessionType))
+    .then(exercises => GymGoerExercisesModel.flattenExercises(exercises));
+};
+
+/**
+ * Adds a new Set to the exercise
+ * @param {String} gymGoerId - GymGoer Id
+ * @param {String} sessionType - type of session
+ * @param {String} exerciseName - name of the exercise
+ * @param {Object} newSet - Object containing the details of the new set { weight, reps }
+ * @returns {Promise} - Updated exercise session with new set added to the exercise
+ */
+gymGoerExercisesSchema.statics.addNewSet = function (gymGoerId, sessionType, exerciseName, newSet) {
+  const startToday = new Date().setHours(0,0,0,0);
+  const endToday = new Date().setHours(23,59,59,0);
+  let setNumber;
+
+  return this.findOne({
+      "gymGoerId": gymGoerId,
+      "sessionType": sessionType,
+      "sessionDate": { $gte: startToday, $lte: endToday },
+      "exerciseName": exerciseName
+    })
+    .then(exercise => setNumber = exercise.sets.length + 1)
+    .then(() => this.findOneAndUpdate({
+      "gymGoerId": gymGoerId,
+      "sessionType": sessionType,
+      "sessionDate": { $gte: startToday, $lte: endToday },
+      "exerciseName": exerciseName
+      },
+      { $addToSet:
+          {
+            "sets": {
+              setNumber: setNumber,//{ $size: "$sets" }, // see if there is a better way of doing this ...
+              weight: newSet.weight,
+              reps: newSet.reps
+            }
+          }
+      },
+      { new: true }
+    ));
 };
 
 /**
@@ -152,61 +158,64 @@ gymGoerSchema.statics.addNewExercise = function(gymGoerId, sessionType, exercise
  * @param {Object} previousSession - previous training session
  * @returns {Promise} - Updated session with new last best sets added to each exercise
  */
-gymGoerSchema.statics.findLastBestSetsForSession = function (currentSession, previousSession) {
+gymGoerExercisesSchema.statics.findLastBestSetForExercise = function (currentSession, previousSession) {
   return new Promise((resolve, reject) => {
-    currentSession.exercises = currentSession.exercises.map(exercise => {
-      const prevSession = previousSession ? previousSession.exercises.find(ex => ex.name === exercise.name) : undefined;
-      if (prevSession !== undefined) {
-        const lastBest = GymGoerModelMethods.getLastBestSet(prevSession.sets, previousSession.sessionDate);
-        return { sets: exercise.sets, name: exercise.name, lastBestSet: lastBest };
-      } else {
-        exercise.lastBestSet = {};
-        return exercise;
-      }
-    });
+    if (previousSession !== undefined) {
+      currentSession.lastBestSet = GymGoerExercisesMethods.getLastBestSet(previousSession.sets, previousSession.sessionDate);
+    } else {
+      currentSession.lastBestSet = {};
+    }
     resolve(currentSession);
   })
 };
 
 /**
- * Get the exercises from the previous session, if there are no current exercises
- * @param {Object[]} currentExercises - current training session exercises
- * @param {Object} previousSessionWithExercises - previous training session
- * @returns {Promise} - Array of exercise objects
- */
-gymGoerSchema.statics.getExercisesFromPreviousSession = function (currentExercises, previousSessionWithExercises) {
-  return new Promise((resolve, reject) => {
-    if (currentExercises.length === 0 && previousSessionWithExercises !== undefined) {
-      currentExercises = previousSessionWithExercises.exercises.map(ex => {
-        return { sets: [], name: ex.name };
-      });
-    }
-    resolve(currentExercises);
-  })
+ * Turn an array of exercises into a single object
+ * @param {Object[]} arrayOfExercises - array of exercise objects
+ * @return {Object} - Session Object that looks like: { sessionType, sessionDate, exercises[ exerciseName, sets, lastBestSet ] }
+*/
+gymGoerExercisesSchema.statics.flattenExercises = function(arrayOfExercises) {
+  if (!Array.isArray(arrayOfExercises) || arrayOfExercises.length === 0) {
+    return null;
+  }
+  return {
+    sessionType: arrayOfExercises[0].sessionType,
+    sessionDate: arrayOfExercises[0].sessionDate,
+    exercises: arrayOfExercises.map(exercise => {
+      return {
+        name: exercise.exerciseName,
+        sets: exercise.sets,
+        lastBestSet: {}
+      }
+    })
+  };
 };
 
 /**
- * Initialised session exercises, by getting previous set of exercises
+ * Initialises session's exercises, by getting previous set of exercises
  * for the given session (if any), and then adding those exercises to
- * the session (via saveExercisesToSession call)
- * @param {string} gymGoerID - Id of the GymGoer
- * @param {string} sessionID - Id of the session
+ * the session (via addNewExercise call)
+ * @param {string} gymGoerId - Id of the GymGoer
  * @param {string} sessionType - Type of session
  * @returns {Promise} - Updated session with new exercises added
  */
-gymGoerSchema.statics.initSessionExercises = function(gymGoerID, sessionID, sessionType) {
-  let previousSessionWithExercises;
-  let sessionForToday;
-  let gymGoer;
-  return GymGoerModel.findById(gymGoerID)
-    .then(_gymGoer => gymGoer = _gymGoer)
-    .then(gymGoer => gymGoer.getSessionForToday(sessionType))
-    .then(_sessionForToday => sessionForToday = _sessionForToday)
-    .then(() => gymGoer.findPreviousTrainingSessionWithExercises(sessionType))
-    .then(_previousSessionWithExercises => previousSessionWithExercises = _previousSessionWithExercises)
-    .then(() => this.getExercisesFromPreviousSession(sessionForToday.exercises, previousSessionWithExercises))
-    .then(exercises => this.saveExercisesToSession(sessionForToday._id, exercises))
-    .then(session => this.findLastBestSetsForSession(session, previousSessionWithExercises));
+gymGoerExercisesSchema.statics.initSessionExercises = function(gymGoerId, sessionType) {
+  const startToday = new Date().setHours(0,0,0,0);
+  return GymGoerExercisesModel.findExercisesForToday(gymGoerId, sessionType)
+    .then(exercises => {
+      if (exercises !== null && exercises.length > 0) { // There are exercises for today
+        return GymGoerExercisesModel.flattenExercises(exercises)
+      } else { // No exercises for today
+        return GymGoerExercisesModel.findPreviousExercises(sessionType, gymGoerId)
+          .then(exercisesArray => {
+            if (exercisesArray.length > 0) {
+              return GymGoerExercisesModel.flattenExercises(exercisesArray);
+            } else {
+              return { sessionType: sessionType, sessionDate: startToday, exercises: [] }
+            }
+          });
+      }
+    });
 };
 
 /**
@@ -216,18 +225,12 @@ gymGoerSchema.statics.initSessionExercises = function(gymGoerID, sessionID, sess
  * @param {string} sessionType - Type of session
  * @returns {Promise} - Training session with exercises (if any)
  */
-gymGoerSchema.statics.initGymGoerTrainingSession = function (gymGoerID, sessionType) {
-  let session;
-  return this.validateParameters([gymGoerID, sessionType], 'Both GymGoerID and SessionType are required')
-    .then(() => this.addTrainingSession(gymGoerID, sessionType))
-    .then(_session => session = _session)
-    .then(() => this.initSessionExercises(gymGoerID, session.sessionID, sessionType))
-    .then(_session => {
-      session.exercises = _session.exercises;
-      return session;
-    });
+gymGoerExercisesSchema.statics.initGymGoerTrainingSession = function (gymGoerID, sessionType) {
+  return validateParameters([gymGoerID, sessionType], 'Both GymGoerID and SessionType are required')
+          .then(() => GymGoerExercisesModel.initSessionExercises(gymGoerID, sessionType))
 };
 
 const GymGoerModel = mongoose.model('GymGoer', gymGoerSchema);
+const GymGoerExercisesModel = mongoose.model('GymGoerExercises', gymGoerExercisesSchema);
 
-module.exports = {GymGoerModel};
+module.exports = {GymGoerModel, GymGoerExercisesModel};

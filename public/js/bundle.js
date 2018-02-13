@@ -10651,7 +10651,7 @@ const TrainingSessionPage = {
                   ${exerciseSetsHTML}
                 </div>
               </div>
-              <button class="btn btn-small btn-aqua"><i class="fa fa-plus-square-o"></i> Add Set</button>
+              <button class="btn btn-small btn-aqua" data-exercise="${exercise.name}"><i class="fa fa-plus-square-o"></i> Add Set</button>
             </li>`;
   },
   exercisesForm(exercises) {
