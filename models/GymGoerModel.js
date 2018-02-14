@@ -174,15 +174,12 @@ gymGoerExercisesSchema.statics.addNewSet = function (gymGoerId, sessionType, exe
  * @param {Object} previousSession - previous training session
  * @returns {Promise} - Updated session with new last best sets added to each exercise
  */
-gymGoerExercisesSchema.statics.findLastBestSetForExercise = function (currentSession, previousSession) {
-  return new Promise((resolve, reject) => {
-    if (previousSession !== undefined) {
-      currentSession.lastBestSet = GymGoerExercisesMethods.getLastBestSet(previousSession.sets, previousSession.sessionDate);
-    } else {
-      currentSession.lastBestSet = {};
-    }
-    resolve(currentSession);
-  })
+gymGoerExercisesSchema.statics.findLastBestSetForExercise = function (previousSession) {
+  if (previousSession !== undefined) {
+    return GymGoerExercisesMethods.getLastBestSet(previousSession.sets, previousSession.sessionDate);
+  } else {
+    return {};
+  }
 };
 
 /**
@@ -201,8 +198,8 @@ gymGoerExercisesSchema.statics.flattenExercises = function(arrayOfExercises) {
       return {
         name: exercise.exerciseName,
         sets: exercise.sets,
-        lastBestSet: {}
-      }
+        lastBestSet: {}//exercise.lastBestSet
+      };
     })
   };
 };
@@ -215,22 +212,32 @@ gymGoerExercisesSchema.statics.flattenExercises = function(arrayOfExercises) {
  * @param {string} sessionType - Type of session
  * @returns {Promise} - Updated session with new exercises added
  */
-gymGoerExercisesSchema.statics.initSessionExercises = function(gymGoerId, sessionType) {
+
+gymGoerExercisesSchema.statics.preFillExercisesFromPreviousSession = function (gymGoerId, sessionType) {
   const startToday = new Date().setHours(0,0,0,0);
+  return GymGoerExercisesModel.findPreviousExercises(sessionType, gymGoerId)
+    .then(exercisesArray => {
+      const defaultSessionObject = { sessionType: sessionType, sessionDate: startToday, exercises: [] };
+      if (exercisesArray.length > 0) {
+        return GymGoerExercisesModel.addMultipleNewExercises(gymGoerId, sessionType, exercisesArray);
+      } else {
+        return defaultSessionObject;
+      }
+      // return exercisesArray.length ? GymGoerExercisesModel.addMultipleNewExercises(gymGoerId, sessionType, exercisesArray) : defaultSessionObject;
+      //return Object.assign(defaultObject, GymGoerExercisesModel.addMultipleNewExercises(gymGoerId, sessionType, exercisesArray));
+    });
+};
+
+/*GymGoerExercisesModel
+  .findPreviousSession(this.name, arrayOfExercises[0].sessionType)
+  .then((previousSession) => GymGoerExercisesModel.findLastBestSetForExercise(previousSession))*/
+gymGoerExercisesSchema.statics.initSessionExercises = function(gymGoerId, sessionType) {
   return GymGoerExercisesModel.findExercisesForToday(gymGoerId, sessionType)
     .then(exercises => {
       if (exercises !== null && exercises.length > 0) { // There are exercises for today
         return GymGoerExercisesModel.flattenExercises(exercises)
       } else { // No exercises for today
-        return GymGoerExercisesModel.findPreviousExercises(sessionType, gymGoerId)
-          .then(exercisesArray => {
-            if (exercisesArray.length > 0) {
-              return GymGoerExercisesModel.addMultipleNewExercises(gymGoerId, sessionType, exercisesArray)
-                // .then(exercises => GymGoerExercisesModel.flattenExercises(exercises));
-            } else {
-              return { sessionType: sessionType, sessionDate: startToday, exercises: [] }
-            }
-          });
+        return GymGoerExercisesModel.preFillExercisesFromPreviousSession(gymGoerId, sessionType);
       }
     });
 };

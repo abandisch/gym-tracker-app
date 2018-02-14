@@ -69,16 +69,55 @@ describe('# GymGoerExerciseModel', function () {
     return GymGoerExercisesModel.initGymGoerTrainingSession(gymGoerId, sessionType);
   };
 
-  describe('# GymGoerExercisesModel.initSessionExercises', function () {
-    it('should provide a session with empty exercises array', function () {
+  describe.only('# GymGoerExercisesModel.initSessionExercises', function () {
+    it('should return a session object with exercises from a previous session', function () {
+      let gymGoer;
+      const TEST_SESSION_TYPE = 'chest';
+      const TEST_EXERCISE_NAME_1 = 'bench press';
+      const TEST_EXERCISE_NAME_2 = 'dips';
+      const TEST_EXERCISE_NAME_3 = 'inclined bench press';
+      return createTestGymGoer(TEST_EMAIL)
+        .then(_gymGoer => gymGoer = _gymGoer)
+        .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, oneWeekAgoDate, TEST_EXERCISE_NAME_1))
+        .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, oneWeekAgoDate, TEST_EXERCISE_NAME_2))
+        .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, oneWeekAgoDate, TEST_EXERCISE_NAME_3))
+        .then(() => GymGoerExercisesModel.initSessionExercises(gymGoer.id, TEST_SESSION_TYPE))
+        .then(session => {
+          expect(session.exercises.length).to.equal(3);
+          expect(session.sessionType).to.equal(TEST_SESSION_TYPE)
+        });
+    });
+    it ('should return session object with exercises from today', function () {
+      let gymGoer;
+      const TEST_SESSION_TYPE = 'chest';
+      const TEST_EXERCISE_NAME_1 = 'bench press';
+      const TEST_EXERCISE_NAME_2 = 'dips';
+      const TEST_EXERCISE_NAME_3 = 'inclined bench press';
+      const TODAY = new Date();
+      return createTestGymGoer(TEST_EMAIL)
+        .then(_gymGoer => gymGoer = _gymGoer)
+        .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, oneWeekAgoDate, TEST_EXERCISE_NAME_1))
+        .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, oneWeekAgoDate, TEST_EXERCISE_NAME_2))
+        .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, oneWeekAgoDate, TEST_EXERCISE_NAME_3))
+        .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, TODAY, TEST_EXERCISE_NAME_1))
+        .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, TODAY, TEST_EXERCISE_NAME_2))
+        .then(() => GymGoerExercisesModel.initSessionExercises(gymGoer.id, TEST_SESSION_TYPE))
+        .then(session => {
+          expect(session.exercises.length).to.equal(2);
+          expect(session.sessionType).to.equal(TEST_SESSION_TYPE)
+        });
+    });
+    it('should return a session object with an empty exercises array', function () {
+      const TEST_SESSION_TYPE = 'chest';
       let gymGoer;
       return createTestGymGoer(TEST_EMAIL)
         .then(_gymGoer => gymGoer = _gymGoer)
-        .then(() => GymGoerExercisesModel.initSessionExercises(gymGoer.id, 'chest'))
+        .then(() => GymGoerExercisesModel.initSessionExercises(gymGoer.id, TEST_SESSION_TYPE))
         .then(session => {
-          expect(session.exercises.length).to.equal(0)
+          expect(session.exercises.length).to.equal(0);
+          expect(session.sessionType).to.equal(TEST_SESSION_TYPE)
         });
-    });
+    })
   });
 
   describe('# GymGoerExercisesModel.initGymGoerTrainingSession', function () {
@@ -231,7 +270,7 @@ describe('# GymGoerExerciseModel', function () {
 
   });
 
-  describe.skip('# GymGoerExercisesModel.findLastBestSet', function () {
+  describe('# GymGoerExercisesModel.findLastBestSet', function () {
     it('should find and return the last best set for an exercise from the previous session');
     it('should return an empty object if there is no last best set in the previous session');
   });
