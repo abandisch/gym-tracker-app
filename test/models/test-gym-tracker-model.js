@@ -256,16 +256,48 @@ describe('# GymGoerExerciseModel', function () {
         .then(() => GymGoerExercisesModel.addNewSet(gymGoer.id, TEST_SESSION_TYPE, TEST_EXERCISE_NAME_1, TEST_SET))
         .then((exerciseSession) => {
           expect(exerciseSession.sessionType).to.equal(TEST_SESSION_TYPE);
-          expect(exerciseSession.sets.length).to.equal(2);
+          expect(exerciseSession.exercises.length).to.equal(2);
+          expect(exerciseSession.exercises[0].sets.length).to.equal(2);
+          expect(exerciseSession.exercises[1].sets.length).to.equal(0);
           expect(toReadableISODate(exerciseSession.sessionDate)).to.equal(toReadableISODate(TODAY));
-          expect(exerciseSession.exerciseName).to.equal(TEST_EXERCISE_NAME_1);
-          expect(exerciseSession.sets[0].setNumber).to.equal(1);
-          expect(exerciseSession.sets[0].weight).to.equal("40");
-          expect(exerciseSession.sets[0].reps).to.equal(12);
+          expect(exerciseSession.exercises[0].name).to.equal(TEST_EXERCISE_NAME_1);
+          expect(exerciseSession.exercises[0].sets[0].setNumber).to.equal(1);
+          expect(exerciseSession.exercises[0].sets[0].weight).to.equal("40");
+          expect(exerciseSession.exercises[0].sets[0].reps).to.equal(12);
         });
     });
   });
 
+  describe('# GymGoerExercisesModel.addMultipleNewExercises', function () {
+    function createMultipleExercises(gymGoerId, sessionType, exerciseNameArray) {
+      return new Promise((resolve, reject) => {
+        resolve(exerciseNameArray.map(exercise => ({
+          gymGoerId: gymGoerId,
+          sessionType: sessionType,
+          exerciseName: exercise,
+          sets: []
+        })));
+      })
+    }
+    it('it should insert an array of new exercises for today and return the exercise session', function () {
+      let gymGoer;
+      const TEST_EXERCISE_NAMES = ['bench press', 'dumbbell curls', 'dips'];
+      const TEST_SESSION_TYPE = 'chest';
+      return createTestGymGoer(TEST_EMAIL)
+        .then(_gymGoer => gymGoer = _gymGoer)
+        .then(() => createMultipleExercises(gymGoer.id, TEST_SESSION_TYPE, TEST_EXERCISE_NAMES))
+        .then((multipleExercises) => GymGoerExercisesModel.addMultipleNewExercises(gymGoer.id, TEST_SESSION_TYPE, multipleExercises))
+        .then(session => {
+          expect(session.exercises.length).to.equal(3);
+          expect(session.sessionType).to.equal(TEST_SESSION_TYPE);
+        })
+        .then(() => GymGoerExercisesModel.find({"gymGoerId": gymGoer.id, "sessionType": TEST_SESSION_TYPE}))
+        .then((sessionFromDB) => {
+          expect(sessionFromDB.length).to.equal(3);
+          expect(sessionFromDB[0].sessionType).to.equal(TEST_SESSION_TYPE);
+        })
+    });
+  });
 });
 
 describe('# GymGoerModel', function () {

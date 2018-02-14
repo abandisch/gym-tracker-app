@@ -54,20 +54,45 @@ const TrainingSessionPage = {
     return lastSessionResults;
   },
   getExerciseSetsHTML(exercise) {
-    let exerciseSets = `<div class="table-cell"></div><div class="table-cell"></div><div class="table-cell"></div>`;
+    let exerciseSets = `<div class="table-row"><div class="table-cell"></div><div class="table-cell"></div><div class="table-cell"></div></div>`;
     if (exercise.sets.length > 0) {
       exerciseSets = exercise.sets.map(set => {
-        return `<div class="table-cell">${set.setNumber}</div>
+      return `<div class="table-row">  
+                <div class="table-cell">${set.setNumber}</div>
                 <div class="table-cell">${set.weight}</div>
-                <div class="table-cell">${set.reps}</div>`;
+                <div class="table-cell">${set.reps}</div>
+              </div>`;
       });
     }
     return exerciseSets;
   },
+  addExerciseSetFormInputHTML(exercise) {
+    let html = `<button class="btn btn-small btn-aqua" data-exercise="${exercise.name}"><i class="fa fa-plus-square-o"></i> Add Set</button>`;
+    if (exercise.displayAddSetInputForm) {
+      html = `<div class="add-exercise-set">
+                <div class="inline-form-input">
+                  <label for="setWeight">Weight: </label>
+                  <input type="text" id="setWeight" name="weight" placeholder="E.g. 10 or Body Weight">
+                </div>
+                <div class="inline-form-input">
+                  <label for="setReps">Reps: </label>
+                  <input type="text" id="setReps" name="reps" placeholder="Number of reps">
+                </div>                 
+                  <button class="btn btn-small btn-green"><i class="fa fa-plus-square-o" aria-hidden="true" data-exercise-name="${exercise.name}"></i> Save New Set</button>
+                  <button class="btn btn-small btn-orange"><i class="fa fa-ban" aria-hidden="true"></i> Cancel</button>
+              </div>`;
+    }
+    return html;
+  },
   exercisesLiElement(exercise) {
     const lastSessionResultsHTML = TrainingSessionPage.getLastSessionResultsHTML(exercise);
 
-    const exerciseSetsHTML = TrainingSessionPage.getExerciseSetsHTML(exercise);
+    let exerciseSetsHTML = TrainingSessionPage.getExerciseSetsHTML(exercise);
+    if (Array.isArray(exerciseSetsHTML)) {
+      exerciseSetsHTML = exerciseSetsHTML.join('');
+    }
+
+    const addSetFormInputHTML = TrainingSessionPage.addExerciseSetFormInputHTML(exercise);
 
     return `<li>
               <h3>${exercise.name.toUpperCase()}</h3>
@@ -78,11 +103,9 @@ const TrainingSessionPage = {
                   <div class="table-cell">Weight</div>
                   <div class="table-cell">Reps</div>
                 </div>
-                <div class="table-row">
-                  ${exerciseSetsHTML}
-                </div>
+                ${exerciseSetsHTML}
               </div>
-              <button class="btn btn-small btn-aqua" data-exercise="${exercise.name}"><i class="fa fa-plus-square-o"></i> Add Set</button>
+              ${addSetFormInputHTML}
             </li>`;
   },
   exercisesForm(exercises) {

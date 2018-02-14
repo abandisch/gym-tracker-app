@@ -113,6 +113,20 @@ gymGoerExercisesSchema.statics.addNewExercise = function(gymGoerId, sessionType,
     .then(exercises => GymGoerExercisesModel.flattenExercises(exercises));
 };
 
+gymGoerExercisesSchema.statics.addMultipleNewExercises = function(gymGoerId, sessionType, exercises) {
+
+  const exercisesToInsert = exercises.map(exercise => ({
+    gymGoerId: gymGoerId,
+    sessionType: sessionType,
+    exerciseName: exercise.exerciseName,
+    sets: []
+  }));
+
+  return this.insertMany(exercisesToInsert)
+    .then(() => GymGoerExercisesModel.findExercisesForToday(gymGoerId, sessionType))
+    .then(exercises => GymGoerExercisesModel.flattenExercises(exercises));
+};
+
 /**
  * Adds a new Set to the exercise
  * @param {String} gymGoerId - GymGoer Id
@@ -149,7 +163,9 @@ gymGoerExercisesSchema.statics.addNewSet = function (gymGoerId, sessionType, exe
           }
       },
       { new: true }
-    ));
+    ))
+    .then(() => GymGoerExercisesModel.findExercisesForToday(gymGoerId, sessionType))
+    .then((exercisesForToday) => GymGoerExercisesModel.flattenExercises(exercisesForToday))
 };
 
 /**
@@ -209,7 +225,8 @@ gymGoerExercisesSchema.statics.initSessionExercises = function(gymGoerId, sessio
         return GymGoerExercisesModel.findPreviousExercises(sessionType, gymGoerId)
           .then(exercisesArray => {
             if (exercisesArray.length > 0) {
-              return GymGoerExercisesModel.flattenExercises(exercisesArray);
+              return GymGoerExercisesModel.addMultipleNewExercises(gymGoerId, sessionType, exercisesArray)
+                // .then(exercises => GymGoerExercisesModel.flattenExercises(exercises));
             } else {
               return { sessionType: sessionType, sessionDate: startToday, exercises: [] }
             }

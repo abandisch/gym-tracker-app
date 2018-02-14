@@ -218,19 +218,6 @@ const MOCK_TRAINING_SESSION_DATA = {
 const COOKIE_NAME = 'gymGoer';
 
 export const GymTrackerAPI = {
-  // getCurrentGymGoer() {
-  //   return MOCK_TRAINING_SESSION_DATA.gymgoers.find(gGoer => gGoer.email === JSON.parse(getCookie(COOKIE_NAME)).email);
-  // },
-  // getTodaysSession(trainingSessionType) {
-  //   return this.getCurrentGymGoer().trainingSessions.find(session => {
-  //     const trainingDate = new Date(Number.parseInt(session.sessionDate)).toLocaleString().split(',').splice(0, 1)[0];
-  //     const today = new Date().toLocaleString().split(',').splice(0, 1)[0];
-  //     return session.sessionType === trainingSessionType && trainingDate === today;
-  //   });
-  // },
-  // hasDoneTrainingSessionToday(trainingSessionType) {
-  //   return this.getTodaysSession(trainingSessionType) !== undefined;
-  // },
   authenticate(emailAddress) {
     return new Promise((resolve, reject) => {
       $.ajax({
@@ -281,16 +268,18 @@ export const GymTrackerAPI = {
       });
     });
   },
-  // Get all training session data
-  // Include JWT in request Authorization header to identify the user
-  // - /training-session/<training session type>, e.g. /training-session/chest
-  getTrainingSessionData(trainingSession) {
-    $.getJSON(GYM_TRACKER_API_URL, (data) => {
-      console.log(data);
-    })
-  },
-  // Get only the last training session data
-  // Include JWT in request Authorization header to identify the user
-  // - /training-session/<training session type>/last, e.g. /training-session/chest/last
-
+  addSetToExercise(trainingSession, nameOfExercise, newSetForExercise) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: 'gym-tracker/add-exercise-set',
+        data: JSON.stringify({sessionType: trainingSession, exerciseName: nameOfExercise, newSet: newSetForExercise}),
+        method: 'POST',
+        dataType: 'json',
+        contentType: 'application/json'
+      }).done(updatedSessionExercises => resolve(updatedSessionExercises))
+        .fail(() => {
+        reject({error: 'Error adding set to exercise for training session'});
+      });
+    });
+  }
 };

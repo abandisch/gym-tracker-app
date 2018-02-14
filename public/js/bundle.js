@@ -10461,7 +10461,14 @@ const State = {
     {exercise: 'legs', icon: 'fa-male'},
     {exercise: 'back', icon: 'fa-heart'}
   ],
-  trainingSessionExercises: {},
+  trainingSessionExercises: [],
+  initTrainingSessionExercises(exercises) {
+    this.trainingSessionExercises = exercises.map(ex => {
+      ex.displayAddSetInputForm = false; // Include displayAddSetInputForm to the exercise object
+      return ex;
+    });
+  },
+  currentExercise: '',
   render() {
     const main = $('main');
     let sessionDetails = { };
@@ -10511,12 +10518,16 @@ const State = {
     }
 
     if (this.displayTrainingSessionPage) {
+      // Page Header: SessionType [Date]
       const pageHeadingHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].sessionHeading, session: sessionDetails });
 
       const formsContainer = $('<div class="exercise-data"></div>');
+
+      // Change session type button/form
       const changeSessionForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].changeSessionForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onChangeSessionFormSubmit });
       formsContainer.append(changeSessionForm);
 
+      // Add exercise button/form
       if (this.displayAddExerciseInputForm) { // show the form with input field and cancel button
         const cancelAddExerciseButtonForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].cancelAddExerciseSmallButtonForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onCancelAddExerciseButtonFormSubmit  });
         const addExerciseInputForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].addExerciseInputForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseInputFormSubmit });
@@ -10526,8 +10537,14 @@ const State = {
         const addExercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].addExerciseSmallButtonForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseSmallButtonFormSubmit });
         formsContainer.append(addExercisesForm);
       }
-      const exercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].exercisesForm, session: State.trainingSessionExercises });
+
+      // Exercises
+      const exercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].exercisesForm, session: State.trainingSessionExercises, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddSetForExerciseButtonFormSubmit });
       formsContainer.append(exercisesForm);
+
+      // this.displayAddSetForExercise = this.trainingSessionExercises.find(ex => ex.displayAddSetInput !== undefined && ex.displayAddSetInput === true)
+
+      // Build the page
       main.html(pageHeadingHtml);
       main.append(formsContainer);
       this.displayTrainingSessionPage = false;
@@ -10623,20 +10640,45 @@ const TrainingSessionPage = {
     return lastSessionResults;
   },
   getExerciseSetsHTML(exercise) {
-    let exerciseSets = `<div class="table-cell"></div><div class="table-cell"></div><div class="table-cell"></div>`;
+    let exerciseSets = `<div class="table-row"><div class="table-cell"></div><div class="table-cell"></div><div class="table-cell"></div></div>`;
     if (exercise.sets.length > 0) {
       exerciseSets = exercise.sets.map(set => {
-        return `<div class="table-cell">${set.setNumber}</div>
+      return `<div class="table-row">  
+                <div class="table-cell">${set.setNumber}</div>
                 <div class="table-cell">${set.weight}</div>
-                <div class="table-cell">${set.reps}</div>`;
+                <div class="table-cell">${set.reps}</div>
+              </div>`;
       });
     }
     return exerciseSets;
   },
+  addExerciseSetFormInputHTML(exercise) {
+    let html = `<button class="btn btn-small btn-aqua" data-exercise="${exercise.name}"><i class="fa fa-plus-square-o"></i> Add Set</button>`;
+    if (exercise.displayAddSetInputForm) {
+      html = `<div class="add-exercise-set">
+                <div class="inline-form-input">
+                  <label for="setWeight">Weight: </label>
+                  <input type="text" id="setWeight" name="weight" placeholder="E.g. 10 or Body Weight">
+                </div>
+                <div class="inline-form-input">
+                  <label for="setReps">Reps: </label>
+                  <input type="text" id="setReps" name="reps" placeholder="Number of reps">
+                </div>                 
+                  <button class="btn btn-small btn-green"><i class="fa fa-plus-square-o" aria-hidden="true" data-exercise-name="${exercise.name}"></i> Save New Set</button>
+                  <button class="btn btn-small btn-orange"><i class="fa fa-ban" aria-hidden="true"></i> Cancel</button>
+              </div>`;
+    }
+    return html;
+  },
   exercisesLiElement(exercise) {
     const lastSessionResultsHTML = TrainingSessionPage.getLastSessionResultsHTML(exercise);
 
-    const exerciseSetsHTML = TrainingSessionPage.getExerciseSetsHTML(exercise);
+    let exerciseSetsHTML = TrainingSessionPage.getExerciseSetsHTML(exercise);
+    if (Array.isArray(exerciseSetsHTML)) {
+      exerciseSetsHTML = exerciseSetsHTML.join('');
+    }
+
+    const addSetFormInputHTML = TrainingSessionPage.addExerciseSetFormInputHTML(exercise);
 
     return `<li>
               <h3>${exercise.name.toUpperCase()}</h3>
@@ -10647,11 +10689,9 @@ const TrainingSessionPage = {
                   <div class="table-cell">Weight</div>
                   <div class="table-cell">Reps</div>
                 </div>
-                <div class="table-row">
-                  ${exerciseSetsHTML}
-                </div>
+                ${exerciseSetsHTML}
               </div>
-              <button class="btn btn-small btn-aqua" data-exercise="${exercise.name}"><i class="fa fa-plus-square-o"></i> Add Set</button>
+              ${addSetFormInputHTML}
             </li>`;
   },
   exercisesForm(exercises) {
@@ -10756,7 +10796,7 @@ const EventHandler = {
       .then(result => {
         __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionType = result.sessionType;
         if (result.exercises.length !== 0) {  // if there are previous exercises from the last session
-          __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionExercises = result.exercises;
+          __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].initTrainingSessionExercises(result.exercises);
           __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showTrainingSessionPage();
         } else { // if there are no previous exercises, show empty training session page
           __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showEmptyTrainingSessionPage();
@@ -10786,10 +10826,11 @@ const EventHandler = {
     __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */]
       .addExercise(__WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionType, exerciseName)
       .then(session => {
-        __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionExercises = session.exercises;
         if (session.exercises.length !== 0) {
+          __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].initTrainingSessionExercises(session.exercises);
           __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showTrainingSessionPage();
         } else {
+          __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionExercises = [];
           __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showEmptyTrainingSessionPage();
         }
       })
@@ -10800,6 +10841,35 @@ const EventHandler = {
   onCancelAddExerciseButtonFormSubmit: function (event) {
     event.preventDefault();
     __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showTrainingSessionPage();
+  },
+  onAddSetForExerciseButtonFormSubmit: function (event) {
+    event.preventDefault();
+
+    const button = $(document.activeElement);
+
+    // If not 'Add Set' button will be undefined, so it will set displayAddSetInputForm to false
+    __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionExercises.forEach(exercise => {
+      exercise.displayAddSetInputForm = exercise.name === button.data('exercise');
+    });
+
+    if (button.data('exercise') !== undefined) {
+      __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].currentExercise = button.data('exercise')
+    }
+
+    if (button.text().trim() === 'Add Set' || button.text().trim() === 'Cancel') {
+      __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showTrainingSessionPage();
+    }
+
+    if (button.text().trim() === 'Save New Set') {
+      const weight = button.closest('.add-exercise-set').find('input[name=weight]').val();
+      const reps = button.closest('.add-exercise-set').find('input[name=reps]').val();
+      __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */]
+        .addSetToExercise(__WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionType, __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].currentExercise, {weight: weight, reps: reps})
+        .then(updatedSession => {
+          __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].initTrainingSessionExercises(updatedSession.exercises);
+          __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showTrainingSessionPage();
+        });
+    }
   }
 };
 
@@ -11031,19 +11101,6 @@ const MOCK_TRAINING_SESSION_DATA = {
 const COOKIE_NAME = 'gymGoer';
 
 const GymTrackerAPI = {
-  // getCurrentGymGoer() {
-  //   return MOCK_TRAINING_SESSION_DATA.gymgoers.find(gGoer => gGoer.email === JSON.parse(getCookie(COOKIE_NAME)).email);
-  // },
-  // getTodaysSession(trainingSessionType) {
-  //   return this.getCurrentGymGoer().trainingSessions.find(session => {
-  //     const trainingDate = new Date(Number.parseInt(session.sessionDate)).toLocaleString().split(',').splice(0, 1)[0];
-  //     const today = new Date().toLocaleString().split(',').splice(0, 1)[0];
-  //     return session.sessionType === trainingSessionType && trainingDate === today;
-  //   });
-  // },
-  // hasDoneTrainingSessionToday(trainingSessionType) {
-  //   return this.getTodaysSession(trainingSessionType) !== undefined;
-  // },
   authenticate(emailAddress) {
     return new Promise((resolve, reject) => {
       $.ajax({
@@ -11094,18 +11151,20 @@ const GymTrackerAPI = {
       });
     });
   },
-  // Get all training session data
-  // Include JWT in request Authorization header to identify the user
-  // - /training-session/<training session type>, e.g. /training-session/chest
-  getTrainingSessionData(trainingSession) {
-    $.getJSON(GYM_TRACKER_API_URL, (data) => {
-      console.log(data);
-    })
-  },
-  // Get only the last training session data
-  // Include JWT in request Authorization header to identify the user
-  // - /training-session/<training session type>/last, e.g. /training-session/chest/last
-
+  addSetToExercise(trainingSession, nameOfExercise, newSetForExercise) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: 'gym-tracker/add-exercise-set',
+        data: JSON.stringify({sessionType: trainingSession, exerciseName: nameOfExercise, newSet: newSetForExercise}),
+        method: 'POST',
+        dataType: 'json',
+        contentType: 'application/json'
+      }).done(updatedSessionExercises => resolve(updatedSessionExercises))
+        .fail(() => {
+        reject({error: 'Error adding set to exercise for training session'});
+      });
+    });
+  }
 };
 /* harmony export (immutable) */ __webpack_exports__["a"] = GymTrackerAPI;
 

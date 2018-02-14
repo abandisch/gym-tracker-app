@@ -76,6 +76,24 @@ router.post('/add-exercise', [cookieParser(), jsonParser, jwtAuth], (req, res) =
     .then(session => res.json(session));
 });
 
+router.post('/add-exercise-set', [cookieParser(), jsonParser, jwtAuth], (req, res) => {
+  const {id: gymGoerID} = req.user;
+  const {sessionType, exerciseName, newSet} = req.body;
+
+  routerUtils.confirmRequiredProperties(req.body, ['sessionType', 'exerciseName', 'newSet'], (msg) => {
+    console.error(msg);
+    return res.status(400).json({error: msg});
+  });
+
+  GymGoerExercisesModel
+    .addNewSet(gymGoerID, sessionType, exerciseName, newSet)
+    .then(updatedSession => res.json(updatedSession))
+    .catch(err => {
+      console.error('Error adding new set: ', err);
+    })
+
+});
+
 router.post('/init-training-session', [cookieParser(), jsonParser, jwtAuth], (req, res) => {
   const {id: gymGoerID} = req.user;
   const sessionType = req.body.sessionType;
@@ -85,7 +103,7 @@ router.post('/init-training-session', [cookieParser(), jsonParser, jwtAuth], (re
     return res.status(400).json({error: msg});
   });
 
-  GymGoerModel
+  GymGoerExercisesModel
     .initGymGoerTrainingSession(gymGoerID, sessionType)
     .then(session => {
       res.json(session);

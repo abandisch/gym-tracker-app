@@ -15,7 +15,14 @@ const State = {
     {exercise: 'legs', icon: 'fa-male'},
     {exercise: 'back', icon: 'fa-heart'}
   ],
-  trainingSessionExercises: {},
+  trainingSessionExercises: [],
+  initTrainingSessionExercises(exercises) {
+    this.trainingSessionExercises = exercises.map(ex => {
+      ex.displayAddSetInputForm = false; // Include displayAddSetInputForm to the exercise object
+      return ex;
+    });
+  },
+  currentExercise: '',
   render() {
     const main = $('main');
     let sessionDetails = { };
@@ -65,12 +72,16 @@ const State = {
     }
 
     if (this.displayTrainingSessionPage) {
+      // Page Header: SessionType [Date]
       const pageHeadingHtml = TrainingSessionPage.render({ template: TrainingSessionPage.sessionHeading, session: sessionDetails });
 
       const formsContainer = $('<div class="exercise-data"></div>');
+
+      // Change session type button/form
       const changeSessionForm = TrainingSessionPage.render({ template: TrainingSessionPage.changeSessionForm, onSubmitForm: EventHandler.onChangeSessionFormSubmit });
       formsContainer.append(changeSessionForm);
 
+      // Add exercise button/form
       if (this.displayAddExerciseInputForm) { // show the form with input field and cancel button
         const cancelAddExerciseButtonForm = TrainingSessionPage.render({ template: TrainingSessionPage.cancelAddExerciseSmallButtonForm, onSubmitForm: EventHandler.onCancelAddExerciseButtonFormSubmit  });
         const addExerciseInputForm = TrainingSessionPage.render({ template: TrainingSessionPage.addExerciseInputForm, session: sessionDetails, onSubmitForm: EventHandler.onAddExerciseInputFormSubmit });
@@ -80,8 +91,14 @@ const State = {
         const addExercisesForm = TrainingSessionPage.render({ template: TrainingSessionPage.addExerciseSmallButtonForm, session: sessionDetails, onSubmitForm: EventHandler.onAddExerciseSmallButtonFormSubmit });
         formsContainer.append(addExercisesForm);
       }
-      const exercisesForm = TrainingSessionPage.render({ template: TrainingSessionPage.exercisesForm, session: State.trainingSessionExercises });
+
+      // Exercises
+      const exercisesForm = TrainingSessionPage.render({ template: TrainingSessionPage.exercisesForm, session: State.trainingSessionExercises, onSubmitForm: EventHandler.onAddSetForExerciseButtonFormSubmit });
       formsContainer.append(exercisesForm);
+
+      // this.displayAddSetForExercise = this.trainingSessionExercises.find(ex => ex.displayAddSetInput !== undefined && ex.displayAddSetInput === true)
+
+      // Build the page
       main.html(pageHeadingHtml);
       main.append(formsContainer);
       this.displayTrainingSessionPage = false;

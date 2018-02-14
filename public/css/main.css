@@ -300,3 +300,28 @@ main > section {
   width: 140px;
   margin: 0 auto;
 }
+
+/* Add Set Form controls */
+.add-exercise-set .inline-form-input {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 776px;
+  margin: 0 0 10px;
+}
+.add-exercise-set .inline-form-input > label {
+  width: 25%;
+  font-weight: normal;
+  font-size: 0.9em;
+}
+.add-exercise-set .inline-form-input > input {
+  width: 70%;
+  font-size: 0.9em;
+}
+#exercises-form .exercise-list .add-exercise-set button {
+  max-width: 310px;
+  width: 100%;
+  margin: 0 auto 10px;
+}
