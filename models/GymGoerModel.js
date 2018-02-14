@@ -205,14 +205,11 @@ gymGoerExercisesSchema.statics.flattenExercises = function(arrayOfExercises) {
 };
 
 /**
- * Initialises session's exercises, by getting previous set of exercises
- * for the given session (if any), and then adding those exercises to
- * the session (via addNewExercise call)
+ * Gets the previous exercises for the given session type and creates a session object with the previous exercises, if any
  * @param {string} gymGoerId - Id of the GymGoer
  * @param {string} sessionType - Type of session
- * @returns {Promise} - Updated session with new exercises added
+ * @returns {Object|Promise} - Updated session with empty exercise set or a promise containing session with previous exercises
  */
-
 gymGoerExercisesSchema.statics.preFillExercisesFromPreviousSession = function (gymGoerId, sessionType) {
   const startToday = new Date().setHours(0,0,0,0);
   return GymGoerExercisesModel.findPreviousExercises(sessionType, gymGoerId)
@@ -228,9 +225,13 @@ gymGoerExercisesSchema.statics.preFillExercisesFromPreviousSession = function (g
     });
 };
 
-/*GymGoerExercisesModel
-  .findPreviousSession(this.name, arrayOfExercises[0].sessionType)
-  .then((previousSession) => GymGoerExercisesModel.findLastBestSetForExercise(previousSession))*/
+/**
+ * Initialises session's exercises, by getting today's exercises, or previous
+ * set of exercises for the given session (if any)
+ * @param {string} gymGoerId - Id of the GymGoer
+ * @param {string} sessionType - Type of session
+ * @returns {Promise} - Updated session with new exercises added
+ */
 gymGoerExercisesSchema.statics.initSessionExercises = function(gymGoerId, sessionType) {
   return GymGoerExercisesModel.findExercisesForToday(gymGoerId, sessionType)
     .then(exercises => {
