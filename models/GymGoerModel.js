@@ -216,6 +216,7 @@ gymGoerExercisesSchema.statics.addNewSet = function (gymGoerId, sessionType, exe
       { new: true }
     ))
     .then(() => GymGoerExercisesModel.findExercisesForToday(gymGoerId, sessionType))
+    .then(exercises => GymGoerExercisesModel.attachLastBestSetToMultipleExercises(exercises))
     .then((exercisesForToday) => GymGoerExercisesModel.flattenExercises(exercisesForToday))
 };
 
