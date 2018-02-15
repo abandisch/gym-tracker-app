@@ -1,17 +1,5 @@
 const {validateParameters, toReadableISODate} = require('./GymGoerUtils');
-
-const GymGoerExercisesMethods = {
-  findExercisesForToday(gymGoerId, sessionType) {
-    const startToday = new Date().setHours(0,0,0,0);
-    const endToday = new Date().setHours(23,59,59,0);
-
-    return this.find({
-        gymGoerId: gymGoerId,
-        sessionType: sessionType,
-        sessionDate: { $gte: startToday, $lte: endToday }
-      })
-      .sort({sessionDate: -1});
-  },
+const GymGoerExercisesStatics = {
   extractExercisesFromLastSession(previousExercises) {
     // previousExercises[0] should contain the previous training session
     let exercisesArray = [];
@@ -27,15 +15,26 @@ const GymGoerExercisesMethods = {
     }
     return exercisesArray;
   },
+  findExercisesForToday(gymGoerId, sessionType) {
+    const startToday = new Date().setHours(0,0,0,0);
+    const endToday = new Date().setHours(23,59,59,0);
+
+    return this.find({
+      gymGoerId: gymGoerId,
+      sessionType: sessionType,
+      sessionDate: { $gte: startToday, $lte: endToday }
+    })
+      .sort({sessionDate: -1});
+  },
   hasExistingTrainingSessionToday(sessionType, gymGoer) {
     // return this.getSessionForToday(sessionType, gymGoer) !== undefined;
     const startToday = new Date().setHours(0,0,0,0);
     const endToday = new Date().setHours(23,59,59,0);
     return this.count({
-        gymGoerId: gymGoer.id,
-        sessionType: sessionType,
-        sessionDate: {$gte: startToday, $lte: endToday }
-      })
+      gymGoerId: gymGoer.id,
+      sessionType: sessionType,
+      sessionDate: {$gte: startToday, $lte: endToday }
+    })
       .then(count => count > 0);
   },
   findBestSet(sets) {
@@ -62,4 +61,4 @@ const GymGoerExercisesMethods = {
   }
 };
 
-module.exports = GymGoerExercisesMethods;
+module.exports = GymGoerExercisesStatics;

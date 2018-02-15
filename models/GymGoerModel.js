@@ -2,7 +2,8 @@
 
 const mongoose = require('mongoose');
 mongoose.promise = global.Promise;
-const GymGoerExercisesMethods = require('./GymGoerExercisesMethods');
+// const GymGoerExercisesMethods = require('./GymGoerExercisesMethods');
+const GymGoerExercisesStatics = require('./GymGoerExercisesStatics');
 const {validateParameters, toReadableISODate} = require('./GymGoerUtils');
 
 const gymGoerExercisesSchema = mongoose.Schema({
@@ -28,7 +29,7 @@ const gymGoerSchema = mongoose.Schema({
 });
 
 // Assign the GymGoerExercisesMethods to the gymGoerSchema methods
-Object.assign(gymGoerExercisesSchema.statics, GymGoerExercisesMethods);
+Object.assign(gymGoerExercisesSchema.statics, GymGoerExercisesStatics);
 
 gymGoerExercisesSchema.methods.serialize = function () {
   return {
@@ -44,13 +45,7 @@ gymGoerExercisesSchema.methods.serialize = function () {
 gymGoerSchema.methods.serializeAll = function() {
   return {
     id: this._id,
-    email: this.email/*,
-      trainingSessions: this.trainingSessions.map(trainingSession => ({
-        sessionID: trainingSession._id,
-        exercises: trainingSession.exercises.map(exercise => ({sets: exercise.sets, name: exercise.name, exerciseID: exercise._id})),
-        sessionDate: trainingSession.sessionDate,
-        sessionType: trainingSession.sessionType
-      }))*/
+    email: this.email
   };
 };
 

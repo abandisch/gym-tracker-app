@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 
-const GymGoerExercisesMethods = require('../../models/GymGoerExercisesMethods');
+const GymGoerExercisesMethods = require('../../models/GymGoerExercisesStatics');
 
 let dateToday = new Date();
 let dateYesterday = new Date();
