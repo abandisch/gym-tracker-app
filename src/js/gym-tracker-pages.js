@@ -151,10 +151,13 @@ const SelectTrainingSessionPage = {
 const HomePage = {
   introText() {
     return `
-      <p>The Gym Tracker App provides an easy interface to help you track your exercises, weights and reps at the gym.</p>
-      <p>To start off, enter your email address. Then select the training session you're doing at the gym, then add your first exercise.</p>
-      <p>Once you've done a set, record the weight in numbers (e.g. 40) or text (e.g. Body Weight), and the number of reps.</p>
-      <p>Next time you do the same session, the app will preload the exercises for you and display your best set from the previous session.</p>
+      <section role="region" aria-labelledby="intro-heading" class="section-intro-text">
+        <h2 id="intro-heading">What is the Gym Tracker?</h2>
+        <p>The Gym Tracker App provides an easy interface to help you track your exercises, weights and reps at the gym.</p>
+        <p>To start off, enter your email address. Then select the training session you're doing at the gym, then add your first exercise.</p>
+        <p>Once you've done a set, record the weight in numbers (e.g. 40) or text (e.g. Body Weight), and the number of reps.</p>
+        <p>Next time you do the same session, the app will preload the exercises for you and display your best set from the previous session.</p>
+      </section>
     `;
   },
   loginForm: function() {

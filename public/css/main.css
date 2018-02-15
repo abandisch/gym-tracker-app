@@ -85,7 +85,6 @@ label {
 }
 /* header */
 header {
-  max-width: 960px;
   margin: 0 auto;
   height: 140px;
   background-size: cover;
@@ -126,6 +125,15 @@ main > section {
 }
 #login-form input, #login-form .btn {
   margin-top: 8px;
+}
+.section-intro-text {
+  margin-top: 30px;
+  padding: 20px 0 0;
+}
+.section-intro-text h2 {
+  margin: 0;
+  font-size: 1.3em;
+  font-weight: 500;
 }
 
 /* Select training session form */
@@ -248,13 +256,14 @@ main > section {
 #exercises-form .exercise-list {
   list-style-type: none;
   padding: 0;
-  max-width: 460px;
   margin: 0 auto;
+  max-width: 400px;
 }
 #exercises-form .exercise-list li {
   border-bottom: 1px dashed #022f5f;
   margin: 0 0 20px;
   padding: 0 0 20px;
+  max-width: 400px;
 }
 #exercises-form .exercise-list h3 {
   margin: 0;
@@ -269,6 +278,7 @@ main > section {
   font-size: 0.8em;
   padding: 8px;
   text-align: center;
+  min-height: 50px;
 }
 #exercises-form .exercise-list .last-session-results p {
   margin: 0;
@@ -326,18 +336,29 @@ main > section {
   margin: 0 auto 10px;
 }
 
+/* Sticky Footer */
+.page-wrapper {
+  min-height: calc(100vh - 92px);
+}
+
 /* Footer */
 footer {
   background-color: #222;
   color: #eee;
   font-size: 0.8em;
   text-align: center;
-  padding: 10px;
+  padding: 15px;
+  height: 92px;
+}
+footer .footer-contents {
+  max-width: 960px;
+  height: 100%;
 }
 footer p {
   margin: 0;
-  padding: 0 0 5px;
+  padding: 0 0 8px;
 }
 footer p a, footer p a:visited {
+  text-decoration: none;
   color: #eee;
 }
