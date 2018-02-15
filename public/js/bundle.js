@@ -10737,9 +10737,10 @@ const SelectTrainingSessionPage = {
 const HomePage = {
   introText() {
     return `
-      <p>What this app does and how it's used at a high level ...</p>
-      <p>Bacon ipsum dolor amet pastrami cow fatback chuck swine meatloaf. Pastrami spare ribs tri-tip, chicken t-bone hamburger corned beef sirloin shoulder turkey short loin filet mignon.</p>
-      <p> Alcatra hamburger boudin jerky biltong pork chop tongue buffalo brisket chuck frankfurter tail. Tri-tip turducken pork, kielbasa brisket strip steak capicola beef buffalo leberkas alcatra ribeye shoulder t-bone. Rump bresaola pork belly ground round. </p>
+      <p>The Gym Tracker App provides an easy interface to help you track your exercises, weights and reps at the gym.</p>
+      <p>To start off, enter your email address. Then select the training session you're doing at the gym, then add your first exercise.</p>
+      <p>Once you've done a set, record the weight in numbers (e.g. 40) or text (e.g. Body Weight), and the number of reps.</p>
+      <p>Next time you do the same session, the app will preload the exercises for you and display your best set from the previous session.</p>
     `;
   },
   loginForm: function() {
