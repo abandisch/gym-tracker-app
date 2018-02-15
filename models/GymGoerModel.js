@@ -30,6 +30,17 @@ const gymGoerSchema = mongoose.Schema({
 // Assign the GymGoerExercisesMethods to the gymGoerSchema methods
 Object.assign(gymGoerExercisesSchema.statics, GymGoerExercisesMethods);
 
+gymGoerExercisesSchema.methods.serialize = function () {
+  return {
+    id: this._id,
+    exerciseName: this.exerciseName,
+    gymGoerId: this.gymGoerId,
+    sessionDate: this.sessionDate,
+    sessionType: this.sessionType,
+    sets: this.sets.map(set => ({setNumber: set.setNumber, weight: set.weight, reps: set.reps}))
+  };
+};
+
 gymGoerSchema.methods.serializeAll = function() {
   return {
     id: this._id,
@@ -83,7 +94,7 @@ gymGoerSchema.statics.createGymGoer = function (email) {
  * @param {string} gymGoerId - GymGoer ID
  * @returns {Object[]} - Array of previous exercise objects
  */
-gymGoerExercisesSchema.statics.findPreviousExercises = function(sessionType, gymGoerId) {
+gymGoerExercisesSchema.statics.findAllPreviousExercisesForSessionType = function(sessionType, gymGoerId) {
   const startToday = new Date().setHours(0,0,0,0);
 
   return this.find({ // find previous exercises for sessionType
@@ -93,6 +104,37 @@ gymGoerExercisesSchema.statics.findPreviousExercises = function(sessionType, gym
     })
     .sort({sessionDate: -1}) // sort in descending sessionDate order, so the 0th element will be the most recent
     .then(previousExercises => GymGoerExercisesModel.extractExercisesFromLastSession(previousExercises));
+};
+
+/**
+ * Find the last exercise for the given session type for the given GymGoer
+ * @param {string} sessionType - Type of training session (chest, legs, back, arms etc)
+ * @param {string} gymGoerId - GymGoer ID
+ * @param {string} exerciseName - Name of the exercise
+ * @param {boolean} findWithSets - find ony exercises that have sets
+ * @returns {Object[]} - Array of previous exercise objects
+ */
+gymGoerExercisesSchema.statics.findSinglePreviousExerciseForSessionType = function(gymGoerId, sessionType, exerciseName, findWithSets = true) {
+  const startToday = new Date().setHours(0,0,0,0);
+  let query = {
+    gymGoerId: gymGoerId,
+    sessionType: sessionType,
+    sessionDate: { $lt: startToday },
+    exerciseName: exerciseName
+  };
+
+  if (findWithSets === true) {
+    query['$where'] = "this.sets.length > 0";
+  }
+
+  return this.find(query)
+    .sort({sessionDate: -1}) // sort in descending sessionDate order, so the 0th element will be the most recent
+    .then(previousExercises => {
+      if (previousExercises.length > 0) {
+        return previousExercises[0].serialize();
+      }
+      return null;
+    });
 };
 
 /**
@@ -110,9 +152,17 @@ gymGoerExercisesSchema.statics.addNewExercise = function(gymGoerId, sessionType,
       sets: []
     })
     .then(() => GymGoerExercisesModel.findExercisesForToday(gymGoerId, sessionType))
+    .then(exercises => GymGoerExercisesModel.attachLastBestSetToMultipleExercises(exercises))
     .then(exercises => GymGoerExercisesModel.flattenExercises(exercises));
 };
 
+/**
+ * Adds multiple new exercise with no sets to the session for the given GymGoer
+ * @param {string} gymGoerId - GymGoer ID
+ * @param {string} sessionType - Type of training session (chest, legs, back, arms etc)
+ * @param {Object[]} exercises - Array of the new exercises to add
+ * @returns {Promise} - Updated session with new exercise added
+ */
 gymGoerExercisesSchema.statics.addMultipleNewExercises = function(gymGoerId, sessionType, exercises) {
 
   const exercisesToInsert = exercises.map(exercise => ({
@@ -124,6 +174,7 @@ gymGoerExercisesSchema.statics.addMultipleNewExercises = function(gymGoerId, ses
 
   return this.insertMany(exercisesToInsert)
     .then(() => GymGoerExercisesModel.findExercisesForToday(gymGoerId, sessionType))
+    .then(exercises => GymGoerExercisesModel.attachLastBestSetToMultipleExercises(exercises))
     .then(exercises => GymGoerExercisesModel.flattenExercises(exercises));
 };
 
@@ -169,17 +220,39 @@ gymGoerExercisesSchema.statics.addNewSet = function (gymGoerId, sessionType, exe
 };
 
 /**
+ * Callback function for attachLastBestSetToMultipleExercises - finds the previous exercise and gets the best set from that exercise
+ * @param {Object} exercise object
+ * @returns {Promise} - Updated exercise with last best sets added to the exercise
+ */
+gymGoerExercisesSchema.statics.attachLastBestSetToSingleExercise = function (exercise) {
+  return GymGoerExercisesModel.findSinglePreviousExerciseForSessionType(exercise.gymGoerId, exercise.sessionType, exercise.exerciseName)
+    .then(previousExercise => {
+      let lastBest = {};
+      if (previousExercise !== null) {
+        lastBest = GymGoerExercisesModel.getLastBestSet(previousExercise.sets, previousExercise.sessionDate);
+      }
+      return {
+        sessionDate: exercise.sessionDate,
+        exerciseName: exercise.exerciseName,
+        sets: exercise.sets,
+        gymGoerId: exercise.gymGoerId,
+        sessionType: exercise.sessionType,
+        lastBestSet: lastBest
+      };
+    });
+};
+
+/**
  * Finds the last best set from the previous session exercise sets
- * @param {Object} currentSession - current training session
- * @param {Object} previousSession - previous training session
+ * @param {Object[]} exercises - array of exercise objects
  * @returns {Promise} - Updated session with new last best sets added to each exercise
  */
-gymGoerExercisesSchema.statics.findLastBestSetForExercise = function (previousSession) {
-  if (previousSession !== undefined) {
-    return GymGoerExercisesMethods.getLastBestSet(previousSession.sets, previousSession.sessionDate);
-  } else {
-    return {};
-  }
+gymGoerExercisesSchema.statics.attachLastBestSetToMultipleExercises = function (exercises) {
+  const processExercisesFunctions = [];
+  exercises.forEach(exercise => processExercisesFunctions.push(GymGoerExercisesModel.attachLastBestSetToSingleExercise(exercise)));
+  return Promise
+    .all(processExercisesFunctions)
+    .catch(err => console.error(err));
 };
 
 /**
@@ -198,7 +271,7 @@ gymGoerExercisesSchema.statics.flattenExercises = function(arrayOfExercises) {
       return {
         name: exercise.exerciseName,
         sets: exercise.sets,
-        lastBestSet: {}//exercise.lastBestSet
+        lastBestSet: exercise.lastBestSet
       };
     })
   };
@@ -212,7 +285,7 @@ gymGoerExercisesSchema.statics.flattenExercises = function(arrayOfExercises) {
  */
 gymGoerExercisesSchema.statics.preFillExercisesFromPreviousSession = function (gymGoerId, sessionType) {
   const startToday = new Date().setHours(0,0,0,0);
-  return GymGoerExercisesModel.findPreviousExercises(sessionType, gymGoerId)
+  return GymGoerExercisesModel.findAllPreviousExercisesForSessionType(sessionType, gymGoerId)
     .then(exercisesArray => {
       const defaultSessionObject = { sessionType: sessionType, sessionDate: startToday, exercises: [] };
       if (exercisesArray.length > 0) {
@@ -220,8 +293,6 @@ gymGoerExercisesSchema.statics.preFillExercisesFromPreviousSession = function (g
       } else {
         return defaultSessionObject;
       }
-      // return exercisesArray.length ? GymGoerExercisesModel.addMultipleNewExercises(gymGoerId, sessionType, exercisesArray) : defaultSessionObject;
-      //return Object.assign(defaultObject, GymGoerExercisesModel.addMultipleNewExercises(gymGoerId, sessionType, exercisesArray));
     });
 };
 
@@ -234,8 +305,11 @@ gymGoerExercisesSchema.statics.preFillExercisesFromPreviousSession = function (g
  */
 gymGoerExercisesSchema.statics.initSessionExercises = function(gymGoerId, sessionType) {
   return GymGoerExercisesModel.findExercisesForToday(gymGoerId, sessionType)
+    .then(exercises => GymGoerExercisesModel.attachLastBestSetToMultipleExercises(exercises))
     .then(exercises => {
       if (exercises !== null && exercises.length > 0) { // There are exercises for today
+        // return GymGoerExercisesModel.findLastBestSetForExercises(exercisesArray)
+        //        .then(exercises => GymGoerExercisesModel.flattenExercises(exercises))
         return GymGoerExercisesModel.flattenExercises(exercises)
       } else { // No exercises for today
         return GymGoerExercisesModel.preFillExercisesFromPreviousSession(gymGoerId, sessionType);

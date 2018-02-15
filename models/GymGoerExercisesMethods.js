@@ -38,12 +38,6 @@ const GymGoerExercisesMethods = {
       })
       .then(count => count > 0);
   },
-  serialize() {
-    return {
-      id: this._id,
-      email: this.email
-    };
-  },
   findBestSet(sets) {
     sets
       .sort((setA, setB) => setB.reps - setA.reps) // sort by reps
