@@ -10440,10 +10440,42 @@ return jQuery;
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "State", function() { return State; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GymTrackerClient", function() { return GymTrackerClient; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gym_tracker_state__ = __webpack_require__(2);
+
+const $ = __webpack_require__(0);
+
+const GymTrackerClient = {
+  showStartPage() {
+    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_state__["a" /* State */].displayHomePage = true;
+    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_state__["a" /* State */].render();
+  },
+  showSelectTrainingSessionPage() {
+    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_state__["a" /* State */].displaySelectTrainingSessionPage = true;
+    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_state__["a" /* State */].render();
+  },
+  showEmptyTrainingSessionPage() {
+    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_state__["a" /* State */].displayEmptyTrainingSessionPage = true;
+    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_state__["a" /* State */].render();
+  },
+  showTrainingSessionPage() {
+    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_state__["a" /* State */].displayTrainingSessionPage = true;
+    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_state__["a" /* State */].render();
+  }
+};
+
+$(GymTrackerClient.showStartPage());
+
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return State; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__ = __webpack_require__(4);
 
 
 const $ = __webpack_require__(0);
@@ -10553,31 +10585,10 @@ const State = {
   }
 };
 
-const GymTrackerClient = {
-  showStartPage() {
-    State.displayHomePage = true;
-    State.render();
-  },
-  showSelectTrainingSessionPage() {
-    State.displaySelectTrainingSessionPage = true;
-    State.render();
-  },
-  showEmptyTrainingSessionPage() {
-    State.displayEmptyTrainingSessionPage = true;
-    State.render();
-  },
-  showTrainingSessionPage() {
-    State.displayTrainingSessionPage = true;
-    State.render();
-  }
-};
-
-$(GymTrackerClient.showStartPage());
-
 
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10764,13 +10775,15 @@ const HomePage = {
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return EventHandler; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gym_tracker__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__ = __webpack_require__(1);
+
 
 
 const $ = __webpack_require__(0);
@@ -10782,7 +10795,7 @@ const EventHandler = {
     __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */].authenticate(emailAddress)
       .then(result => {
         // show select training session page
-        __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showSelectTrainingSessionPage();
+        __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showSelectTrainingSessionPage();
       })
       .catch(err => {
         console.error('error:', err);
@@ -10796,12 +10809,12 @@ const EventHandler = {
     __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */]
       .initGymGoerTrainingSession(selectedTrainingSession)
       .then(result => {
-        __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionType = result.sessionType;
+        __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionType = result.sessionType;
         if (result.exercises.length !== 0) {  // if there are previous exercises from the last session
-          __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].initTrainingSessionExercises(result.exercises);
-          __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showTrainingSessionPage();
+          __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].initTrainingSessionExercises(result.exercises);
+          __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
         } else { // if there are no previous exercises, show empty training session page
-          __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showEmptyTrainingSessionPage();
+          __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showEmptyTrainingSessionPage();
         }
       })
       .catch(err => {
@@ -10810,30 +10823,30 @@ const EventHandler = {
   },
   onChangeSessionFormSubmit: function (event) {
     event.preventDefault();
-    __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showSelectTrainingSessionPage();
+    __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showSelectTrainingSessionPage();
   },
   onAddExerciseBigButtonFormSubmit: function (event) {
     event.preventDefault();
-    __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].displayAddExerciseInputForm = true;
-    __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showEmptyTrainingSessionPage();
+    __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].displayAddExerciseInputForm = true;
+    __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showEmptyTrainingSessionPage();
   },
   onAddExerciseSmallButtonFormSubmit: function (event) {
     event.preventDefault();
-    __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].displayAddExerciseInputForm = true;
-    __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showTrainingSessionPage();
+    __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].displayAddExerciseInputForm = true;
+    __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
   },
   onAddExerciseInputFormSubmit: function (event) {
     event.preventDefault();
     const exerciseName = $(event.currentTarget).find('input[name=exerciseName]').val();
     __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */]
-      .addExercise(__WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionType, exerciseName)
+      .addExercise(__WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionType, exerciseName)
       .then(session => {
         if (session.exercises.length !== 0) {
-          __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].initTrainingSessionExercises(session.exercises);
-          __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showTrainingSessionPage();
+          __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].initTrainingSessionExercises(session.exercises);
+          __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
         } else {
-          __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionExercises = [];
-          __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showEmptyTrainingSessionPage();
+          __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionExercises = [];
+          __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showEmptyTrainingSessionPage();
         }
       })
       .catch(err => {
@@ -10842,7 +10855,7 @@ const EventHandler = {
   },
   onCancelAddExerciseButtonFormSubmit: function (event) {
     event.preventDefault();
-    __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showTrainingSessionPage();
+    __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
   },
   onAddSetForExerciseButtonFormSubmit: function (event) {
     event.preventDefault();
@@ -10851,26 +10864,26 @@ const EventHandler = {
     // const button = $(document.activeElement);
 
     // If not 'Add Set' button will be undefined, so it will set displayAddSetInputForm to false
-    __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionExercises.forEach(exercise => {
+    __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionExercises.forEach(exercise => {
       exercise.displayAddSetInputForm = exercise.name === button.data('exercise');
     });
 
     if (button.data('exercise') !== undefined) {
-      __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].currentExercise = button.data('exercise')
+      __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].currentExercise = button.data('exercise')
     }
 
     if (button.text().trim() === 'Add Set' || button.text().trim() === 'Cancel') {
-      __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showTrainingSessionPage();
+      __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
     }
 
     if (button.text().trim() === 'Save New Set') {
       const weight = button.closest('.add-exercise-set').find('input[name=weight]').val();
       const reps = button.closest('.add-exercise-set').find('input[name=reps]').val();
       __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */]
-        .addSetToExercise(__WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionType, __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].currentExercise, {weight: weight, reps: reps})
+        .addSetToExercise(__WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionType, __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].currentExercise, {weight: weight, reps: reps})
         .then(updatedSession => {
-          __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].initTrainingSessionExercises(updatedSession.exercises);
-          __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["GymTrackerClient"].showTrainingSessionPage();
+          __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].initTrainingSessionExercises(updatedSession.exercises);
+          __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
         });
     }
   }
@@ -10879,11 +10892,11 @@ const EventHandler = {
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__cookies__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__cookies__ = __webpack_require__(6);
 
 const $ = __webpack_require__(0);
 
@@ -11174,7 +11187,7 @@ const GymTrackerAPI = {
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

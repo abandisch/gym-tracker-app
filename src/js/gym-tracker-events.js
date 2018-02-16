@@ -1,5 +1,6 @@
 import {GymTrackerAPI} from "./gym-tracker-api";
-import {GymTrackerClient, State} from "./gym-tracker";
+import {State} from "./gym-tracker-state";
+import {GymTrackerClient} from "./gym-tracker-client";
 const $ = require("jquery");
 
 const EventHandler = {

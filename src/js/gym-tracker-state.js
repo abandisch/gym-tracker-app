@@ -107,25 +107,4 @@ const State = {
   }
 };
 
-const GymTrackerClient = {
-  showStartPage() {
-    State.displayHomePage = true;
-    State.render();
-  },
-  showSelectTrainingSessionPage() {
-    State.displaySelectTrainingSessionPage = true;
-    State.render();
-  },
-  showEmptyTrainingSessionPage() {
-    State.displayEmptyTrainingSessionPage = true;
-    State.render();
-  },
-  showTrainingSessionPage() {
-    State.displayTrainingSessionPage = true;
-    State.render();
-  }
-};
-
-$(GymTrackerClient.showStartPage());
-
-export { State, GymTrackerClient }
+export { State }
