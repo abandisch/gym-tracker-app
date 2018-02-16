@@ -74,7 +74,8 @@ const EventHandler = {
   onAddSetForExerciseButtonFormSubmit: function (event) {
     event.preventDefault();
 
-    const button = $(document.activeElement);
+    const button = $(event.currentTarget);
+    // const button = $(document.activeElement);
 
     // If not 'Add Set' button will be undefined, so it will set displayAddSetInputForm to false
     State.trainingSessionExercises.forEach(exercise => {

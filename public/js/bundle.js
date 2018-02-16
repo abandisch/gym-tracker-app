@@ -10538,7 +10538,7 @@ const State = {
         formsContainer.append(addExercisesForm);
       }
 
-      // Exercises
+      // Exercises & Sets
       const exercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingSessionPage */].exercisesForm, session: State.trainingSessionExercises, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddSetForExerciseButtonFormSubmit });
       formsContainer.append(exercisesForm);
 
@@ -10589,14 +10589,14 @@ const $ = __webpack_require__(0);
 const TrainingSessionPage = {
   sessionHeading(session) {
     if (session === undefined) {
-      return null;
+      return '';
     }
     let trainingDate = new Date(session.sessionDate).toLocaleString().split(',').splice(0, 1)[0];
     return `<h2 class="training-session-type type-${session.sessionType}"><i class="fa ${session.sessionIcon}"></i> ${session.sessionType.toUpperCase()} - ${trainingDate}</h2>`;
   },
   noPreviousDataNote(session) {
     if (session === undefined) {
-      return null;
+      return '';
     }
     return `<p class="text-center">No previous data - this is the first time you're tracking ${session.sessionType}. Add a new exercise to begin.</p>`
   },
@@ -10640,7 +10640,7 @@ const TrainingSessionPage = {
     return lastSessionResults;
   },
   getExerciseSetsHTML(exercise) {
-    let exerciseSets = `<div class="table-row"><div class="table-cell"></div><div class="table-cell"></div><div class="table-cell"></div></div>`;
+    let exerciseSets = [`<div class="table-row"><div class="table-cell"></div><div class="table-cell"></div><div class="table-cell"></div></div>`];
     if (exercise.sets.length > 0) {
       exerciseSets = exercise.sets.map(set => {
       return `<div class="table-row">  
@@ -10673,10 +10673,7 @@ const TrainingSessionPage = {
   exercisesLiElement(exercise) {
     const lastSessionResultsHTML = TrainingSessionPage.getLastSessionResultsHTML(exercise);
 
-    let exerciseSetsHTML = TrainingSessionPage.getExerciseSetsHTML(exercise);
-    if (Array.isArray(exerciseSetsHTML)) {
-      exerciseSetsHTML = exerciseSetsHTML.join('');
-    }
+    let exerciseSetsHTML = TrainingSessionPage.getExerciseSetsHTML(exercise).join('');
 
     const addSetFormInputHTML = TrainingSessionPage.addExerciseSetFormInputHTML(exercise);
 
@@ -10705,7 +10702,8 @@ const TrainingSessionPage = {
   render(props) {
     const template = props.template(props.session);
     if (props.onSubmitForm) {
-      return $(template).on('submit', props.onSubmitForm);
+      return $(template).on('click', 'button', props.onSubmitForm);
+      // return $(template).on('submit', props.onSubmitForm);
     }
     return template;
   }
@@ -10849,7 +10847,8 @@ const EventHandler = {
   onAddSetForExerciseButtonFormSubmit: function (event) {
     event.preventDefault();
 
-    const button = $(document.activeElement);
+    const button = $(event.currentTarget);
+    // const button = $(document.activeElement);
 
     // If not 'Add Set' button will be undefined, so it will set displayAddSetInputForm to false
     __WEBPACK_IMPORTED_MODULE_1__gym_tracker__["State"].trainingSessionExercises.forEach(exercise => {

@@ -92,7 +92,7 @@ const State = {
         formsContainer.append(addExercisesForm);
       }
 
-      // Exercises
+      // Exercises & Sets
       const exercisesForm = TrainingSessionPage.render({ template: TrainingSessionPage.exercisesForm, session: State.trainingSessionExercises, onSubmitForm: EventHandler.onAddSetForExerciseButtonFormSubmit });
       formsContainer.append(exercisesForm);
 
