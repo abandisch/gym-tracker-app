@@ -243,8 +243,9 @@ main > section {
 .exercise-data #add-exercise-button-form button, .exercise-data #change-session-form button, .exercise-data #cancel-add-exercise-button-form button {
   width: 140px;
 }
-.exercise-data #exercises-form {
-  margin: 50px 0 0;
+/*.exercise-data #exercises-form {*/
+.exercise-data .exercise-list {
+  margin: 50px auto 0;
 }
 .exercise-data #add-exercise-input-form {
   clear: both;
@@ -256,26 +257,30 @@ main > section {
   display: block;
   margin: 0 auto 5px;
 }
-#exercises-form .exercise-list {
+/*#exercises-form .exercise-list {*/
+.exercise-list {
   list-style-type: none;
   padding: 0;
   margin: 0 auto;
   max-width: 400px;
 }
-#exercises-form .exercise-list li {
+/*#exercises-form .exercise-list li {*/
+.exercise-list li {
   border-bottom: 1px dashed #022f5f;
   margin: 0 0 20px;
   padding: 0 0 20px;
   max-width: 400px;
 }
-#exercises-form .exercise-list h3 {
+/*#exercises-form .exercise-list h3 {*/
+.exercise-list h3 {
   margin: 0;
   background-color: #e0e0e0;
   padding: 15px;
   text-align: center;
   font-size: 1.2em;
 }
-#exercises-form .exercise-list .last-session-results {
+/*#exercises-form .exercise-list .last-session-results {*/
+.exercise-list .last-session-results {
   background-color: #03a9f4;
   color: #fff;
   font-size: 0.8em;
@@ -283,32 +288,38 @@ main > section {
   text-align: center;
   min-height: 50px;
 }
-#exercises-form .exercise-list .last-session-results p {
+/*#exercises-form .exercise-list .last-session-results p {*/
+.exercise-list .last-session-results p {
   margin: 0;
   line-height: 1.4em;
   letter-spacing: 0.1em;
 }
-#exercises-form .exercise-list .last-session-results p:first-of-type {
+/*#exercises-form .exercise-list .last-session-results p:first-of-type {*/
+.exercise-list .last-session-results p:first-of-type {
   font-weight: bold;
 }
-#exercises-form .exercise-list .set-table {
+/*#exercises-form .exercise-list .set-table {*/
+.exercise-list .set-table {
   display: table;
   font-size: 0.8em;
   width: 100%;
   table-layout: fixed;
   margin: 0 0 10px;
 }
-#exercises-form .exercise-list .set-table .table-row {
+/*#exercises-form .exercise-list .set-table .table-row {*/
+.exercise-list .set-table .table-row {
   display: table-row;
 }
-#exercises-form .exercise-list .set-table .table-cell {
+/*#exercises-form .exercise-list .set-table .table-cell {*/
+.exercise-list .set-table .table-cell {
   display: table-cell;
   text-align: center;
   padding: 8px 0;
   height: 31px;
   border-bottom: 1px solid #cecaca;
 }
-#exercises-form .exercise-list button {
+/*#exercises-form .exercise-list button {*/
+.exercise-list button {
   display: block;
   width: 140px;
   margin: 0 auto;
@@ -333,7 +344,8 @@ main > section {
   width: 70%;
   font-size: 0.9em;
 }
-#exercises-form .exercise-list .add-exercise-set button {
+/*#exercises-form .exercise-list .add-exercise-set button {*/
+.exercise-list .add-exercise-set button {
   max-width: 310px;
   width: 100%;
   margin: 0 auto 10px;

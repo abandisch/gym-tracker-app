@@ -37,34 +37,41 @@
     padding: 0;
   }
 
-  #exercises-form .exercise-list {
+  /*#exercises-form .exercise-list {*/
+  .exercise-list {
     width: 100%;
     max-width: 900px;
   }
-  #exercises-form .exercise-list li {
+  /*#exercises-form .exercise-list li {*/
+  .exercise-list li {
     display: flex;
     flex-direction: row;
     max-width: 100%;
     flex-wrap: wrap;
     border: 1px solid #eee;
   }
-  #exercises-form .exercise-list h3 {
+  /*#exercises-form .exercise-list h3 {*/
+  .exercise-list h3 {
     width: 50%;
     font-size: 1em;
     text-align: left;
   }
-  #exercises-form .exercise-list .last-session-results {
+  /*#exercises-form .exercise-list .last-session-results {*/
+  .exercise-list .last-session-results {
     width: 50%;
   }
-  #exercises-form .exercise-list .set-table {
+  /*#exercises-form .exercise-list .set-table {*/
+  .exercise-list .set-table {
     width: 70%;
     margin-top: 10px;
   }
-  #exercises-form .exercise-list button {
+  /*#exercises-form .exercise-list button {*/
+  .exercise-list button {
     width: 20%;
     margin: 10px auto;
   }
-  #exercises-form .exercise-list li .add-exercise-set {
+  /*#exercises-form .exercise-list li .add-exercise-set {*/
+  .exercise-list li .add-exercise-set {
     width: 28%;
     margin: 10px auto 0;
   }
