@@ -36,6 +36,9 @@ label {
 }
 
 /* Button Types */
+button:hover {
+  cursor: pointer;
+}
 .btn-block {
   display: block;
   width: 100%;

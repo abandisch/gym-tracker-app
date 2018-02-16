@@ -36,24 +36,37 @@
   footer p {
     padding: 0;
   }
-}
 
-@media screen and (min-width: 820px) {
-  #exercises-form {
-    width: 100%;
-    display: table;
-    text-align: center;
-  }
   #exercises-form .exercise-list {
-    list-style: none;
-    padding-top: 20px;
-    max-width: 100%;
+    width: 100%;
+    max-width: 900px;
   }
   #exercises-form .exercise-list li {
-    display: inline-block;
-    max-width: 300px;
-    margin: 20px;
-    vertical-align: top;
+    display: flex;
+    flex-direction: row;
+    max-width: 100%;
+    flex-wrap: wrap;
+    border: 1px solid #eee;
+  }
+  #exercises-form .exercise-list h3 {
+    width: 50%;
+    font-size: 1em;
+    text-align: left;
+  }
+  #exercises-form .exercise-list .last-session-results {
+    width: 50%;
+  }
+  #exercises-form .exercise-list .set-table {
+    width: 70%;
+    margin-top: 10px;
+  }
+  #exercises-form .exercise-list button {
+    width: 20%;
+    margin: 10px auto;
+  }
+  #exercises-form .exercise-list li .add-exercise-set {
+    width: 28%;
+    margin: 10px auto 0;
   }
 }
 
