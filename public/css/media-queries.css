@@ -23,7 +23,8 @@
     background-image: url(../images/header-bg-776.jpg);
   }
   header h1 {
-    font-size: 3em;
+    font-size: 7vw;
+    /*font-size: 54px;*/
     line-height: 195px;
   }
 
@@ -45,13 +46,15 @@
   footer p {
     padding: 0;
   }
-
-  /*#exercises-form .exercise-list {*/
+ /* .exercise-list .add-exercise-set button {
+    max-width: 100px;
+    width: auto;
+    margin: 0 10px;
+  }*/
   .exercise-list {
     width: 100%;
     max-width: 900px;
   }
-  /*#exercises-form .exercise-list li {*/
   .exercise-list li {
     display: flex;
     flex-direction: row;
@@ -59,27 +62,26 @@
     flex-wrap: wrap;
     border: 1px solid #eee;
   }
-  /*#exercises-form .exercise-list h3 {*/
   .exercise-list h3 {
     width: 50%;
-    font-size: 1em;
     text-align: left;
+    font-size: 1.1em;
+    padding: 14px;
   }
-  /*#exercises-form .exercise-list .last-session-results {*/
   .exercise-list .last-session-results {
     width: 50%;
+    font-size: 0.9em;
+    padding: 5px;
   }
-  /*#exercises-form .exercise-list .set-table {*/
   .exercise-list .set-table {
     width: 70%;
     margin-top: 10px;
+    font-size: 1em;
   }
-  /*#exercises-form .exercise-list button {*/
   .exercise-list button {
     width: 20%;
     margin: 10px auto;
   }
-  /*#exercises-form .exercise-list li .add-exercise-set {*/
   .exercise-list li .add-exercise-set {
     width: 28%;
     margin: 10px auto 0;
@@ -102,6 +104,7 @@
   }
   header h1 {
     line-height: 300px;
+    font-size: 6vw;
   }
 }
 
@@ -109,6 +112,9 @@
   header {
     height: 300px;
     background-image: url(../images/header-bg-1200.jpg);
+  }
+  header h1 {
+    font-size: 5vw;
   }
 }
 
@@ -119,5 +125,6 @@
   }
   header h1 {
     line-height: 450px;
+    font-size: 4vw;
   }
 }

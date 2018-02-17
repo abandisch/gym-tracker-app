@@ -67,11 +67,18 @@ button:hover {
 .btn-change-session:hover {
   background-color: #535353;
 }
-.btn-start, .btn-add-set, .btn-add-exercise, .btn-save-set {
+.btn-add-exercise {
+  background-color: #3F7999;
+  border-color: #3F7999;
+}
+.btn-add-exercise:hover {
+  background-color: #2B6585;
+}
+.btn-start, .btn-add-set, .btn-save-set {
   border-color: #03b85c;
   background-color: #03CC67;
 }
-.btn-start:hover, .btn-add-set:hover, .btn-add-exercise:hover, .btn-save-set:hover {
+.btn-start:hover, .btn-add-set:hover, .btn-save-set:hover {
   background-color: #00B853;
 }
 .btn-cancel-add-set, .btn-cancel-add-exercise {
@@ -82,28 +89,28 @@ button:hover {
   background-color: #EB774F;
 }
 .btn-chest, .type-chest {
-  background-color: #026094;
+  background-color: #81C3D7;
 }
 .btn-chest:hover {
-  background-color: #004C80;
+  background-color: #6DAFC3;
 }
 .btn-arms, .type-arms {
-  background-color: #FF9243;
+  background-color: #3A7CA5;
 }
 .btn-arms:hover {
-  background-color: #EB7E2F;
+  background-color: #266891;
 }
 .btn-legs, .type-legs {
-  background-color: #CC4917;
+  background-color: #16425B;
 }
 .btn-legs:hover {
-  background-color: #B83503;
+  background-color: #022E47;
 }
 .btn-back, .type-back {
-  background-color: #009798;
+  background-color: #007886;
 }
 .btn-back:hover {
-  background-color: #008384;
+  background-color: #006472;
 }
 
 /* header */
@@ -117,12 +124,13 @@ header {
 }
 header h1 {
   text-transform: uppercase;
-  font-size: 2em;
+  font-size: 8vw;
+  /*font-size: 32px;*/
   font-weight: normal;
   text-align: center;
   line-height: 100px;
-  color: #08D3E8;
-  text-shadow: 1px 2px 1px #222, 3px 3px 5px #222;
+  color: #f8f9fb;
+  text-shadow: 2px 4px 1px #222, 4px 3px 5px #222;
   margin: 0;
 }
 
@@ -201,18 +209,6 @@ main > section {
   font-weight: normal;
   font-size: 1.2em;
 }
-/*.type-chest {
-  background-color: #0275d8;
-}
-.type-arms {
-  background-color: #e91e63;
-}
-.type-legs {
-  background-color: #009688;
-}
-.type-back {
-  background-color: #ff9800;
-}*/
 /* Training Session Page - No previous exercises */
 .no-previous-data #add-exercise-button-form > p {
   text-align: center;
@@ -291,34 +287,30 @@ main > section {
   padding: 0 0 20px;
   max-width: 400px;
 }
-/*#exercises-form .exercise-list h3 {*/
 .exercise-list h3 {
   margin: 0;
-  background-color: #e0e0e0;
+  background-color: #D9DCD6;
   padding: 15px;
   text-align: center;
   font-size: 1.2em;
 }
-/*#exercises-form .exercise-list .last-session-results {*/
 .exercise-list .last-session-results {
-  background-color: #14A3E8;
+  /*background-color: #14A3E8;*/
+  background-color: #263A40;
   color: #fff;
   font-size: 0.8em;
   padding: 8px;
   text-align: center;
   min-height: 50px;
 }
-/*#exercises-form .exercise-list .last-session-results p {*/
 .exercise-list .last-session-results p {
   margin: 0;
   line-height: 1.4em;
   letter-spacing: 0.1em;
 }
-/*#exercises-form .exercise-list .last-session-results p:first-of-type {*/
 .exercise-list .last-session-results p:first-of-type {
   font-weight: bold;
 }
-/*#exercises-form .exercise-list .set-table {*/
 .exercise-list .set-table {
   display: table;
   font-size: 0.8em;
@@ -326,11 +318,9 @@ main > section {
   table-layout: fixed;
   margin: 0 0 10px;
 }
-/*#exercises-form .exercise-list .set-table .table-row {*/
 .exercise-list .set-table .table-row {
   display: table-row;
 }
-/*#exercises-form .exercise-list .set-table .table-cell {*/
 .exercise-list .set-table .table-cell {
   display: table-cell;
   text-align: center;
@@ -338,7 +328,6 @@ main > section {
   height: 31px;
   border-bottom: 1px solid #cecaca;
 }
-/*#exercises-form .exercise-list button {*/
 .exercise-list button {
   display: block;
   width: 140px;
