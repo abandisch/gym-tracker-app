@@ -32,7 +32,7 @@ const TrainingPageHeadingSection = {
 const TrainingPageChangeSessionSection = {
   html() {
     return `<form role="form" id="change-session-form">
-              <button class="btn btn-grey btn-small"><i class="fa fa-undo" aria-hidden="true"></i> Change Session</button>
+              <button class="btn btn-change-session btn-small"><i class="fa fa-undo" aria-hidden="true"></i> Change Session</button>
             </form>`;
   },
   render(props) {
@@ -47,17 +47,17 @@ const TrainingPageChangeSessionSection = {
 const TrainingPageAddExerciseSection = {
   cancelAddExerciseSmallButtonForm() {
     return `<form role="form" id="cancel-add-exercise-button-form">
-              <button class="btn btn-orange btn-small"><i class="fa fa-ban" aria-hidden="true"></i> Cancel</button>
+              <button class="btn btn-small btn-cancel-add-exercise"><i class="fa fa-ban" aria-hidden="true"></i> Cancel</button>
             </form>`;
   },
   addExerciseSmallButtonForm() {
     return `<form role="form" id="add-exercise-button-form">
-              <button class="btn btn-green btn-small"><i class="fa fa-plus" aria-hidden="true"></i> Add Exercise</button>
+              <button class="btn btn-add-exercise btn-small"><i class="fa fa-plus" aria-hidden="true"></i> Add Exercise</button>
             </form>`;
   },
   addExerciseBigButtonForm() {
     return `<form role="form" id="add-exercise-button-form">
-              <button id="addBigExerciseButton" class="btn btn-big-round btn-green"><i class="fa fa-plus" aria-hidden="true"></i></button>
+              <button id="addBigExerciseButton" class="btn btn-big-round btn-add-exercise"><i class="fa fa-plus" aria-hidden="true"></i></button>
               <label for="addBigExerciseButton">Add a new Exercise</label>
             </form>`;
   },
@@ -65,7 +65,7 @@ const TrainingPageAddExerciseSection = {
     return `<form role="form" id="add-exercise-input-form">
               <label for="exerciseName">Add a new exercise</label>
               <input type="text" id="exerciseName" name="exerciseName" placeholder="New exercise name">
-              <button class="btn btn-green"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Save New Exercise</button>
+              <button class="btn btn-add-exercise"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Save New Exercise</button>
             </form>`;
   },
   render(props) {
@@ -93,7 +93,7 @@ const TrainingPageExerciseSetSection = {
   },
   addExerciseSetButtonFormHTML(exercise, exerciseIndex) {
     return `<form role="form" data-exercise-index="${exerciseIndex}">
-              <button class="btn btn-small btn-aqua" data-exercise="${exercise.name}"><i class="fa fa-plus-square-o"></i> Add Set</button>
+              <button class="btn btn-small btn-add-set" data-exercise="${exercise.name}"><i class="fa fa-plus-square-o"></i> Add Set</button>
             </form>`;
   },
   addExerciseSetInputFormHTML(exercise, exerciseIndex) {
@@ -106,14 +106,14 @@ const TrainingPageExerciseSetSection = {
                 <label for="setReps">Reps: </label>
                 <input type="number" id="setReps" name="reps" placeholder="Number of reps" required>
               </div> 
-              <button class="btn btn-small btn-green">
+              <button class="btn btn-small btn-save-set">
                 <i class="fa fa-plus-square-o" aria-hidden="true" data-exercise-name="${exercise.name}"></i> Save New Set
               </button>
             </form>`;
   },
   cancelAddExerciseSetButtonForm() {
     return `<form role="form">
-              <button class="btn btn-small btn-orange">
+              <button class="btn btn-small btn-cancel-add-set">
                 <i class="fa fa-ban" aria-hidden="true"></i> Cancel
               </button>
             </form>`;
@@ -198,10 +198,10 @@ const SelectTrainingSessionSection = {
   },
   selectTrainingSessionForm() {
     return `<form role="form" id="select-training-session-form">
-              <button class="btn-block btn-blue" data-session="chest"><i class="fa fa-user"></i> CHEST <span><i class="fa fa-angle-right"></i></span></button>
-              <button class="btn-block btn-pink" data-session="arms"><i class="fa fa-hand-grab-o"></i> ARMS <span><i class="fa fa-angle-right"></i></span></button>
-              <button class="btn-block btn-teal" data-session="legs"><i class="fa fa-male"></i> LEGS <span><i class="fa fa-angle-right"></i></span></button>
-              <button class="btn-block btn-orange" data-session="back"><i class="fa fa-heart"></i> BACK <span><i class="fa fa-angle-right"></i></span></button>
+              <button class="btn-block btn-chest" data-session="chest"><i class="fa fa-user"></i> CHEST <span><i class="fa fa-angle-right"></i></span></button>
+              <button class="btn-block btn-back" data-session="back"><i class="fa fa-heart"></i> BACK <span><i class="fa fa-angle-right"></i></span></button>
+              <button class="btn-block btn-arms" data-session="arms"><i class="fa fa-hand-grab-o"></i> ARMS <span><i class="fa fa-angle-right"></i></span></button>
+              <button class="btn-block btn-legs" data-session="legs"><i class="fa fa-male"></i> LEGS <span><i class="fa fa-angle-right"></i></span></button>
             </form>`;
   },
   render(props) {
@@ -229,7 +229,7 @@ const HomePage = {
     return `<form role="form" id="login-form">
               <label for="emailAddress">Enter your email address to get started:</label>
               <input type="email" id="emailAddress" name="emailAddress" placeholder="Your Email Address" required>
-              <button class="btn btn-green"><i class="fa fa-play"></i> Start Your Training Session</button>
+              <button class="btn btn-start"><i class="fa fa-play"></i> Start Your Training Session</button>
             </form>`;
   },
   render(props) {

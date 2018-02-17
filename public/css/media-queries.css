@@ -1,3 +1,12 @@
+@media screen and (min-width: 480px) {
+  header {
+    height: 120px;
+    background-image: url(../images/header-bg-480.jpg);
+  }
+  header h1 {
+    line-height: 120px;
+  }
+}
 @media screen and (min-width: 500px) {
   .exercise-data #add-exercise-button-form button, .exercise-data #change-session-form button, .exercise-data #cancel-add-exercise-button-form button {
     width: 200px;
@@ -10,12 +19,12 @@
 }
 @media screen and (min-width: 776px) {
   header {
-    height: 180px;
-    /*margin: 0 auto 40px;*/
+    height: 195px;
+    background-image: url(../images/header-bg-776.jpg);
   }
   header h1 {
     font-size: 3em;
-    line-height: 180px;
+    line-height: 195px;
   }
 
   .section-intro-text {
@@ -83,5 +92,32 @@
     right: 20px;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  header {
+    height: 300px;
+    background-image: url(../images/header-bg-992.jpg);
+  }
+  header h1 {
+    line-height: 300px;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  header {
+    height: 300px;
+    background-image: url(../images/header-bg-1200.jpg);
+  }
+}
+
+@media screen and (min-width: 1920px) {
+  header {
+    height: 450px;
+    background-image: url(../images/header-bg-1920.jpg);
+  }
+  header h1 {
+    line-height: 450px;
   }
 }

@@ -60,38 +60,58 @@ button:hover {
 .btn-small {
   font-size: 0.8em;
 }
-.btn.btn-green {
-  background-color: #00bb00;
-  border-color: #00a900;
+.btn-change-session {
+  border-color: #909090;
+  background-color: #676767;
 }
-.btn.btn-green:hover {
-  background-color: #00a800;
+.btn-change-session:hover {
+  background-color: #535353;
 }
-.btn-blue {
-  background-color: #0275d8;
+.btn-start, .btn-add-set, .btn-add-exercise, .btn-save-set {
+  border-color: #03b85c;
+  background-color: #03CC67;
 }
-.btn-pink {
-  background-color: #e91e63;
+.btn-start:hover, .btn-add-set:hover, .btn-add-exercise:hover, .btn-save-set:hover {
+  background-color: #00B853;
 }
-.btn-teal {
-  background-color: #009688;
+.btn-cancel-add-set, .btn-cancel-add-exercise {
+  border-color: #d37352;
+  background-color: #FF8B63;
 }
-.btn-orange {
-  background-color: #ff9800;
+.btn-cancel-add-set:hover, .btn-cancel-add-exercise:hover {
+  background-color: #EB774F;
 }
-.btn-grey {
-  background-color: #607d8b;
+.btn-chest, .type-chest {
+  background-color: #026094;
 }
-.btn-aqua {
-  background-color: #5bc0de;
-  border-color: #2E9ADE;
+.btn-chest:hover {
+  background-color: #004C80;
 }
+.btn-arms, .type-arms {
+  background-color: #FF9243;
+}
+.btn-arms:hover {
+  background-color: #EB7E2F;
+}
+.btn-legs, .type-legs {
+  background-color: #CC4917;
+}
+.btn-legs:hover {
+  background-color: #B83503;
+}
+.btn-back, .type-back {
+  background-color: #009798;
+}
+.btn-back:hover {
+  background-color: #008384;
+}
+
 /* header */
 header {
   margin: 0 auto;
-  height: 140px;
+  height: 100px;
   background-size: cover;
-  background-image: url(../images/gym-tracker-header.jpg);
+  background-image: url(../images/header-bg-375.jpg);
   background-repeat: no-repeat;
   padding: 0;
 }
@@ -100,9 +120,9 @@ header h1 {
   font-size: 2em;
   font-weight: normal;
   text-align: center;
-  line-height: 140px;
-  color: #1ed0dc;
-  text-shadow: 1px 1px 1px #000, 3px 3px 5px #000;
+  line-height: 100px;
+  color: #08D3E8;
+  text-shadow: 1px 2px 1px #222, 3px 3px 5px #222;
   margin: 0;
 }
 
@@ -181,7 +201,7 @@ main > section {
   font-weight: normal;
   font-size: 1.2em;
 }
-.type-chest {
+/*.type-chest {
   background-color: #0275d8;
 }
 .type-arms {
@@ -192,7 +212,7 @@ main > section {
 }
 .type-back {
   background-color: #ff9800;
-}
+}*/
 /* Training Session Page - No previous exercises */
 .no-previous-data #add-exercise-button-form > p {
   text-align: center;
@@ -281,7 +301,7 @@ main > section {
 }
 /*#exercises-form .exercise-list .last-session-results {*/
 .exercise-list .last-session-results {
-  background-color: #03a9f4;
+  background-color: #14A3E8;
   color: #fff;
   font-size: 0.8em;
   padding: 8px;
@@ -358,7 +378,7 @@ main > section {
 
 /* Footer */
 footer {
-  background-color: #222;
+  background-color: #012940;
   color: #eee;
   font-size: 0.8em;
   text-align: center;
