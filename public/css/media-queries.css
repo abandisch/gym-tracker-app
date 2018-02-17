@@ -120,11 +120,11 @@
 
 @media screen and (min-width: 1920px) {
   header {
-    height: 450px;
+    height: 350px;
     background-image: url(../images/header-bg-1920.jpg);
   }
   header h1 {
-    line-height: 450px;
+    line-height: 350px;
     font-size: 4vw;
   }
 }
