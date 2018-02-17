@@ -130,7 +130,7 @@ const TrainingPageExerciseSetSection = {
 
 const TrainingPageExerciseListSection = {
   createLastBestSetHTML(exercise) {
-    let lastSessionResults = '<div class="last-session-results"><p class="last-session-date"></p><p class="last-session-stats">No stats from a previous session</p></div>';
+    let lastSessionResults = '<div class="last-session-results"><p class="no-stats">No stats from a previous session</p></div>';
     if (exercise.lastBestSet.weight !== undefined && exercise.lastBestSet.reps !== undefined) {
       const lastSessionDate = new Date(exercise.lastBestSet.sessionDate).toLocaleString().split(',').splice(0, 1)[0];
       lastSessionResults = `<div class="last-session-results">

@@ -311,6 +311,10 @@ main > section {
 .exercise-list .last-session-results p:first-of-type {
   font-weight: bold;
 }
+.exercise-list .last-session-results p.no-stats {
+  line-height: 2.8em;
+  font-weight: normal;
+}
 .exercise-list .set-table {
   display: table;
   font-size: 0.8em;
