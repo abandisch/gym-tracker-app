@@ -151,15 +151,15 @@ main > section {
 }
 
 /* Start Page */
-#login-form {
+.login-form {
   width: 100%;
   max-width: 400px;
   margin: 0 auto;
 }
-#login-form input, #login-form .btn {
+.login-form input, .login-form .btn {
   width: 100%
 }
-#login-form input, #login-form .btn {
+.login-form input, .login-form .btn {
   margin-top: 8px;
 }
 .section-intro-text {
@@ -178,24 +178,24 @@ main > section {
   font-size: 1.2em;
   font-weight: normal;
 }
-#select-training-session-form {
+.select-training-session-form {
   width: 100%;
   max-width: 400px;
   margin: 0 auto;
 }
-#select-training-session-form .btn-block {
+.select-training-session-form .btn-block {
   margin: 0 0 5px;
   text-align: left;
   position: relative;
   height: 45px;
 }
-#select-training-session-form .btn-block > i {
+.select-training-session-form .btn-block > i {
   display: inline-block;
   width: 20px;
   margin: 0 5px;
   text-align: center;
 }
-#select-training-session-form .btn-block span {
+.select-training-session-form .btn-block span {
   position: absolute;
   right: 10px;
 }
@@ -215,63 +215,63 @@ main > section {
   font-size: 1.2em;
 }
 /* Training Session Page - No previous exercises */
-.no-previous-data #add-exercise-button-form > p {
+.no-previous-data .add-exercise-button-form > p {
   text-align: center;
   margin: 15px 0 0;
 }
-.no-previous-data #add-exercise-button-form button {
+.no-previous-data .add-exercise-button-form button {
   margin: 15px auto 0;
 }
-.no-previous-data #add-exercise-button-form .btn-big-round > i {
+.no-previous-data .add-exercise-button-form .btn-big-round > i {
   line-height: 97px;
   font-size: 2.5em;
   font-weight: normal;
 }
-.no-previous-data #add-exercise-button-form button + label {
+.no-previous-data .add-exercise-button-form button + label {
   font-weight: normal;
   text-align: center;
   display: block;
   margin: 10px 0 0;
 }
-.no-previous-data #add-exercise-input-form > p {
+.no-previous-data .add-exercise-input-form > p {
   text-align: center;
   margin: 15px 0;
 }
-.no-previous-data #add-exercise-input-form label {
+.no-previous-data .add-exercise-input-form label {
   margin: 0 auto;
 }
-.no-previous-data #add-exercise-input-form label , .no-previous-data #add-exercise-input-form input, .no-previous-data #add-exercise-input-form button {
+.no-previous-data .add-exercise-input-form label , .no-previous-data .add-exercise-input-form input, .no-previous-data .add-exercise-input-form button {
   width: 100%;
   max-width: 375px;
   display: block;
 }
-.no-previous-data #add-exercise-input-form input {
+.no-previous-data .add-exercise-input-form input {
   margin: 3px auto 5px;
 }
-.no-previous-data #add-exercise-input-form button {
+.no-previous-data .add-exercise-input-form button {
   margin: 0 auto;
   text-align: center;
 }
 .no-previous-data, .exercise-data {
   padding: 55px 0 0;
 }
-.exercise-data #change-session-form {
+.exercise-data .change-session-form {
   float: left;
 }
-.exercise-data #add-exercise-button-form, .exercise-data #cancel-add-exercise-button-form {
+.exercise-data .add-exercise-button-form, .exercise-data .cancel-add-exercise-button-form {
   float: right;
 }
-.exercise-data #add-exercise-button-form button, .exercise-data #change-session-form button, .exercise-data #cancel-add-exercise-button-form button {
+.exercise-data .add-exercise-button-form button, .exercise-data .change-session-form button, .exercise-data .cancel-add-exercise-button-form button {
   width: 140px;
 }
 .exercise-data .exercise-list {
   margin: 50px auto 0;
 }
-.exercise-data #add-exercise-input-form {
+.exercise-data .add-exercise-input-form {
   clear: both;
   padding-top: 15px;
 }
-.exercise-data #add-exercise-input-form label , .exercise-data #add-exercise-input-form input, .exercise-data #add-exercise-input-form button {
+.exercise-data .add-exercise-input-form label , .exercise-data .add-exercise-input-form input, .exercise-data .add-exercise-input-form button {
   width: 100%;
   max-width: 375px;
   display: block;

@@ -8,7 +8,7 @@
   }
 }
 @media screen and (min-width: 500px) {
-  .exercise-data #add-exercise-button-form button, .exercise-data #change-session-form button, .exercise-data #cancel-add-exercise-button-form button {
+  .exercise-data .add-exercise-button-form button, .exercise-data .change-session-form button, .exercise-data .cancel-add-exercise-button-form button {
     width: 200px;
   }
   .btn-small {
