@@ -174,14 +174,17 @@ main > section {
 
 /* Select training session form */
 .heading-select-session {
-  text-align: center;
   font-size: 1.2em;
-  font-weight: normal;
 }
 .select-training-session-form {
   width: 100%;
   max-width: 400px;
   margin: 0 auto;
+}
+.select-training-session-form fieldset {
+  padding: 0;
+  border: none;
+  text-align: center;
 }
 .select-training-session-form .btn-block {
   margin: 0 0 5px;
@@ -317,21 +320,16 @@ main > section {
   font-weight: normal;
 }
 .exercise-list .set-table {
-  display: table;
   font-size: 0.8em;
   width: 100%;
-  table-layout: fixed;
   margin: 0 0 10px;
 }
-.exercise-list .set-table .table-row {
-  display: table-row;
-}
-.exercise-list .set-table .table-cell {
-  display: table-cell;
+.exercise-list .set-table th, .exercise-list .set-table td {
   text-align: center;
   padding: 8px 0;
   height: 31px;
   border-bottom: 1px solid #cecaca;
+  font-weight: normal;
 }
 .exercise-list button {
   display: block;

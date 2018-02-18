@@ -64,7 +64,7 @@ const TrainingPageAddExerciseSection = {
   addExerciseInputForm() {
     return `<form role="form" class="add-exercise-input-form">
               <label for="exerciseName">Add a new exercise</label>
-              <input type="text" id="exerciseName" name="exerciseName" placeholder="New exercise name">
+              <input type="text" id="exerciseName" name="exerciseName" placeholder="New exercise name" required>
               <button class="btn btn-add-exercise"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Save New Exercise</button>
             </form>`;
   },
@@ -79,14 +79,14 @@ const TrainingPageAddExerciseSection = {
 
 const TrainingPageExerciseSetSection = {
   createExerciseSetsHTML(exercise) {
-    let exerciseSets = `<div class="table-row"><div class="table-cell"></div><div class="table-cell"></div><div class="table-cell"></div></div>`;
+    let exerciseSets = `<tr><td colspan="3">Click the 'Add Set' button to add a new set for this exercise</td></tr>`;
     if (exercise.sets.length > 0) {
       exerciseSets = exercise.sets.map(set => {
-        return `<div class="table-row">  
-                <div class="table-cell">${set.setNumber}</div>
-                <div class="table-cell">${set.weight}</div>
-                <div class="table-cell">${set.reps}</div>
-              </div>`;
+        return `<tr>
+                  <td>${set.setNumber}</td>
+                  <td>${set.weight}</td>
+                  <td>${set.reps}</td>
+                </tr>`;
       }).join('');
     }
     return exerciseSets;
@@ -146,14 +146,20 @@ const TrainingPageExerciseListSection = {
     return `<li>
               <h3>${exercise.name.toUpperCase()}</h3>
               ${lastBestSetHTML}
-              <div class="set-table">
-                <div class="table-row">
-                  <div class="table-cell">Set #</div>
-                  <div class="table-cell">Weight</div>
-                  <div class="table-cell">Reps</div>
-                </div>
-                ${exerciseSetsHTML}
-              </div>
+              <table class="set-table">
+                <!-- Table caption is for Screen Readers only --> 
+                <caption class="sr-only">Exercise Sets Table for ${exercise.name}</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Set #</th>
+                    <th scope="col">Weight</th>
+                    <th scope="col">Reps</th>
+                  </tr>                
+                </thead>
+                <tbody>
+                  ${exerciseSetsHTML}      
+                </tbody>
+              </table>
               <div class="add-exercise-set"></div>
             </li>`;
   },
@@ -198,6 +204,11 @@ const SelectTrainingSessionSection = {
   },
   selectTrainingSessionForm() {
     return `<form role="form" class="select-training-session-form">
+              <fieldset>
+                <legend>
+                        <h2 class="heading-select-session">Select your training session for today</h2>
+                </legend>
+              </fieldset>
               <button class="btn-block btn-chest" data-session="chest"><i class="fa fa-user"></i> CHEST <span><i class="fa fa-angle-right"></i></span></button>
               <button class="btn-block btn-back" data-session="back"><i class="fa fa-heart"></i> BACK <span><i class="fa fa-angle-right"></i></span></button>
               <button class="btn-block btn-arms" data-session="arms"><i class="fa fa-hand-grab-o"></i> ARMS <span><i class="fa fa-angle-right"></i></span></button>

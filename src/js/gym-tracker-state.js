@@ -38,10 +38,11 @@ const State = {
     }
 
     if (this.displaySelectTrainingSessionPage) {
-      const pageTextHtml = SelectTrainingSessionSection.render({template: SelectTrainingSessionSection.selectTrainingSessionIntroText});
+      // const pageTextHtml = SelectTrainingSessionSection.render({template: SelectTrainingSessionSection.selectTrainingSessionIntroText});
       const selectTrainingSessionHtml = SelectTrainingSessionSection.render({template: SelectTrainingSessionSection.selectTrainingSessionForm, onSubmitForm: EventHandler.onSelectTrainingSessionFormSubmit});
-      main.html(pageTextHtml);
-      main.append(selectTrainingSessionHtml);
+      main.html(selectTrainingSessionHtml);
+      // main.html(pageTextHtml);
+      // main.append(selectTrainingSessionHtml);
       this.displaySelectTrainingSessionPage = false;
     }
 
