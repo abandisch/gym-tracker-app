@@ -38,27 +38,36 @@
 
   footer .footer-contents {
     margin: 0 auto;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
     flex-direction: row;
+    -ms-flex-pack: distribute;
     justify-content: space-around;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
   }
   footer p {
     padding: 0;
   }
- /* .exercise-list .add-exercise-set button {
-    max-width: 100px;
-    width: auto;
-    margin: 0 10px;
-  }*/
   .exercise-list {
     width: 100%;
     max-width: 900px;
   }
   .exercise-list li {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
     flex-direction: row;
     max-width: 100%;
+    -ms-flex-wrap: wrap;
     flex-wrap: wrap;
     border: 1px solid #eee;
   }
