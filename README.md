@@ -41,6 +41,10 @@ https://murmuring-thicket-55410.herokuapp.com/
 
 Feedback on the app has been positive - from a usability and design perspective, the app has been well received. The only negative feedback was due to not being able to edit or delete exercises and/or sets, when a typo was accidentally made, which made tracking the rest of the exercise sets difficult. However this functionality was not included in the MVP.  
 
+## MVP App Screenshots - Mobile View
+
+![Gym Tracker App - MVP Screenshot](https://github.com/abandisch/gym-tracker-app/blob/master/resources/gym-tracker-mvp-screenshots.jpg)
+
 ## App Screen List
 
 - Screen for login or registration
