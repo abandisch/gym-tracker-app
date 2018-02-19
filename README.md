@@ -14,6 +14,10 @@ The next week, the gym user has access to the previous weeks session information
 
 This continues week after week, and over time the gym goer can see how the weight and maximum reps for each exercise have improved since the first week.
 
+## Minimum Viable Product URL
+
+https://murmuring-thicket-55410.herokuapp.com/
+
 ## User Stories
 
 - As a gym goer, I want to create a training session, so that I can track my exercises for that session
@@ -32,6 +36,10 @@ This continues week after week, and over time the gym goer can see how the weigh
 - As a gym goer, I want to add exercises to a training session, so I can track the weight lifted, number of sets and my max reps
 - As a gym goer, I want to see the results of my last training session (if any), so that I can set my goals (max reps and weight increase) for my current training session
 - As a gym goer, I want to record my a set (weight and reps) for an exercise
+
+## MVP Feedback
+
+Feedback on the app has been positive - from a usability and design perspective, the app has been well received. The only negative feedback was due to not being able to edit or delete exercises and/or sets, when a typo was accidentally made, which made tracking the rest of the exercise sets difficult. However this functionality was not included in the MVP.  
 
 ## App Screen List
 
