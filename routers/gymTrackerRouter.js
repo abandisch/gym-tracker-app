@@ -21,26 +21,6 @@ const createAuthToken = function(gymGoer) {
 const jwtAuth = passport.authenticate('jwt', { session: false });
 const localAuth = passport.authenticate('local', {session: false});
 
-router.get('/', (req, res) => {
-  const filters = routerUtils.getFilters(req.query, ['email']);
-  const limit = routerUtils.getLimit(req.query, 10);
-
-  GymGoerModel
-    .find(filters)
-    .limit(limit)
-    .then(results => {
-      res.json({
-        gymGoers: results.map((gymGoer) => {
-          return gymGoer.serialize();
-        })
-      });
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).json({message: 'Internal Server Error'});
-    });
-});
-
 router.get('/:id', [cookieParser(), jwtAuth], (req, res) => {
   GymGoerModel
     .findById(req.params.id)

@@ -185,6 +185,10 @@ main > section {
   padding: 0;
   border: none;
   text-align: center;
+  margin: 16px 0;
+}
+.select-training-session-form fieldset h2 {
+  margin: 0;
 }
 .select-training-session-form .btn-block {
   margin: 0 0 5px;
