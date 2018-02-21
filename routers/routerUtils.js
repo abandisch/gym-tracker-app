@@ -16,16 +16,16 @@ const routerUtils = {
       callback(msgs.join('\n'));
     }
   },
-  getFilters: (obj, allowedFilters) => {
-    return allowedFilters.reduce((filters, field) => {
-      if (obj[field]) {
-        filters[field] = obj[field];
-      }
-      return filters;
-    }, {});
-  },
-  getLimit: (obj, defaultLimit) => {
-    return obj['limit'] ? Number.parseInt(obj['limit']) : defaultLimit;
+  isValidISODate(dateString) {
+    const regEx = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateString.match(regEx)) {
+      return false;  // Invalid format
+    }
+    let d = new Date(dateString);
+    if(!d.getTime() && d.getTime() !== 0) {
+      return false; // Invalid date
+    }
+    return d.toISOString().slice(0,10) === dateString;
   }
 };
 

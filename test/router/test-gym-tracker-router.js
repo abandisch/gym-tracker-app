@@ -77,17 +77,29 @@ describe('# gymTrackerRouter', function () {
     });
   });
 
-  describe('# gymTrackerRouter: /gym-tracker/init-training-session', function () {
+  describe('# gymTrackerRouter: /gym-tracker/exercises/:sessionType/:sessionDate', function () {
     it('should return an initialised exercise session for the gym goer', function () {
       const TEST_TRAINING_SESSION = 'chest';
+      const ISODateToday = new Date().toISOString().slice(0, 10);
       return chai.request(app)
-        .post(`${BASE_API_URL}/init-training-session`)
-        .send({sessionType: TEST_TRAINING_SESSION})
+        .post(`${BASE_API_URL}/exercises/${TEST_TRAINING_SESSION}/${ISODateToday}`)
+        // .send({sessionType: TEST_TRAINING_SESSION})
         .set('Cookie', `${COOKIE_NAME}=${createCookieData()}`)
         .then(res => {
           expect(res).status(200);
           expect(res.body).to.have.keys(['sessionType', 'sessionDate', 'exercises']);
           expect(res.body.sessionType).to.equal(TEST_TRAINING_SESSION);
+        });
+    });
+
+    it('should return a http 400 if the session date format is not yyy-mm-dd', function () {
+      const TEST_TRAINING_SESSION = 'chest';
+      const badISODateFormat = 'i-am-a-bad-date';
+      return chai.request(app)
+        .post(`${BASE_API_URL}/exercises/${TEST_TRAINING_SESSION}/${badISODateFormat}`)
+        .set('Cookie', `${COOKIE_NAME}=${createCookieData()}`)
+        .catch(res => {
+          expect(res).status(400);
         });
     });
   });

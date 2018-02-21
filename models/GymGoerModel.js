@@ -297,32 +297,20 @@ gymGoerExercisesSchema.statics.preFillExercisesFromPreviousSession = function (g
  * set of exercises for the given session (if any)
  * @param {string} gymGoerId - Id of the GymGoer
  * @param {string} sessionType - Type of session
+ * @param {string} sessionISODate - ISO Date (yyy-mm-dd)
  * @returns {Promise} - Updated session with new exercises added
  */
-gymGoerExercisesSchema.statics.initSessionExercises = function(gymGoerId, sessionType) {
-  return GymGoerExercisesModel.findExercisesForToday(gymGoerId, sessionType)
+gymGoerExercisesSchema.statics.initSessionExercises = function(gymGoerId, sessionType, sessionISODate) {
+  return validateParameters([gymGoerId, sessionType], 'Both GymGoerID and SessionType are required')
+    .then(() => GymGoerExercisesModel.findExercisesByDate(gymGoerId, sessionType, sessionISODate))
     .then(exercises => GymGoerExercisesModel.attachLastBestSetToMultipleExercises(exercises))
     .then(exercises => {
       if (exercises !== null && exercises.length > 0) { // There are exercises for today
-        // return GymGoerExercisesModel.findLastBestSetForExercises(exercisesArray)
-        //        .then(exercises => GymGoerExercisesModel.flattenExercises(exercises))
         return GymGoerExercisesModel.flattenExercises(exercises)
       } else { // No exercises for today
         return GymGoerExercisesModel.preFillExercisesFromPreviousSession(gymGoerId, sessionType);
       }
     });
-};
-
-/**
- * Initialises training session for a GymGoer, by adding the training session to the database,
- * and initialising the exercises (via initSessionExercises call)
- * @param {string} gymGoerID - Id of the GymGoer
- * @param {string} sessionType - Type of session
- * @returns {Promise} - Training session with exercises (if any)
- */
-gymGoerExercisesSchema.statics.initGymGoerTrainingSession = function (gymGoerID, sessionType) {
-  return validateParameters([gymGoerID, sessionType], 'Both GymGoerID and SessionType are required')
-          .then(() => GymGoerExercisesModel.initSessionExercises(gymGoerID, sessionType))
 };
 
 const GymGoerModel = mongoose.model('GymGoer', gymGoerSchema);

@@ -10613,23 +10613,19 @@ const EventHandler = {
   },
   onSelectTrainingSessionFormSubmit: function (event) {
     event.preventDefault();
-    // get exercises from server here, if empty, display the empty training session page, else
-    // display the training session page with the previous exercises on it
+
     const selectedTrainingSession = $(event.currentTarget).data('session');
     __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */]
       .initGymGoerTrainingSession(selectedTrainingSession)
       .then(result => {
         __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionType = result.sessionType;
-        if (result.exercises.length !== 0) {  // if there are previous exercises from the last session
+        if (result.exercises.length !== 0) {
           __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].initTrainingSessionExercises(result.exercises);
           __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
-        } else { // if there are no previous exercises, show empty training session page
+        } else {
           __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showEmptyTrainingSessionPage();
         }
-      })
-      /*.catch(err => {
-        console.error('(1) There has been a problem. Please try again later (' + JSON.stringify(err, null, 2) + ')');
-      });*/
+      });
   },
   onChangeSessionFormSubmit: function (event) {
     event.preventDefault();
@@ -10956,10 +10952,10 @@ const GymTrackerAPI = {
     });
   },
   initGymGoerTrainingSession(trainingSession) {
+    const ISODateToday = new Date().toISOString().slice(0, 10);
     return new Promise((resolve, reject) => {
       $.ajax({
-        url: 'gym-tracker/init-training-session',
-        data: JSON.stringify({sessionType: trainingSession}),
+        url: `gym-tracker/exercises/${trainingSession}/${ISODateToday}`,
         method: 'POST',
         dataType: 'json',
         contentType: 'application/json'

@@ -74,17 +74,25 @@ router.post('/add-exercise-set', [cookieParser(), jsonParser, jwtAuth], (req, re
 
 });
 
-router.post('/init-training-session', [cookieParser(), jsonParser, jwtAuth], (req, res) => {
+router.post('/exercises/:sessionType/:sessionISODate', [cookieParser(), jsonParser, jwtAuth], (req, res) => {
   const {id: gymGoerID} = req.user;
-  const sessionType = req.body.sessionType;
+  const sessionType = req.params.sessionType;
+  let sessionISODate;
 
-  routerUtils.confirmRequiredProperties(req.body, ['sessionType'], (msg) => {
+  routerUtils.confirmRequiredProperties(req.params, ['sessionType', 'sessionISODate'], (msg) => {
     console.error(msg);
     return res.status(400).json({error: msg});
   });
 
+  // Validate provided sessionDate is in the correct format (yyyy-mm-dd), if provided
+  if (routerUtils.isValidISODate(req.params.sessionISODate)) {
+    sessionISODate = req.params.sessionISODate;
+  } else {
+    return res.status(400).json({error: 'Incorrect date format'});
+  }
+
   GymGoerExercisesModel
-    .initGymGoerTrainingSession(gymGoerID, sessionType)
+    .initSessionExercises(gymGoerID, sessionType, sessionISODate)
     .then(session => {
       res.json(session);
     });

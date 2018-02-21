@@ -65,10 +65,6 @@ describe('# GymGoerExerciseModel', function () {
   let twoWeeksAgoDate = new Date();
   twoWeeksAgoDate.setDate(oneWeekAgoDate.getDate() - 7);
 
-  const initTestGymGoerTrainingSession = (gymGoerId, sessionType) => {
-    return GymGoerExercisesModel.initGymGoerTrainingSession(gymGoerId, sessionType);
-  };
-
   describe('# GymGoerExercisesModel.findLastExercisesForSessionType', function () {
     it('should return an exercise object from a previous session', function () {
       let gymGoer;
@@ -233,12 +229,13 @@ describe('# GymGoerExerciseModel', function () {
       const TEST_EXERCISE_NAME_1 = 'bench press';
       const TEST_EXERCISE_NAME_2 = 'dips';
       const TEST_EXERCISE_NAME_3 = 'inclined bench press';
+      const ISODateToday = new Date().toISOString().slice(0, 10);
       return createTestGymGoer(TEST_EMAIL)
         .then(_gymGoer => gymGoer = _gymGoer)
         .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, oneWeekAgoDate, TEST_EXERCISE_NAME_1))
         .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, oneWeekAgoDate, TEST_EXERCISE_NAME_2))
         .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, oneWeekAgoDate, TEST_EXERCISE_NAME_3))
-        .then(() => GymGoerExercisesModel.initSessionExercises(gymGoer.id, TEST_SESSION_TYPE))
+        .then(() => GymGoerExercisesModel.initSessionExercises(gymGoer.id, TEST_SESSION_TYPE, ISODateToday))
         .then(session => {
           expect(session.exercises.length).to.equal(3);
           expect(session.sessionType).to.equal(TEST_SESSION_TYPE)
@@ -250,15 +247,16 @@ describe('# GymGoerExerciseModel', function () {
       const TEST_EXERCISE_NAME_1 = 'bench press';
       const TEST_EXERCISE_NAME_2 = 'dips';
       const TEST_EXERCISE_NAME_3 = 'inclined bench press';
-      const TODAY = new Date();
+      const TEST_DATE_TODAY = new Date();
+      let ISODateToday = TEST_DATE_TODAY.toISOString().slice(0, 10);
       return createTestGymGoer(TEST_EMAIL)
         .then(_gymGoer => gymGoer = _gymGoer)
         .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, oneWeekAgoDate, TEST_EXERCISE_NAME_1))
         .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, oneWeekAgoDate, TEST_EXERCISE_NAME_2))
         .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, oneWeekAgoDate, TEST_EXERCISE_NAME_3))
-        .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, TODAY, TEST_EXERCISE_NAME_1))
-        .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, TODAY, TEST_EXERCISE_NAME_2))
-        .then(() => GymGoerExercisesModel.initSessionExercises(gymGoer.id, TEST_SESSION_TYPE))
+        .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, TEST_DATE_TODAY, TEST_EXERCISE_NAME_1))
+        .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, TEST_DATE_TODAY, TEST_EXERCISE_NAME_2))
+        .then(() => GymGoerExercisesModel.initSessionExercises(gymGoer.id, TEST_SESSION_TYPE, ISODateToday))
         .then(session => {
           expect(session.exercises.length).to.equal(2);
           expect(session.sessionType).to.equal(TEST_SESSION_TYPE)
@@ -267,28 +265,13 @@ describe('# GymGoerExerciseModel', function () {
     it('should return a session object with an empty exercises array', function () {
       const TEST_SESSION_TYPE = 'chest';
       let gymGoer;
+      const ISODateToday = new Date().toISOString().slice(0, 10);
       return createTestGymGoer(TEST_EMAIL)
         .then(_gymGoer => gymGoer = _gymGoer)
-        .then(() => GymGoerExercisesModel.initSessionExercises(gymGoer.id, TEST_SESSION_TYPE))
+        .then(() => GymGoerExercisesModel.initSessionExercises(gymGoer.id, TEST_SESSION_TYPE, ISODateToday))
         .then(session => {
           expect(session.exercises.length).to.equal(0);
           expect(session.sessionType).to.equal(TEST_SESSION_TYPE)
-        });
-    })
-  });
-
-  describe('# GymGoerExercisesModel.initGymGoerTrainingSession', function () {
-    it('should initialise a training session for a gym goer', function () {
-      let gymGoer;
-      return createTestGymGoer(TEST_EMAIL)
-        .then(_gymGoer => gymGoer = _gymGoer)
-        .then(() => initTestGymGoerTrainingSession(gymGoer.id, 'chest'))
-        .then(initialisedSession => {
-          const dateToday = new Date().toISOString().split('T')[0];
-          const dateSession = new Date(initialisedSession.sessionDate).toISOString().split('T')[0];
-          expect(initialisedSession).to.be.a('object');
-          expect(initialisedSession).to.have.keys(['sessionDate', 'exercises', 'sessionType']);
-          expect(dateSession).to.equal(dateToday);
         });
     })
   });

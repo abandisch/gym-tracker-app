@@ -40,10 +40,10 @@ export const GymTrackerAPI = {
     });
   },
   initGymGoerTrainingSession(trainingSession) {
+    const ISODateToday = new Date().toISOString().slice(0, 10);
     return new Promise((resolve, reject) => {
       $.ajax({
-        url: 'gym-tracker/init-training-session',
-        data: JSON.stringify({sessionType: trainingSession}),
+        url: `gym-tracker/exercises/${trainingSession}/${ISODateToday}`,
         method: 'POST',
         dataType: 'json',
         contentType: 'application/json'

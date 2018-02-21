@@ -15,26 +15,29 @@ const GymGoerExercisesStatics = {
     }
     return exercisesArray;
   },
-  findExercisesForToday(gymGoerId, sessionType) {
-    const startToday = new Date().setHours(0,0,0,0);
-    const endToday = new Date().setHours(23,59,59,0);
+  findExercisesByDate(gymGoerId, sessionType, sessionISODate) {
+    const dateStart = new Date(sessionISODate).setHours(0,0,0,0);
+    const dateEnd = new Date(sessionISODate).setHours(23,59,59,0);
 
     return this.find({
-      gymGoerId: gymGoerId,
-      sessionType: sessionType,
-      sessionDate: { $gte: startToday, $lte: endToday }
-    })
+        gymGoerId: gymGoerId,
+        sessionType: sessionType,
+        sessionDate: { $gte: dateStart, $lte: dateEnd }
+      })
       .sort({sessionDate: -1});
   },
+  findExercisesForToday(gymGoerId, sessionType) {
+    const dateISOToday = new Date().toISOString().slice(0, 10);
+    return this.findExercisesByDate(gymGoerId, sessionType, dateISOToday);
+  },
   hasExistingTrainingSessionToday(sessionType, gymGoer) {
-    // return this.getSessionForToday(sessionType, gymGoer) !== undefined;
     const startToday = new Date().setHours(0,0,0,0);
     const endToday = new Date().setHours(23,59,59,0);
     return this.count({
-      gymGoerId: gymGoer.id,
-      sessionType: sessionType,
-      sessionDate: {$gte: startToday, $lte: endToday }
-    })
+        gymGoerId: gymGoer.id,
+        sessionType: sessionType,
+        sessionDate: {$gte: startToday, $lte: endToday }
+      })
       .then(count => count > 0);
   },
   findBestSet(sets) {
