@@ -10675,7 +10675,19 @@ const EventHandler = {
           __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
         });
     };
-  }
+  },
+  onEditExerciseSet: function (exerciseSetId) {
+    console.log('editing exerciseSetId:', exerciseSetId);
+  },
+  onDeleteExerciseSet: function(exerciseSetId) {
+    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */]
+      .deleteExerciseSet(exerciseSetId)
+      .then(() => __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */].initGymGoerTrainingSession(__WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionType))
+      .then(updatedSession => {
+        __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].initTrainingSessionExercises(updatedSession.exercises);
+        __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
+      })
+    }
 };
 
 
@@ -10694,6 +10706,8 @@ const EventHandler = {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return TrainingPageExerciseListSection; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gym_tracker_events__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__add_set_form__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__exercise_sets_table__ = __webpack_require__(8);
+
 
 
 const $ = __webpack_require__(0);
@@ -10777,22 +10791,23 @@ const TrainingPageAddExerciseSection = {
 
 const TrainingPageExerciseSetSection = {
   createExerciseSetsHTML(exercise) {
-    let exerciseSets = `<tr><td colspan="3">Click the 'Add Set' button to add a new set for this exercise</td></tr>`;
+    let exerciseSets = `<tr><td colspan="5">Click the 'Add Set' button to add a new set for this exercise</td></tr>`;
     if (exercise.sets.length > 0) {
       exerciseSets = exercise.sets.map(set => {
-        return `<tr>
+        return `<tr data-exercise-set-id="${set.id}">
+                  <td><button class="btn-delete-set"><i class="fa fa-times"></i><span class="sr-only">Delete Set</span></button></td>
                   <td>${set.setNumber}</td>
                   <td>${set.weight}</td>
                   <td>${set.reps}</td>
+                  <td><button class="btn-edit-set"><i class="fa fa-edit"></i><span class="sr-only">Edit Set</span></button></td>
                 </tr>`;
       }).join('');
     }
     return exerciseSets;
   },
   render(props) {
-    const template = props.template(props.exercise, props.exerciseIndex);
+    const template = props.template(props.exercise);
     if (props.onSubmitForm) {
-      // return $(template).on('click', 'button', props.onSubmitForm);
       return $(template).on('submit', props.onSubmitForm);
     }
     return template;
@@ -10813,24 +10828,11 @@ const TrainingPageExerciseListSection = {
   },
   exerciseListItemHTML(exercise) {
     const lastBestSetHTML = this.createLastBestSetHTML(exercise);
-    const exerciseSetsHTML = TrainingPageExerciseSetSection.render({template: TrainingPageExerciseSetSection.createExerciseSetsHTML, exercise: exercise});
+    // const exerciseSetsHTML = TrainingPageExerciseSetSection.render({template: TrainingPageExerciseSetSection.createExerciseSetsHTML, exercise: exercise});
     return `<li>
               <h3>${exercise.name.toUpperCase()}</h3>
               ${lastBestSetHTML}
-              <table class="set-table">
-                <!-- Table caption is for Screen Readers only --> 
-                <caption class="sr-only">Exercise Sets Table for ${exercise.name}</caption>
-                <thead>
-                  <tr>
-                    <th scope="col">Set #</th>
-                    <th scope="col">Weight</th>
-                    <th scope="col">Reps</th>
-                  </tr>                
-                </thead>
-                <tbody>
-                  ${exerciseSetsHTML}      
-                </tbody>
-              </table>
+              <div class="exercise-sets"></div>
               <div class="add-exercise-set"></div>
             </li>`;
   },
@@ -10841,6 +10843,9 @@ const TrainingPageExerciseListSection = {
       const addSetForm = new __WEBPACK_IMPORTED_MODULE_1__add_set_form__["a" /* default */]({onSubmitForm: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_events__["a" /* EventHandler */].onSaveAddSetForExercise(index)});
       const addExerciseSetDiv = $(liElement).find('.add-exercise-set');
       addSetForm.render(addExerciseSetDiv);
+      const exerciseSetsTable = new __WEBPACK_IMPORTED_MODULE_2__exercise_sets_table__["a" /* default */]({exercise: exercise, onClickEditButton: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_events__["a" /* EventHandler */].onEditExerciseSet, onClickDeleteButton: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_events__["a" /* EventHandler */].onDeleteExerciseSet});
+      const exerciseSetsDiv = $(liElement).find('.exercise-sets');
+      exerciseSetsTable.render(exerciseSetsDiv);
       $(list).append(liElement);
     });
     return list;
@@ -10979,6 +10984,16 @@ const GymTrackerAPI = {
         reject({error: 'Error adding set to exercise for training session'});
       });
     });
+  },
+  deleteExerciseSet(exerciseSetId) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+          url: `gym-tracker/exercises/sets/${exerciseSetId}`,
+          method: 'DELETE'
+        })
+        .done(() => resolve(true))
+        .fail(() => reject({error: 'Error deleting set from exercise'}));
+    });
   }
 };
 /* harmony export (immutable) */ __webpack_exports__["a"] = GymTrackerAPI;
@@ -11078,6 +11093,72 @@ class AddSetForm {
   }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = AddSetForm;
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
+
+
+class ExerciseSetsTable {
+  constructor(props) {
+    this.props = props;
+  }
+  createSetsRowHTML(sets) {
+    let exerciseSets = `<tr><td colspan="5">Click the 'Add Set' button to add a new set for this exercise</td></tr>`;
+    if (sets.length > 0) {
+      exerciseSets = sets.map(set => {
+        return `<tr data-exercise-set-id="${set.id}">
+                  <td><button class="btn-delete-set"><i class="fa fa-times"></i><span class="sr-only">Delete Set</span></button></td>
+                  <td>${set.setNumber}</td>
+                  <td>${set.weight}</td>
+                  <td>${set.reps}</td>
+                  <td><button class="btn-edit-set"><i class="fa fa-edit"></i><span class="sr-only">Edit Set</span></button></td>
+                </tr>`;
+      }).join('');
+    }
+    return exerciseSets;
+  }
+  createSetsTableHTML(exercise) {
+    const exerciseSetsHTML = this.createSetsRowHTML(exercise.sets);
+    return `<table class="set-table">
+                <!-- Table caption is for Screen Readers only --> 
+                <caption class="sr-only">Exercise Sets Table for ${exercise.name}</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Delete</th>
+                    <th scope="col">Set #</th>
+                    <th scope="col">Weight</th>
+                    <th scope="col">Reps</th>
+                    <th scope="col">Edit</th>
+                  </tr>                
+                </thead>
+                <tbody>
+                  ${exerciseSetsHTML} 
+                </tbody>
+              </table>`;
+  }
+  render(parent) {
+    parent.html(this.createSetsTableHTML(this.props.exercise));
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default()(parent).on('click', 'button', (event) => {
+      event.preventDefault();
+      const exerciseSetId = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(event.currentTarget).closest('tr').data('exercise-set-id');
+      const func = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(event.currentTarget).text().trim() === 'Delete Set' ? 'delete' : 'edit';
+      if (func === 'edit') {
+        this.props.onClickEditButton(exerciseSetId);
+      }
+      if (func === 'delete') {
+        this.props.onClickDeleteButton(exerciseSetId);
+      }
+    });
+  }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = ExerciseSetsTable;
+
 
 
 /***/ })

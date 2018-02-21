@@ -1,5 +1,6 @@
 import {EventHandler} from "./gym-tracker-events";
 import AddSetForm from "./add-set-form";
+import ExerciseSetsTable from "./exercise-sets-table";
 const $ = require("jquery");
 
 const TrainingPageStaticContent = {
@@ -81,22 +82,23 @@ const TrainingPageAddExerciseSection = {
 
 const TrainingPageExerciseSetSection = {
   createExerciseSetsHTML(exercise) {
-    let exerciseSets = `<tr><td colspan="3">Click the 'Add Set' button to add a new set for this exercise</td></tr>`;
+    let exerciseSets = `<tr><td colspan="5">Click the 'Add Set' button to add a new set for this exercise</td></tr>`;
     if (exercise.sets.length > 0) {
       exerciseSets = exercise.sets.map(set => {
-        return `<tr>
+        return `<tr data-exercise-set-id="${set.id}">
+                  <td><button class="btn-delete-set"><i class="fa fa-times"></i><span class="sr-only">Delete Set</span></button></td>
                   <td>${set.setNumber}</td>
                   <td>${set.weight}</td>
                   <td>${set.reps}</td>
+                  <td><button class="btn-edit-set"><i class="fa fa-edit"></i><span class="sr-only">Edit Set</span></button></td>
                 </tr>`;
       }).join('');
     }
     return exerciseSets;
   },
   render(props) {
-    const template = props.template(props.exercise, props.exerciseIndex);
+    const template = props.template(props.exercise);
     if (props.onSubmitForm) {
-      // return $(template).on('click', 'button', props.onSubmitForm);
       return $(template).on('submit', props.onSubmitForm);
     }
     return template;
@@ -117,24 +119,11 @@ const TrainingPageExerciseListSection = {
   },
   exerciseListItemHTML(exercise) {
     const lastBestSetHTML = this.createLastBestSetHTML(exercise);
-    const exerciseSetsHTML = TrainingPageExerciseSetSection.render({template: TrainingPageExerciseSetSection.createExerciseSetsHTML, exercise: exercise});
+    // const exerciseSetsHTML = TrainingPageExerciseSetSection.render({template: TrainingPageExerciseSetSection.createExerciseSetsHTML, exercise: exercise});
     return `<li>
               <h3>${exercise.name.toUpperCase()}</h3>
               ${lastBestSetHTML}
-              <table class="set-table">
-                <!-- Table caption is for Screen Readers only --> 
-                <caption class="sr-only">Exercise Sets Table for ${exercise.name}</caption>
-                <thead>
-                  <tr>
-                    <th scope="col">Set #</th>
-                    <th scope="col">Weight</th>
-                    <th scope="col">Reps</th>
-                  </tr>                
-                </thead>
-                <tbody>
-                  ${exerciseSetsHTML}      
-                </tbody>
-              </table>
+              <div class="exercise-sets"></div>
               <div class="add-exercise-set"></div>
             </li>`;
   },
@@ -145,6 +134,9 @@ const TrainingPageExerciseListSection = {
       const addSetForm = new AddSetForm({onSubmitForm: EventHandler.onSaveAddSetForExercise(index)});
       const addExerciseSetDiv = $(liElement).find('.add-exercise-set');
       addSetForm.render(addExerciseSetDiv);
+      const exerciseSetsTable = new ExerciseSetsTable({exercise: exercise, onClickEditButton: EventHandler.onEditExerciseSet, onClickDeleteButton: EventHandler.onDeleteExerciseSet});
+      const exerciseSetsDiv = $(liElement).find('.exercise-sets');
+      exerciseSetsTable.render(exerciseSetsDiv);
       $(list).append(liElement);
     });
     return list;

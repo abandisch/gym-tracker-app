@@ -67,5 +67,15 @@ export const GymTrackerAPI = {
         reject({error: 'Error adding set to exercise for training session'});
       });
     });
+  },
+  deleteExerciseSet(exerciseSetId) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+          url: `gym-tracker/exercises/sets/${exerciseSetId}`,
+          method: 'DELETE'
+        })
+        .done(() => resolve(true))
+        .fail(() => reject({error: 'Error deleting set from exercise'}));
+    });
   }
 };

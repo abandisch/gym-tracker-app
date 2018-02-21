@@ -80,6 +80,18 @@ router.post('/exercises/sets', [cookieParser(), jsonParser, jwtAuth], (req, res)
 
 });
 
+router.delete('/exercises/sets/:id', [cookieParser(), jsonParser, jwtAuth], (req, res) => {
+
+  routerUtils.confirmRequiredProperties(req.params, ['id'], (msg) => {
+    console.error(msg);
+    return res.status(400).json({error: msg});
+  });
+
+  return GymGoerExercisesModel
+    .deleteExerciseSetById(req.params.id)
+    .then(() => res.status(204).json({delete: true}));
+});
+
 // Get exercises for sessionType on sessionISODate (using POST, so browser doesn't cache results)
 router.post('/exercises/:sessionType/:sessionISODate', [cookieParser(), jsonParser, jwtAuth], (req, res) => {
   const {id: gymGoerID} = req.user;

@@ -80,7 +80,19 @@ const EventHandler = {
           GymTrackerClient.showTrainingSessionPage();
         });
     };
-  }
+  },
+  onEditExerciseSet: function (exerciseSetId) {
+    console.log('editing exerciseSetId:', exerciseSetId);
+  },
+  onDeleteExerciseSet: function(exerciseSetId) {
+    GymTrackerAPI
+      .deleteExerciseSet(exerciseSetId)
+      .then(() => GymTrackerAPI.initGymGoerTrainingSession(State.trainingSessionType))
+      .then(updatedSession => {
+        State.initTrainingSessionExercises(updatedSession.exercises);
+        GymTrackerClient.showTrainingSessionPage();
+      })
+    }
 };
 
 export { EventHandler };

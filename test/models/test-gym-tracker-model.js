@@ -442,6 +442,56 @@ describe('# GymGoerExerciseModel', function () {
     });
   });
 
+  describe('# GymGoerExercisesModel.deleteExerciseSet', function () {
+    it('should return true when deleting the exercise set with the given id', function () {
+      const TEST_SESSION_TYPE = 'chest';
+      const TEST_EXERCISE_NAME_1 = 'bench press';
+      const TEST_EXERCISE_NAME_2 = 'inclined bench press';
+      const TEST_SET = {
+        weight: "40",
+        reps: 12
+      };
+      const TODAY = new Date();
+      let exerciseSetId;
+      let gymGoer;
+      return createTestGymGoer(TEST_EMAIL)
+        .then(_gymGoer => gymGoer = _gymGoer)
+        .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, TODAY, TEST_EXERCISE_NAME_1))
+        .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, TODAY, TEST_EXERCISE_NAME_2))
+        .then(() => GymGoerExercisesModel.addNewSet(gymGoer.id, TEST_SESSION_TYPE, TEST_EXERCISE_NAME_1, TEST_SET))
+        .then(() => GymGoerExercisesModel.addNewSet(gymGoer.id, TEST_SESSION_TYPE, TEST_EXERCISE_NAME_1, TEST_SET))
+        .then(exerciseSession => {
+          exerciseSetId = exerciseSession.exercises[0].sets[0].id;
+        })
+        .then(() => GymGoerExercisesModel.deleteExerciseSetById(exerciseSetId))
+        .then((deleteResult) => {
+          expect(deleteResult).to.equal(true);
+        });
+    });
+    it('should return false when trying to delete the exercise set with and invalid id', function () {
+      const TEST_SESSION_TYPE = 'chest';
+      const TEST_EXERCISE_NAME_1 = 'bench press';
+      const TEST_EXERCISE_NAME_2 = 'inclined bench press';
+      const TEST_SET = {
+        weight: "40",
+        reps: 12
+      };
+      const TODAY = new Date();
+      const INVALID_EXERCISE_SET_ID = '555aaaa555000c292a5c1111';
+      let gymGoer;
+      return createTestGymGoer(TEST_EMAIL)
+        .then(_gymGoer => gymGoer = _gymGoer)
+        .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, TODAY, TEST_EXERCISE_NAME_1))
+        .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, TODAY, TEST_EXERCISE_NAME_2))
+        .then(() => GymGoerExercisesModel.addNewSet(gymGoer.id, TEST_SESSION_TYPE, TEST_EXERCISE_NAME_1, TEST_SET))
+        .then(() => GymGoerExercisesModel.addNewSet(gymGoer.id, TEST_SESSION_TYPE, TEST_EXERCISE_NAME_1, TEST_SET))
+        .then(() => GymGoerExercisesModel.deleteExerciseSetById(INVALID_EXERCISE_SET_ID))
+        .then((deleteResult) => {
+          expect(deleteResult).to.equal(false);
+        });
+    });
+  });
+
   describe('# GymGoerExercisesModel.addMultipleNewExercises', function () {
     function createMultipleExercises(gymGoerId, sessionType, exerciseNameArray) {
       return new Promise((resolve, reject) => {

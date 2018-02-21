@@ -186,6 +186,14 @@ gymGoerExercisesSchema.statics.addMultipleNewExercises = function(gymGoerId, ses
     .then(exercises => GymGoerExercisesModel.flattenExercises(exercises));
 };
 
+gymGoerExercisesSchema.statics.deleteExerciseSetById = function(exerciseSetId) {
+  return this.findOneAndUpdate(
+    {"sets": {$elemMatch: {"_id": exerciseSetId}}},
+    {$pull: { "sets": { "_id": exerciseSetId }}},
+    { 'new': true })
+    .then(result => result !== null);
+};
+
 /**
  * Adds a new Set to the exercise
  * @param {String} gymGoerId - GymGoer Id

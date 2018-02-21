@@ -117,7 +117,27 @@ button:hover {
 .btn-back:hover {
   background-color: #006472;
 }
-
+.btn-delete-set, .btn-edit-set {
+  border: 1px solid;
+  padding: 5px 10px 5px 10px;
+  border-radius: 3px;
+  background-color: transparent;
+  font-size: 1.1em;
+}
+.btn-delete-set {
+  border-color: #f7998f;
+}
+.btn-delete-set i {
+  color: #f7998f;
+  /*color: #F4796B;*/
+}
+.btn-edit-set {
+  /*border-color: #304D6D;*/
+  border-color: #82A0BC;
+}
+.btn-edit-set i {
+  color: #82A0BC;
+}
 /* header */
 header {
   margin: 0 auto;
@@ -335,7 +355,7 @@ main > section {
   border-bottom: 1px solid #cecaca;
   font-weight: normal;
 }
-.exercise-list button {
+.exercise-list .btn-add-set, .exercise-list .btn-cancel-add-set, .exercise-list .btn-save-set  {
   display: block;
   width: 140px;
   margin: 0 auto;
