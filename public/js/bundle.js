@@ -10969,7 +10969,7 @@ const GymTrackerAPI = {
   addSetToExercise(trainingSession, nameOfExercise, newSetForExercise) {
     return new Promise((resolve, reject) => {
       $.ajax({
-        url: 'gym-tracker/add-exercise-set',
+        url: 'gym-tracker/exercises/sets',
         data: JSON.stringify({sessionType: trainingSession, exerciseName: nameOfExercise, newSet: newSetForExercise}),
         method: 'POST',
         dataType: 'json',
