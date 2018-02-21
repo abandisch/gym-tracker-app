@@ -77,5 +77,18 @@ export const GymTrackerAPI = {
         .done(() => resolve(true))
         .fail(() => reject({error: 'Error deleting set from exercise'}));
     });
+  },
+  updateExerciseSet(exerciseSetId, updatedExerciseSet) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: `gym-tracker/exercises/sets/${exerciseSetId}`,
+        data: JSON.stringify({updatedSet: updatedExerciseSet}),
+        method: 'PUT',
+        dataType: 'json',
+        contentType: 'application/json'
+        })
+        .done(() => resolve(true))
+        .fail(() => reject({error: 'Error updating set from exercise'}));
+    });
   }
 };

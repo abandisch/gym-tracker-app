@@ -81,15 +81,22 @@ const EventHandler = {
         });
     };
   },
-  onEditExerciseSet: function (exerciseSetId) {
+  onEditExerciseSet: function (exerciseSetId, updatedExerciseSet) {
     console.log('editing exerciseSetId:', exerciseSetId);
+    /*GymTrackerAPI
+      .updateExerciseSet(exerciseSetId, updatedExerciseSet)
+      .then(() => GymTrackerAPI.initGymGoerTrainingSession(State.trainingSessionType))
+      .then(session => {
+        State.initTrainingSessionExercises(session.exercises);
+        GymTrackerClient.showTrainingSessionPage();
+      })*/
   },
   onDeleteExerciseSet: function(exerciseSetId) {
     GymTrackerAPI
       .deleteExerciseSet(exerciseSetId)
       .then(() => GymTrackerAPI.initGymGoerTrainingSession(State.trainingSessionType))
-      .then(updatedSession => {
-        State.initTrainingSessionExercises(updatedSession.exercises);
+      .then(session => {
+        State.initTrainingSessionExercises(session.exercises);
         GymTrackerClient.showTrainingSessionPage();
       })
     }

@@ -186,10 +186,24 @@ gymGoerExercisesSchema.statics.addMultipleNewExercises = function(gymGoerId, ses
     .then(exercises => GymGoerExercisesModel.flattenExercises(exercises));
 };
 
+/**
+ * Deletes an exercise set with the given exercise set id
+ * @param {string} exerciseSetId - Exercise Set Id
+ * @returns {Promise|Boolean} - True if deleted, false if not
+ */
 gymGoerExercisesSchema.statics.deleteExerciseSetById = function(exerciseSetId) {
-  return this.findOneAndUpdate(
+  return GymGoerExercisesModel.findOneAndUpdate(
     {"sets": {$elemMatch: {"_id": exerciseSetId}}},
     {$pull: { "sets": { "_id": exerciseSetId }}},
+    { 'new': true })
+    .then(result => result !== null);
+};
+
+gymGoerExercisesSchema.statics.updateExerciseSetById = function (exerciseSetId, exerciseSet) {
+  return GymGoerExercisesModel.findOneAndUpdate(
+    {"sets": {$elemMatch: {"_id": exerciseSetId}}},
+    {
+      $set: { "sets.$": { "weight": exerciseSet.weight, "reps": exerciseSet.reps } } },
     { 'new': true })
     .then(result => result !== null);
 };

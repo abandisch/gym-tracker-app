@@ -174,7 +174,32 @@ describe('# gymTrackerRouter', function () {
             .delete(`${BASE_API_URL}/exercises/sets/${exerciseSetId}`)
             .set('Cookie', `${COOKIE_NAME}=${createCookieData(gymGoer.id)}`)
             .then(res => {
-              expect(res).status(204);
+              expect(res).status(200);
+            });
+        });
+    });
+  });
+
+  describe('# gymTrackerRouter: UPDATE: /gym-tracker/exercises/sets/:id', function () {
+    it('should return a session with the set removed from the exercise', function () {
+      const TEST_SESSION_TYPE = 'chest';
+      const TEST_EXERCISE_NAME = 'bench press';
+      const TEST_SET = [{setNumber: 1, weight: "40", reps: 12 }];
+      const UPDATED_TEST_SET = { weight: "60", reps: 10 };
+      let TODAY = new Date();
+      let gymGoer;
+      let exerciseSetId;
+      return createTestGymGoer(TEST_EMAIL)
+        .then(_gymGoer => gymGoer = _gymGoer)
+        .then(() => addTestExercise(gymGoer.id, TEST_SESSION_TYPE, TODAY, TEST_EXERCISE_NAME, TEST_SET))
+        .then((exercise) =>  exerciseSetId = exercise.sets[0]._id)
+        .then(() => {
+          return chai.request(app)
+            .put(`${BASE_API_URL}/exercises/sets/${exerciseSetId}`)
+            .send({updatedSet: UPDATED_TEST_SET})
+            .set('Cookie', `${COOKIE_NAME}=${createCookieData(gymGoer.id)}`)
+            .then(res => {
+              expect(res).status(200);
             });
         });
     });

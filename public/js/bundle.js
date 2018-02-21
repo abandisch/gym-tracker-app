@@ -10676,15 +10676,22 @@ const EventHandler = {
         });
     };
   },
-  onEditExerciseSet: function (exerciseSetId) {
+  onEditExerciseSet: function (exerciseSetId, updatedExerciseSet) {
     console.log('editing exerciseSetId:', exerciseSetId);
+    /*GymTrackerAPI
+      .updateExerciseSet(exerciseSetId, updatedExerciseSet)
+      .then(() => GymTrackerAPI.initGymGoerTrainingSession(State.trainingSessionType))
+      .then(session => {
+        State.initTrainingSessionExercises(session.exercises);
+        GymTrackerClient.showTrainingSessionPage();
+      })*/
   },
   onDeleteExerciseSet: function(exerciseSetId) {
     __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */]
       .deleteExerciseSet(exerciseSetId)
       .then(() => __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */].initGymGoerTrainingSession(__WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionType))
-      .then(updatedSession => {
-        __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].initTrainingSessionExercises(updatedSession.exercises);
+      .then(session => {
+        __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].initTrainingSessionExercises(session.exercises);
         __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
       })
     }
@@ -10993,6 +11000,19 @@ const GymTrackerAPI = {
         })
         .done(() => resolve(true))
         .fail(() => reject({error: 'Error deleting set from exercise'}));
+    });
+  },
+  updateExerciseSet(exerciseSetId, updatedExerciseSet) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: `gym-tracker/exercises/sets/${exerciseSetId}`,
+        data: JSON.stringify({updatedSet: updatedExerciseSet}),
+        method: 'PUT',
+        dataType: 'json',
+        contentType: 'application/json'
+        })
+        .done(() => resolve(true))
+        .fail(() => reject({error: 'Error updating set from exercise'}));
     });
   }
 };

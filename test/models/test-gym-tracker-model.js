@@ -442,7 +442,7 @@ describe('# GymGoerExerciseModel', function () {
     });
   });
 
-  describe('# GymGoerExercisesModel.deleteExerciseSet', function () {
+  describe('# GymGoerExercisesModel.deleteExerciseSetById', function () {
     it('should return true when deleting the exercise set with the given id', function () {
       const TEST_SESSION_TYPE = 'chest';
       const TEST_EXERCISE_NAME_1 = 'bench press';
@@ -488,6 +488,39 @@ describe('# GymGoerExerciseModel', function () {
         .then(() => GymGoerExercisesModel.deleteExerciseSetById(INVALID_EXERCISE_SET_ID))
         .then((deleteResult) => {
           expect(deleteResult).to.equal(false);
+        });
+    });
+  });
+
+  describe('# GymGoerExercisesModel.updateExerciseSetById', function () {
+    it('should return true after updating the exercise set with the given id', function () {
+      const TEST_SESSION_TYPE = 'chest';
+      const TEST_EXERCISE_NAME = 'bench press';
+      const TEST_SETS = [{
+          setNumber: 1,
+          weight: "40",
+          reps: 12
+        },
+        {
+          setNumber: 2,
+          weight: "40",
+          reps: 13
+        }];
+      const UPDATED_SET = {
+        weight: "body weight",
+        reps: 10
+      };
+      const TODAY = new Date();
+      let exerciseSetId;
+      let gymGoer;
+      return createTestGymGoer(TEST_EMAIL)
+        .then(_gymGoer => gymGoer = _gymGoer)
+        .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, TODAY, TEST_EXERCISE_NAME, TEST_SETS))
+        .then(() => GymGoerExercisesModel.findExercisesForToday(gymGoer.id, TEST_SESSION_TYPE))
+        .then(exercises => exerciseSetId = exercises[0].sets[0].id)
+        .then(() => GymGoerExercisesModel.updateExerciseSetById(exerciseSetId, UPDATED_SET))
+        .then((results) => {
+          expect(results).to.equal(true);
         });
     });
   });
@@ -598,37 +631,5 @@ describe('# GymGoerModel', function () {
           expect(gymGoer).to.have.keys(['id', 'email']);
         });
     });
-
   });
-
-  /* - THIS HAS BEEN MOVED TO GymGoerUtils
-  describe('# GymGoerModel.validateParameters', function () {
-    it('should return true if all parameters are not undefined', function () {
-      const parameter1 = 'test1';
-      const parameter2 = 'test2';
-      GymGoerModel
-        .validateParameters([parameter1, parameter2], 'test message')
-        .then(result => {
-          expect(result).to.equal(true);
-        });
-    });
-    it('should throw an Error if one or all parameters are undefined', function () {
-      const parameter1 = 'test1';
-      const parameter2 = undefined;
-      GymGoerModel
-        .validateParameters([parameter1, parameter2], 'All parameters are required')
-        .catch(result => {
-          expect(result).to.be.an.instanceOf(Error);
-        });
-    });
-    it('should throw an Error if all parameters are undefined', function () {
-      const parameter1 = undefined;
-      GymGoerModel
-        .validateParameters([parameter1], 'All parameters are required')
-        .catch(result => {
-          expect(result).to.be.an.instanceOf(Error);
-        });
-    });
-  });*/
-
 });
