@@ -1,5 +1,5 @@
 import {EventHandler} from "./gym-tracker-events";
-import AddSetForm from "./add-set-form";
+import ExerciseSetInputForm from "./exercise-set-input-form";
 import ExerciseSetsTable from "./exercise-sets-table";
 const $ = require("jquery");
 
@@ -124,16 +124,16 @@ const TrainingPageExerciseListSection = {
               <h3>${exercise.name.toUpperCase()}</h3>
               ${lastBestSetHTML}
               <div class="exercise-sets"></div>
-              <div class="add-exercise-set"></div>
+              <div class="exercise-set-input"></div>
             </li>`;
   },
   exercisesList(exercises) {
     let list = $.parseHTML('<ul class="exercise-list"></ul>');
     exercises.forEach((exercise, index) => {
       const liElement = $.parseHTML(this.exerciseListItemHTML(exercise));
-      const addSetForm = new AddSetForm({onSubmitForm: EventHandler.onSaveAddSetForExercise(index)});
-      const addExerciseSetDiv = $(liElement).find('.add-exercise-set');
-      addSetForm.render(addExerciseSetDiv);
+      const exerciseSetForm = new ExerciseSetInputForm({onSubmitForm: EventHandler.onSaveAddSetForExercise(index)});
+      const addExerciseSetDiv = $(liElement).find('.exercise-set-input');
+      exerciseSetForm.render(addExerciseSetDiv);
       const exerciseSetsTable = new ExerciseSetsTable({exercise: exercise, onClickEditButton: EventHandler.onEditExerciseSet, onClickDeleteButton: EventHandler.onDeleteExerciseSet});
       const exerciseSetsDiv = $(liElement).find('.exercise-sets');
       exerciseSetsTable.render(exerciseSetsDiv);

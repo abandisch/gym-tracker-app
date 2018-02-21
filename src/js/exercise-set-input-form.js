@@ -1,6 +1,6 @@
 import $ from "jquery";
 
-export default class AddSetForm {
+export default class ExerciseSetInputForm {
   constructor(props) {
     this.displayAddSetInputForm = false;
     this.props = props;
