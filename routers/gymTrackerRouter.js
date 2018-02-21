@@ -42,18 +42,23 @@ router.get('/:id', [cookieParser(), jwtAuth], (req, res) => {
     });
 });
 
-router.post('/add-exercise', [cookieParser(), jsonParser, jwtAuth], (req, res) => {
+// Add new exercise to sessionType
+router.post('/exercises', [cookieParser(), jsonParser, jwtAuth], (req, res) => {
   const {id: gymGoerID} = req.user;
   const {sessionType, exerciseName} = req.body;
 
-  routerUtils.confirmRequiredProperties(req.body, ['sessionType', 'exerciseName'], (msg) => {
+  routerUtils.confirmRequiredProperties(req.body, ['exerciseName'], (msg) => {
     console.error(msg);
     return res.status(400).json({error: msg});
   });
 
   GymGoerExercisesModel
     .addNewExercise(gymGoerID, sessionType, exerciseName)
-    .then(session => res.json(session));
+    .then(session => res.status(201).json(session))
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({error: 'Internal server error'})
+    });
 });
 
 router.post('/add-exercise-set', [cookieParser(), jsonParser, jwtAuth], (req, res) => {
@@ -74,6 +79,7 @@ router.post('/add-exercise-set', [cookieParser(), jsonParser, jwtAuth], (req, re
 
 });
 
+// Get exercises for sessionType on sessionISODate (using POST, so browser doesn't cache results)
 router.post('/exercises/:sessionType/:sessionISODate', [cookieParser(), jsonParser, jwtAuth], (req, res) => {
   const {id: gymGoerID} = req.user;
   const sessionType = req.params.sessionType;

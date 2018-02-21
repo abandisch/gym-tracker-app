@@ -27,7 +27,7 @@ export const GymTrackerAPI = {
   addExercise(trainingSession, exerciseName) {
     return new Promise((resolve, reject) => {
       $.ajax({
-        url: 'gym-tracker/add-exercise',
+        url: `gym-tracker/exercises`,
         data: JSON.stringify({sessionType: trainingSession, exerciseName: exerciseName}),
         method: 'POST',
         dataType: 'json',

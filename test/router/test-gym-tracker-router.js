@@ -104,21 +104,20 @@ describe('# gymTrackerRouter', function () {
     });
   });
 
-  describe('# gymTrackerRouter: /gym-tracker/add-exercise', function () {
+  describe('# gymTrackerRouter: /gym-tracker/exercises', function () {
     it('should return a session with the new exercise added', function () {
       const TEST_SESSION_TYPE = 'chest';
       const TEST_EXERCISE_NAME = 'bench press';
-      let cookieData;
       let gymGoer;
       return createTestGymGoer(TEST_EMAIL)
         .then(_gymGoer => gymGoer = _gymGoer)
         .then(() => {
           return chai.request(app)
-            .post(`${BASE_API_URL}/add-exercise`)
+            .post(`${BASE_API_URL}/exercises`)
             .send({sessionType: TEST_SESSION_TYPE, exerciseName: TEST_EXERCISE_NAME})
             .set('Cookie', `${COOKIE_NAME}=${createCookieData(gymGoer.id)}`)
             .then(res => {
-              expect(res).status(200);
+              expect(res).status(201);
               expect(res.body).to.have.keys(['sessionType', 'sessionDate', 'exercises']);
               expect(res.body.sessionType).to.equal(TEST_SESSION_TYPE);
               expect(res.body.exercises.length).to.equal(1);

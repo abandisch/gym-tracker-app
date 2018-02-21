@@ -31,6 +31,18 @@ const gymGoerSchema = mongoose.Schema({
 // Assign the GymGoerExercisesMethods to the gymGoerSchema methods
 Object.assign(gymGoerExercisesSchema.statics, GymGoerExercisesStatics);
 
+// Confirm the given session type is a valid one
+const isValidSessionType = (sessionType) => {
+  return new Promise((resolve, reject) => {
+    const validSessionTypes = ['chest', 'legs', 'arms', 'back', 'shoulders'];
+    if(validSessionTypes.indexOf(sessionType) >= 0) {
+      resolve();
+    }
+    reject(new Error(`invalid session type: ${sessionType}`));
+  })
+};
+
+
 gymGoerExercisesSchema.methods.serialize = function () {
   return {
     id: this._id,
@@ -140,12 +152,13 @@ gymGoerExercisesSchema.statics.findSinglePreviousExerciseForSessionType = functi
  * @returns {Promise} - Updated session with new exercise added
  */
 gymGoerExercisesSchema.statics.addNewExercise = function(gymGoerId, sessionType, exerciseName) {
-  return this.create({
+  return isValidSessionType(sessionType)
+    .then(() => this.create({
       gymGoerId: gymGoerId,
       sessionType: sessionType,
       exerciseName: exerciseName,
       sets: []
-    })
+    }))
     .then(() => GymGoerExercisesModel.findExercisesForToday(gymGoerId, sessionType))
     .then(exercises => GymGoerExercisesModel.attachLastBestSetToMultipleExercises(exercises))
     .then(exercises => GymGoerExercisesModel.flattenExercises(exercises));
@@ -301,7 +314,8 @@ gymGoerExercisesSchema.statics.preFillExercisesFromPreviousSession = function (g
  * @returns {Promise} - Updated session with new exercises added
  */
 gymGoerExercisesSchema.statics.initSessionExercises = function(gymGoerId, sessionType, sessionISODate) {
-  return validateParameters([gymGoerId, sessionType], 'Both GymGoerID and SessionType are required')
+  return isValidSessionType(sessionType)
+    .then(() => validateParameters([gymGoerId, sessionType], 'Both GymGoerID and SessionType are required'))
     .then(() => GymGoerExercisesModel.findExercisesByDate(gymGoerId, sessionType, sessionISODate))
     .then(exercises => GymGoerExercisesModel.attachLastBestSetToMultipleExercises(exercises))
     .then(exercises => {
