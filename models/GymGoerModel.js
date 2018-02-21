@@ -50,7 +50,7 @@ gymGoerExercisesSchema.methods.serialize = function () {
     gymGoerId: this.gymGoerId,
     sessionDate: this.sessionDate,
     sessionType: this.sessionType,
-    sets: this.sets.map(set => ({setNumber: set.setNumber, weight: set.weight, reps: set.reps}))
+    sets: this.sets.map(set => ({id: set._id, setNumber: set.setNumber, weight: set.weight, reps: set.reps}))
   };
 };
 
@@ -241,9 +241,10 @@ gymGoerExercisesSchema.statics.attachLastBestSetToSingleExercise = function (exe
         lastBest = GymGoerExercisesModel.getLastBestSet(previousExercise.sets, previousExercise.sessionDate);
       }
       return {
+        id: exercise._id,
         sessionDate: exercise.sessionDate,
         exerciseName: exercise.exerciseName,
-        sets: exercise.sets,
+        sets: exercise.sets.map(set => ({id: set._id, setNumber: set.setNumber, weight: set.weight, reps: set.reps})),
         gymGoerId: exercise.gymGoerId,
         sessionType: exercise.sessionType,
         lastBestSet: lastBest
@@ -278,6 +279,7 @@ gymGoerExercisesSchema.statics.flattenExercises = function(arrayOfExercises) {
     sessionDate: arrayOfExercises[0].sessionDate,
     exercises: arrayOfExercises.map(exercise => {
       return {
+        id: exercise.id,
         name: exercise.exerciseName,
         sets: exercise.sets,
         lastBestSet: exercise.lastBestSet

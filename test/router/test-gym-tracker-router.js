@@ -148,9 +148,10 @@ describe('# gymTrackerRouter', function () {
               expect(res.body).to.have.keys(['sessionType', 'sessionDate', 'exercises']);
               expect(res.body.sessionType).to.equal(TEST_SESSION_TYPE);
               expect(res.body.exercises.length).to.equal(1);
+              expect(res.body.exercises[0]).to.have.keys(['id', 'name', 'sets', 'lastBestSet']);
               expect(res.body.exercises[0].name).to.equal(TEST_EXERCISE_NAME);
               expect(res.body.exercises[0].sets.length).to.equal(1);
-              expect(res.body.exercises[0].sets[0]).to.have.keys(['_id', 'setNumber', 'weight', 'reps'])
+              expect(res.body.exercises[0].sets[0]).to.have.keys(['id', 'setNumber', 'weight', 'reps']);
             });
         });
     });
