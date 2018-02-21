@@ -10474,8 +10474,8 @@ $(GymTrackerClient.showStartPage());
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return State; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__ = __webpack_require__(3);
 
 
 const $ = __webpack_require__(0);
@@ -10513,7 +10513,6 @@ const State = {
     }
 
     if (this.displaySelectTrainingSessionPage) {
-      // const pageTextHtml = SelectTrainingSessionSection.render({template: SelectTrainingSessionSection.selectTrainingSessionIntroText});
       const selectTrainingSessionHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["b" /* SelectTrainingSessionSection */].render({template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["b" /* SelectTrainingSessionSection */].selectTrainingSessionForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onSelectTrainingSessionFormSubmit});
       main.html(selectTrainingSessionHtml);
       // main.html(pageTextHtml);
@@ -10571,13 +10570,7 @@ const State = {
       }
 
       // Exercises list - also contains the individual add set forms for each exercise
-      const exerciseListSection = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["e" /* TrainingPageExerciseListSection */]
-                                    .render({
-                                      exercises: State.trainingSessionExercises,
-                                      onAddSetSubmitEvent: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddSetForExerciseButtonFormSubmit,
-                                      onSaveAddSetSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onSaveAddSetForExerciseButtonFormSubmit,
-                                      onCancelAddSetSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onCancelAddSetForExerciseButtonFormSubmit
-                                    });
+      const exerciseListSection = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["e" /* TrainingPageExerciseListSection */].render({exercises: State.trainingSessionExercises});
       exerciseDataContainer.append(exerciseListSection);
 
       // Build the page
@@ -10596,6 +10589,106 @@ const State = {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return EventHandler; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__ = __webpack_require__(1);
+
+
+
+const $ = __webpack_require__(0);
+
+const EventHandler = {
+  onLoginFormSubmit: function (event) {
+    event.preventDefault();
+    const emailAddress = $(event.currentTarget).find('input[name=emailAddress]').val();
+    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */].authenticate(emailAddress)
+      .then(result => {
+        // show select training session page
+        __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showSelectTrainingSessionPage();
+      })
+      .catch(err => {
+        console.error('error:', err);
+      });
+  },
+  onSelectTrainingSessionFormSubmit: function (event) {
+    event.preventDefault();
+    // get exercises from server here, if empty, display the empty training session page, else
+    // display the training session page with the previous exercises on it
+    const selectedTrainingSession = $(event.currentTarget).data('session');
+    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */]
+      .initGymGoerTrainingSession(selectedTrainingSession)
+      .then(result => {
+        __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionType = result.sessionType;
+        if (result.exercises.length !== 0) {  // if there are previous exercises from the last session
+          __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].initTrainingSessionExercises(result.exercises);
+          __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
+        } else { // if there are no previous exercises, show empty training session page
+          __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showEmptyTrainingSessionPage();
+        }
+      })
+      /*.catch(err => {
+        console.error('(1) There has been a problem. Please try again later (' + JSON.stringify(err, null, 2) + ')');
+      });*/
+  },
+  onChangeSessionFormSubmit: function (event) {
+    event.preventDefault();
+    __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showSelectTrainingSessionPage();
+  },
+  onAddExerciseBigButtonFormSubmit: function (event) {
+    event.preventDefault();
+    __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].displayAddExerciseInputForm = true;
+    __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showEmptyTrainingSessionPage();
+  },
+  onAddExerciseSmallButtonFormSubmit: function (event) {
+    event.preventDefault();
+    __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].displayAddExerciseInputForm = true;
+    __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
+  },
+  onAddExerciseInputFormSubmit: function (event) {
+    event.preventDefault();
+    const exerciseName = $(event.currentTarget).find('input[name=exerciseName]').val();
+    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */]
+      .addExercise(__WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionType, exerciseName)
+      .then(session => {
+        if (session.exercises.length !== 0) {
+          __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].initTrainingSessionExercises(session.exercises);
+          __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
+        } else {
+          __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionExercises = [];
+          __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showEmptyTrainingSessionPage();
+        }
+      })
+      .catch(err => {
+        console.error('(2) There has been a problem. Please try again later (' + JSON.stringify(err, null, 2) + ')');
+      });
+  },
+  onCancelAddExerciseButtonFormSubmit: function (event) {
+    event.preventDefault();
+    __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
+  },
+  onSaveAddSetForExercise: function(exerciseIndex) {
+    return (weight, reps) => {
+      const currentExerciseName = __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionExercises[exerciseIndex].name;
+
+      // State.trainingSessionExercises[exerciseIndex].displayAddSetInputForm = true;
+      __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */]
+        .addSetToExercise(__WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionType, currentExerciseName, {weight: weight, reps: reps})
+        .then(updatedSession => {
+          __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].initTrainingSessionExercises(updatedSession.exercises);
+          __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
+        });
+    };
+  }
+};
+
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return SelectTrainingSessionSection; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HomePage; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return TrainingPageHeadingSection; });
@@ -10603,6 +10696,10 @@ const State = {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return TrainingPageAddExerciseSection; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return TrainingPageStaticContent; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return TrainingPageExerciseListSection; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gym_tracker_events__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__add_set_form__ = __webpack_require__(7);
+
+
 const $ = __webpack_require__(0);
 
 const TrainingPageStaticContent = {
@@ -10696,33 +10793,6 @@ const TrainingPageExerciseSetSection = {
     }
     return exerciseSets;
   },
-  addExerciseSetButtonFormHTML(exercise, exerciseIndex) {
-    return `<form role="form" data-exercise-index="${exerciseIndex}">
-              <button class="btn btn-small btn-add-set" data-exercise="${exercise.name}"><i class="fa fa-plus-square-o"></i> Add Set</button>
-            </form>`;
-  },
-  addExerciseSetInputFormHTML(exercise, exerciseIndex) {
-    return `<form role="form" data-exercise-index="${exerciseIndex}">
-              <div class="inline-form-input">
-                <label for="setWeight">Weight: </label>
-                <input type="text" id="setWeight" name="weight" placeholder="E.g. 10 or Body Weight" required>
-              </div>
-              <div class="inline-form-input">
-                <label for="setReps">Reps: </label>
-                <input type="number" id="setReps" name="reps" placeholder="Number of reps" required>
-              </div> 
-              <button class="btn btn-small btn-save-set">
-                <i class="fa fa-plus-square-o" aria-hidden="true" data-exercise-name="${exercise.name}"></i> Save New Set
-              </button>
-            </form>`;
-  },
-  cancelAddExerciseSetButtonForm() {
-    return `<form role="form">
-              <button class="btn btn-small btn-cancel-add-set">
-                <i class="fa fa-ban" aria-hidden="true"></i> Cancel
-              </button>
-            </form>`;
-  },
   render(props) {
     const template = props.template(props.exercise, props.exerciseIndex);
     if (props.onSubmitForm) {
@@ -10768,45 +10838,23 @@ const TrainingPageExerciseListSection = {
               <div class="add-exercise-set"></div>
             </li>`;
   },
-  exercisesList(exercises, onAddSetSubmitEvent, onSaveAddSetSubmitForm, onCancelAddSetSubmitForm) {
+  exercisesList(exercises) {
     let list = $.parseHTML('<ul class="exercise-list"></ul>');
-    let addExerciseSetForm;
-    let saveAddExerciseSetForm;
-    let cancelAddExerciseSetForm;
     exercises.forEach((exercise, index) => {
       const liElement = $.parseHTML(this.exerciseListItemHTML(exercise));
-      if (exercise.displayAddSetInputForm) {
-        saveAddExerciseSetForm = TrainingPageExerciseSetSection.render({template: TrainingPageExerciseSetSection.addExerciseSetInputFormHTML, exercise: exercise, exerciseIndex: index, onSubmitForm: onSaveAddSetSubmitForm});
-        cancelAddExerciseSetForm = TrainingPageExerciseSetSection.render({template: TrainingPageExerciseSetSection.cancelAddExerciseSetButtonForm, onSubmitForm: onCancelAddSetSubmitForm});
-        exercise.displayAddSetInputForm = false; // Reset this to false, so it doesn't appear again
-        $(liElement).find('.add-exercise-set').append(saveAddExerciseSetForm);
-        $(liElement).find('.add-exercise-set').append(cancelAddExerciseSetForm);
-      } else {
-        addExerciseSetForm = TrainingPageExerciseSetSection.render({template: TrainingPageExerciseSetSection.addExerciseSetButtonFormHTML, exercise: exercise, exerciseIndex: index, onSubmitForm: onAddSetSubmitEvent});
-        $(liElement).find('.add-exercise-set').append(addExerciseSetForm);
-      }
+      const addSetForm = new __WEBPACK_IMPORTED_MODULE_1__add_set_form__["a" /* default */]({onSubmitForm: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_events__["a" /* EventHandler */].onSaveAddSetForExercise(index)});
+      const addExerciseSetDiv = $(liElement).find('.add-exercise-set');
+      addSetForm.render(addExerciseSetDiv);
       $(list).append(liElement);
     });
-    /*const exerciseLiElements = exercises.map((exercise, exerciseIndex) => {
-      const liElement = $.parseHTML(this.exerciseListItemHTML(exercise));
-      const addExerciseSetForm = TrainingPageExerciseSetSection.render({template: TrainingPageExerciseSetSection.addExerciseSetForm, exercise: exercise, onSubmitForm: onAddSetSubmitEvent});
-      $(liElement).find('.add-exercise-set').append(addExerciseSetForm);
-      return liElement;
-    });
-    $(list).append(exerciseLiElements);*/
     return list;
   },
   render(props) {
-    return this.exercisesList(props.exercises, props.onAddSetSubmitEvent, props.onSaveAddSetSubmitForm, props.onCancelAddSetSubmitForm)
+    return this.exercisesList(props.exercises)
   }
 };
 
 const SelectTrainingSessionSection = {
-  selectTrainingSessionIntroText() {
-    return `
-      <h2 class="heading-select-session">Select your training session for today</h2>
-    `;
-  },
   selectTrainingSessionForm() {
     return `<form role="form" class="select-training-session-form">
               <fieldset>
@@ -10855,120 +10903,6 @@ const HomePage = {
     } else {
       return templateHtml;
     }
-  }
-};
-
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return EventHandler; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__ = __webpack_require__(1);
-
-
-
-const $ = __webpack_require__(0);
-
-const EventHandler = {
-  onLoginFormSubmit: function (event) {
-    event.preventDefault();
-    const emailAddress = $(event.currentTarget).find('input[name=emailAddress]').val();
-    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */].authenticate(emailAddress)
-      .then(result => {
-        // show select training session page
-        __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showSelectTrainingSessionPage();
-      })
-      .catch(err => {
-        console.error('error:', err);
-      });
-  },
-  onSelectTrainingSessionFormSubmit: function (event) {
-    event.preventDefault();
-    // get exercises from server here, if empty, display the empty training session page, else
-    // display the training session page with the previous exercises on it
-    const selectedTrainingSession = $(event.currentTarget).data('session');
-    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */]
-      .initGymGoerTrainingSession(selectedTrainingSession)
-      .then(result => {
-        __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionType = result.sessionType;
-        if (result.exercises.length !== 0) {  // if there are previous exercises from the last session
-          __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].initTrainingSessionExercises(result.exercises);
-          __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
-        } else { // if there are no previous exercises, show empty training session page
-          __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showEmptyTrainingSessionPage();
-        }
-      })
-      .catch(err => {
-        console.error('(1) There has been a problem. Please try again later (' + JSON.stringify(err, null, 2) + ')');
-      });
-  },
-  onChangeSessionFormSubmit: function (event) {
-    event.preventDefault();
-    __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showSelectTrainingSessionPage();
-  },
-  onAddExerciseBigButtonFormSubmit: function (event) {
-    event.preventDefault();
-    __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].displayAddExerciseInputForm = true;
-    __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showEmptyTrainingSessionPage();
-  },
-  onAddExerciseSmallButtonFormSubmit: function (event) {
-    event.preventDefault();
-    __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].displayAddExerciseInputForm = true;
-    __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
-  },
-  onAddExerciseInputFormSubmit: function (event) {
-    event.preventDefault();
-    const exerciseName = $(event.currentTarget).find('input[name=exerciseName]').val();
-    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */]
-      .addExercise(__WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionType, exerciseName)
-      .then(session => {
-        if (session.exercises.length !== 0) {
-          __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].initTrainingSessionExercises(session.exercises);
-          __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
-        } else {
-          __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionExercises = [];
-          __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showEmptyTrainingSessionPage();
-        }
-      })
-      .catch(err => {
-        console.error('(2) There has been a problem. Please try again later (' + JSON.stringify(err, null, 2) + ')');
-      });
-  },
-  onCancelAddExerciseButtonFormSubmit: function (event) {
-    event.preventDefault();
-    __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
-  },
-  onAddSetForExerciseButtonFormSubmit: function (event) {
-    event.preventDefault();
-    const exerciseIndex = Number.parseInt($(event.currentTarget).data('exercise-index'));
-    __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionExercises[exerciseIndex].displayAddSetInputForm = true;
-    __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
-  },
-  onCancelAddSetForExerciseButtonFormSubmit: function (event) {
-    event.preventDefault();
-    // just show the training page again (State would have been reset)
-    __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
-  },
-  onSaveAddSetForExerciseButtonFormSubmit: function (event) {
-    event.preventDefault();
-
-    const exerciseIndex = Number.parseInt($(event.currentTarget).data('exercise-index'));
-    const weight = $(event.currentTarget).find('input[name=weight]').val();
-    const reps = $(event.currentTarget).find('input[name=reps]').val();
-    const currentExerciseName = __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionExercises[exerciseIndex].name;
-
-    __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionExercises[exerciseIndex].displayAddSetInputForm = true;
-    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */]
-      .addSetToExercise(__WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionType, currentExerciseName, {weight: weight, reps: reps})
-      .then(updatedSession => {
-        __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].initTrainingSessionExercises(updatedSession.exercises);
-        __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
-      });
   }
 };
 
@@ -11079,6 +11013,75 @@ function getCookie(name) {
   return (result === null) ? null : result[1];
 }
 
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
+
+
+class AddSetForm {
+  constructor(props) {
+    this.displayAddSetInputForm = false;
+    this.props = props;
+  }
+  addExerciseSetButtonFormHTML() {
+    return `<form role="form" class="add-set-button-form">
+              <button class="btn btn-small btn-add-set"><i class="fa fa-plus-square-o"></i> Add Set</button>
+            </form>`;
+  }
+  addExerciseSetInputFormHTML() {
+    return `<form role="form" class="add-set-input-form">
+              <div class="inline-form-input">
+                <label for="setWeight">Weight: </label>
+                <input type="text" id="setWeight" name="weight" placeholder="E.g. 10 or Body Weight" required>
+              </div>
+              <div class="inline-form-input">
+                <label for="setReps">Reps: </label>
+                <input type="number" id="setReps" name="reps" placeholder="Number of reps" required>
+              </div> 
+              <button class="btn btn-small btn-save-set">
+                <i class="fa fa-plus-square-o" aria-hidden="true"></i> Save New Set
+              </button>
+              <button class="btn btn-small btn-cancel-add-set">
+                <i class="fa fa-ban" aria-hidden="true"></i> Cancel
+              </button>
+            </form>`;
+  }
+  render(parent) {
+    if (this.displayAddSetInputForm) {
+      parent.html(this.addExerciseSetInputFormHTML());
+      // Event for click cancel button
+      __WEBPACK_IMPORTED_MODULE_0_jquery___default()(parent).on('click', '.btn-cancel-add-set', (event) => {
+        event.preventDefault();
+        this.displayAddSetInputForm = false;
+        this.render(parent);
+      });
+      // Event for submit 'add set' button
+      __WEBPACK_IMPORTED_MODULE_0_jquery___default()(parent).on('submit', '.add-set-input-form', (event) => {
+        event.preventDefault();
+        const weight = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(event.currentTarget).find('input[name=weight]').val();
+        const reps = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(event.currentTarget).find('input[name=reps]').val();
+        this.displayAddSetInputForm = false;
+        this.props.onSubmitForm(weight, reps);
+        this.render(parent);
+      });
+    } else {
+      const addExerciseSetForm = this.addExerciseSetButtonFormHTML();
+      parent.html(addExerciseSetForm);
+      __WEBPACK_IMPORTED_MODULE_0_jquery___default()(parent).on('submit', '.add-set-button-form', (event) => {
+        event.preventDefault();
+        this.displayAddSetInputForm = true;
+        this.render(parent);
+      });
+    }
+  }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = AddSetForm;
 
 
 /***/ })

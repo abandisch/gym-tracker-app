@@ -1,3 +1,5 @@
+import {EventHandler} from "./gym-tracker-events";
+import AddSetForm from "./add-set-form";
 const $ = require("jquery");
 
 const TrainingPageStaticContent = {
@@ -91,33 +93,6 @@ const TrainingPageExerciseSetSection = {
     }
     return exerciseSets;
   },
-  addExerciseSetButtonFormHTML(exercise, exerciseIndex) {
-    return `<form role="form" data-exercise-index="${exerciseIndex}">
-              <button class="btn btn-small btn-add-set" data-exercise="${exercise.name}"><i class="fa fa-plus-square-o"></i> Add Set</button>
-            </form>`;
-  },
-  addExerciseSetInputFormHTML(exercise, exerciseIndex) {
-    return `<form role="form" data-exercise-index="${exerciseIndex}">
-              <div class="inline-form-input">
-                <label for="setWeight">Weight: </label>
-                <input type="text" id="setWeight" name="weight" placeholder="E.g. 10 or Body Weight" required>
-              </div>
-              <div class="inline-form-input">
-                <label for="setReps">Reps: </label>
-                <input type="number" id="setReps" name="reps" placeholder="Number of reps" required>
-              </div> 
-              <button class="btn btn-small btn-save-set">
-                <i class="fa fa-plus-square-o" aria-hidden="true" data-exercise-name="${exercise.name}"></i> Save New Set
-              </button>
-            </form>`;
-  },
-  cancelAddExerciseSetButtonForm() {
-    return `<form role="form">
-              <button class="btn btn-small btn-cancel-add-set">
-                <i class="fa fa-ban" aria-hidden="true"></i> Cancel
-              </button>
-            </form>`;
-  },
   render(props) {
     const template = props.template(props.exercise, props.exerciseIndex);
     if (props.onSubmitForm) {
@@ -163,45 +138,23 @@ const TrainingPageExerciseListSection = {
               <div class="add-exercise-set"></div>
             </li>`;
   },
-  exercisesList(exercises, onAddSetSubmitEvent, onSaveAddSetSubmitForm, onCancelAddSetSubmitForm) {
+  exercisesList(exercises) {
     let list = $.parseHTML('<ul class="exercise-list"></ul>');
-    let addExerciseSetForm;
-    let saveAddExerciseSetForm;
-    let cancelAddExerciseSetForm;
     exercises.forEach((exercise, index) => {
       const liElement = $.parseHTML(this.exerciseListItemHTML(exercise));
-      if (exercise.displayAddSetInputForm) {
-        saveAddExerciseSetForm = TrainingPageExerciseSetSection.render({template: TrainingPageExerciseSetSection.addExerciseSetInputFormHTML, exercise: exercise, exerciseIndex: index, onSubmitForm: onSaveAddSetSubmitForm});
-        cancelAddExerciseSetForm = TrainingPageExerciseSetSection.render({template: TrainingPageExerciseSetSection.cancelAddExerciseSetButtonForm, onSubmitForm: onCancelAddSetSubmitForm});
-        exercise.displayAddSetInputForm = false; // Reset this to false, so it doesn't appear again
-        $(liElement).find('.add-exercise-set').append(saveAddExerciseSetForm);
-        $(liElement).find('.add-exercise-set').append(cancelAddExerciseSetForm);
-      } else {
-        addExerciseSetForm = TrainingPageExerciseSetSection.render({template: TrainingPageExerciseSetSection.addExerciseSetButtonFormHTML, exercise: exercise, exerciseIndex: index, onSubmitForm: onAddSetSubmitEvent});
-        $(liElement).find('.add-exercise-set').append(addExerciseSetForm);
-      }
+      const addSetForm = new AddSetForm({onSubmitForm: EventHandler.onSaveAddSetForExercise(index)});
+      const addExerciseSetDiv = $(liElement).find('.add-exercise-set');
+      addSetForm.render(addExerciseSetDiv);
       $(list).append(liElement);
     });
-    /*const exerciseLiElements = exercises.map((exercise, exerciseIndex) => {
-      const liElement = $.parseHTML(this.exerciseListItemHTML(exercise));
-      const addExerciseSetForm = TrainingPageExerciseSetSection.render({template: TrainingPageExerciseSetSection.addExerciseSetForm, exercise: exercise, onSubmitForm: onAddSetSubmitEvent});
-      $(liElement).find('.add-exercise-set').append(addExerciseSetForm);
-      return liElement;
-    });
-    $(list).append(exerciseLiElements);*/
     return list;
   },
   render(props) {
-    return this.exercisesList(props.exercises, props.onAddSetSubmitEvent, props.onSaveAddSetSubmitForm, props.onCancelAddSetSubmitForm)
+    return this.exercisesList(props.exercises)
   }
 };
 
 const SelectTrainingSessionSection = {
-  selectTrainingSessionIntroText() {
-    return `
-      <h2 class="heading-select-session">Select your training session for today</h2>
-    `;
-  },
   selectTrainingSessionForm() {
     return `<form role="form" class="select-training-session-form">
               <fieldset>

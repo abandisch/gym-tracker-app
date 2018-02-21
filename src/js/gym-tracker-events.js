@@ -32,9 +32,9 @@ const EventHandler = {
           GymTrackerClient.showEmptyTrainingSessionPage();
         }
       })
-      .catch(err => {
+      /*.catch(err => {
         console.error('(1) There has been a problem. Please try again later (' + JSON.stringify(err, null, 2) + ')');
-      });
+      });*/
   },
   onChangeSessionFormSubmit: function (event) {
     event.preventDefault();
@@ -72,32 +72,18 @@ const EventHandler = {
     event.preventDefault();
     GymTrackerClient.showTrainingSessionPage();
   },
-  onAddSetForExerciseButtonFormSubmit: function (event) {
-    event.preventDefault();
-    const exerciseIndex = Number.parseInt($(event.currentTarget).data('exercise-index'));
-    State.trainingSessionExercises[exerciseIndex].displayAddSetInputForm = true;
-    GymTrackerClient.showTrainingSessionPage();
-  },
-  onCancelAddSetForExerciseButtonFormSubmit: function (event) {
-    event.preventDefault();
-    // just show the training page again (State would have been reset)
-    GymTrackerClient.showTrainingSessionPage();
-  },
-  onSaveAddSetForExerciseButtonFormSubmit: function (event) {
-    event.preventDefault();
+  onSaveAddSetForExercise: function(exerciseIndex) {
+    return (weight, reps) => {
+      const currentExerciseName = State.trainingSessionExercises[exerciseIndex].name;
 
-    const exerciseIndex = Number.parseInt($(event.currentTarget).data('exercise-index'));
-    const weight = $(event.currentTarget).find('input[name=weight]').val();
-    const reps = $(event.currentTarget).find('input[name=reps]').val();
-    const currentExerciseName = State.trainingSessionExercises[exerciseIndex].name;
-
-    State.trainingSessionExercises[exerciseIndex].displayAddSetInputForm = true;
-    GymTrackerAPI
-      .addSetToExercise(State.trainingSessionType, currentExerciseName, {weight: weight, reps: reps})
-      .then(updatedSession => {
-        State.initTrainingSessionExercises(updatedSession.exercises);
-        GymTrackerClient.showTrainingSessionPage();
-      });
+      // State.trainingSessionExercises[exerciseIndex].displayAddSetInputForm = true;
+      GymTrackerAPI
+        .addSetToExercise(State.trainingSessionType, currentExerciseName, {weight: weight, reps: reps})
+        .then(updatedSession => {
+          State.initTrainingSessionExercises(updatedSession.exercises);
+          GymTrackerClient.showTrainingSessionPage();
+        });
+    };
   }
 };
 

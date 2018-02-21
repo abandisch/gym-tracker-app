@@ -38,7 +38,6 @@ const State = {
     }
 
     if (this.displaySelectTrainingSessionPage) {
-      // const pageTextHtml = SelectTrainingSessionSection.render({template: SelectTrainingSessionSection.selectTrainingSessionIntroText});
       const selectTrainingSessionHtml = SelectTrainingSessionSection.render({template: SelectTrainingSessionSection.selectTrainingSessionForm, onSubmitForm: EventHandler.onSelectTrainingSessionFormSubmit});
       main.html(selectTrainingSessionHtml);
       // main.html(pageTextHtml);
@@ -96,13 +95,7 @@ const State = {
       }
 
       // Exercises list - also contains the individual add set forms for each exercise
-      const exerciseListSection = TrainingPageExerciseListSection
-                                    .render({
-                                      exercises: State.trainingSessionExercises,
-                                      onAddSetSubmitEvent: EventHandler.onAddSetForExerciseButtonFormSubmit,
-                                      onSaveAddSetSubmitForm: EventHandler.onSaveAddSetForExerciseButtonFormSubmit,
-                                      onCancelAddSetSubmitForm: EventHandler.onCancelAddSetForExerciseButtonFormSubmit
-                                    });
+      const exerciseListSection = TrainingPageExerciseListSection.render({exercises: State.trainingSessionExercises});
       exerciseDataContainer.append(exerciseListSection);
 
       // Build the page
