@@ -18,6 +18,8 @@ This continues week after week, and over time the gym goer can see how the weigh
 
 https://murmuring-thicket-55410.herokuapp.com/
 
+Travis CI Build Status: [![Build Status](https://travis-ci.org/abandisch/gym-tracker-app.svg?branch=master)](https://travis-ci.org/abandisch/gym-tracker-app)
+
 ## Stack
 
 * Client: jQuery
