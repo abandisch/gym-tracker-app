@@ -81,16 +81,16 @@ export const GymTrackerAPI = {
         .fail(() => reject({error: 'Error deleting set from exercise'}));
     });
   },
-  updateExerciseSet(exerciseSetId, updatedExerciseSet) {
+  updateExerciseSet(exerciseSetId, updatedExerciseSet, sessionType) {
     return new Promise((resolve, reject) => {
       $.ajax({
         url: `gym-tracker/exercises/sets/${exerciseSetId}`,
-        data: JSON.stringify({updatedSet: updatedExerciseSet}),
+        data: JSON.stringify({updatedSet: updatedExerciseSet, sessionType: sessionType}),
         method: 'PUT',
         dataType: 'json',
         contentType: 'application/json'
         })
-        .done(() => resolve(true))
+        .done(updatedSessionExercises => resolve(updatedSessionExercises))
         .fail(() => reject({error: 'Error updating set from exercise'}));
     });
   }

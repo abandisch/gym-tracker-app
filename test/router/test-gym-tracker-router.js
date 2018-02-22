@@ -197,7 +197,7 @@ describe('# gymTrackerRouter', function () {
         .then(() => {
           return chai.request(app)
             .put(`${BASE_API_URL}/exercises/sets/${exerciseSetId}`)
-            .send({updatedSet: UPDATED_TEST_SET})
+            .send({updatedSet: UPDATED_TEST_SET, sessionType: TEST_SESSION_TYPE})
             .set('Cookie', `${COOKIE_NAME}=${createCookieData(gymGoer.id)}`)
             .then(res => {
               expect(res).status(200);

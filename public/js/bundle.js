@@ -10679,8 +10679,7 @@ const EventHandler = {
   onUpdateExerciseSetSubmitForm: function (exerciseSetId) {
     return (weight, reps, setNumber) => {
       __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */]
-        .updateExerciseSet(exerciseSetId, {setNumber: setNumber, weight: weight, reps: reps})
-        .then(() => __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */].initGymGoerTrainingSession(__WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionType))
+        .updateExerciseSet(exerciseSetId, {setNumber: setNumber, weight: weight, reps: reps}, __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionType)
         .then(session => {
           __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionExercises = session.exercises;
           __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
@@ -10690,7 +10689,6 @@ const EventHandler = {
   onDeleteExerciseSetButtonClick: function(exerciseSetId) {
     __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */]
       .deleteExerciseSet(exerciseSetId, __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionType)
-      // .then(() => GymTrackerAPI.initGymGoerTrainingSession(State.trainingSessionType))
       .then(session => {
         __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionExercises = session.exercises;
         __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
@@ -11108,16 +11106,16 @@ const GymTrackerAPI = {
         .fail(() => reject({error: 'Error deleting set from exercise'}));
     });
   },
-  updateExerciseSet(exerciseSetId, updatedExerciseSet) {
+  updateExerciseSet(exerciseSetId, updatedExerciseSet, sessionType) {
     return new Promise((resolve, reject) => {
       $.ajax({
         url: `gym-tracker/exercises/sets/${exerciseSetId}`,
-        data: JSON.stringify({updatedSet: updatedExerciseSet}),
+        data: JSON.stringify({updatedSet: updatedExerciseSet, sessionType: sessionType}),
         method: 'PUT',
         dataType: 'json',
         contentType: 'application/json'
         })
-        .done(() => resolve(true))
+        .done(updatedSessionExercises => resolve(updatedSessionExercises))
         .fail(() => reject({error: 'Error updating set from exercise'}));
     });
   }

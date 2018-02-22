@@ -84,6 +84,7 @@ router.post('/exercises/sets', [cookieParser(), jsonParser, jwtAuth], (req, res)
 router.delete('/exercises/sets/:id', [cookieParser(), jsonParser, jwtAuth], (req, res) => {
   const {id: gymGoerId} = req.user;
   const {sessionType} = req.body;
+
   routerUtils.confirmRequiredProperties(req.params, ['id'], (msg) => {
     console.error(msg);
     return res.status(400).json({error: msg});
@@ -104,16 +105,25 @@ router.delete('/exercises/sets/:id', [cookieParser(), jsonParser, jwtAuth], (req
 
 // update exercise set
 router.put('/exercises/sets/:id', [cookieParser(), jsonParser, jwtAuth], (req, res) => {
-  const {updatedSet} = req.body;
+  const {id: gymGoerId} = req.user;
+  const {updatedSet, sessionType} = req.body;
 
   routerUtils.confirmRequiredProperties(req.params, ['id'], (msg) => {
     console.error(msg);
     return res.status(400).json({error: msg});
   });
 
+  routerUtils.confirmRequiredProperties(req.body, ['sessionType'], (msg) => {
+    console.error(msg);
+    return res.status(400).json({error: msg});
+  });
+
   return GymGoerExercisesModel
     .updateExerciseSetById(req.params.id, updatedSet)
-    .then(() => res.status(200).json({update: true}));
+    .then(() => GymGoerExercisesModel.findExercisesForToday(gymGoerId, sessionType))
+    .then(exercises => GymGoerExercisesModel.attachLastBestSetToMultipleExercises(exercises))
+    .then(exercisesForToday => GymGoerExercisesModel.flattenExercises(exercisesForToday))
+    .then(flattenedExercises => res.status(200).json(flattenedExercises))
 });
 
 // Get exercises for sessionType on sessionISODate (using POST, so browser doesn't cache results)

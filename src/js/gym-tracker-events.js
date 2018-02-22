@@ -90,8 +90,7 @@ const EventHandler = {
   onUpdateExerciseSetSubmitForm: function (exerciseSetId) {
     return (weight, reps, setNumber) => {
       GymTrackerAPI
-        .updateExerciseSet(exerciseSetId, {setNumber: setNumber, weight: weight, reps: reps})
-        .then(() => GymTrackerAPI.initGymGoerTrainingSession(State.trainingSessionType))
+        .updateExerciseSet(exerciseSetId, {setNumber: setNumber, weight: weight, reps: reps}, State.trainingSessionType)
         .then(session => {
           State.trainingSessionExercises = session.exercises;
           GymTrackerClient.showTrainingSessionPage();
@@ -101,7 +100,6 @@ const EventHandler = {
   onDeleteExerciseSetButtonClick: function(exerciseSetId) {
     GymTrackerAPI
       .deleteExerciseSet(exerciseSetId, State.trainingSessionType)
-      // .then(() => GymTrackerAPI.initGymGoerTrainingSession(State.trainingSessionType))
       .then(session => {
         State.trainingSessionExercises = session.exercises;
         GymTrackerClient.showTrainingSessionPage();
