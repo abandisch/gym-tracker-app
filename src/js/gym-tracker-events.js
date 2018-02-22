@@ -100,8 +100,8 @@ const EventHandler = {
   },
   onDeleteExerciseSetButtonClick: function(exerciseSetId) {
     GymTrackerAPI
-      .deleteExerciseSet(exerciseSetId)
-      .then(() => GymTrackerAPI.initGymGoerTrainingSession(State.trainingSessionType))
+      .deleteExerciseSet(exerciseSetId, State.trainingSessionType)
+      // .then(() => GymTrackerAPI.initGymGoerTrainingSession(State.trainingSessionType))
       .then(session => {
         State.trainingSessionExercises = session.exercises;
         GymTrackerClient.showTrainingSessionPage();

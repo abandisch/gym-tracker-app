@@ -82,15 +82,24 @@ router.post('/exercises/sets', [cookieParser(), jsonParser, jwtAuth], (req, res)
 
 // Delete exercise set
 router.delete('/exercises/sets/:id', [cookieParser(), jsonParser, jwtAuth], (req, res) => {
-
+  const {id: gymGoerId} = req.user;
+  const {sessionType} = req.body;
   routerUtils.confirmRequiredProperties(req.params, ['id'], (msg) => {
+    console.error(msg);
+    return res.status(400).json({error: msg});
+  });
+
+  routerUtils.confirmRequiredProperties(req.body, ['sessionType'], (msg) => {
     console.error(msg);
     return res.status(400).json({error: msg});
   });
 
   return GymGoerExercisesModel
     .deleteExerciseSetById(req.params.id)
-    .then(() => res.status(200).json({delete: true}));
+    .then(() => GymGoerExercisesModel.findExercisesForToday(gymGoerId, sessionType))
+    .then(exercises => GymGoerExercisesModel.attachLastBestSetToMultipleExercises(exercises))
+    .then(exercisesForToday => GymGoerExercisesModel.flattenExercises(exercisesForToday))
+    .then(flattenedExercises => res.status(200).json(flattenedExercises));
 });
 
 // update exercise set

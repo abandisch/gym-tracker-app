@@ -10689,8 +10689,8 @@ const EventHandler = {
   },
   onDeleteExerciseSetButtonClick: function(exerciseSetId) {
     __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */]
-      .deleteExerciseSet(exerciseSetId)
-      .then(() => __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */].initGymGoerTrainingSession(__WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionType))
+      .deleteExerciseSet(exerciseSetId, __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionType)
+      // .then(() => GymTrackerAPI.initGymGoerTrainingSession(State.trainingSessionType))
       .then(session => {
         __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionExercises = session.exercises;
         __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
@@ -11095,13 +11095,16 @@ const GymTrackerAPI = {
       });
     });
   },
-  deleteExerciseSet(exerciseSetId) {
+  deleteExerciseSet(exerciseSetId, sessionType) {
     return new Promise((resolve, reject) => {
       $.ajax({
           url: `gym-tracker/exercises/sets/${exerciseSetId}`,
-          method: 'DELETE'
+          data: JSON.stringify({sessionType: sessionType}),
+          method: 'DELETE',
+          dataType: 'json',
+          contentType: 'application/json'
         })
-        .done(() => resolve(true))
+        .done(updatedSessionExercises => resolve(updatedSessionExercises))
         .fail(() => reject({error: 'Error deleting set from exercise'}));
     });
   },

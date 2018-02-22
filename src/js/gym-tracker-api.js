@@ -68,13 +68,16 @@ export const GymTrackerAPI = {
       });
     });
   },
-  deleteExerciseSet(exerciseSetId) {
+  deleteExerciseSet(exerciseSetId, sessionType) {
     return new Promise((resolve, reject) => {
       $.ajax({
           url: `gym-tracker/exercises/sets/${exerciseSetId}`,
-          method: 'DELETE'
+          data: JSON.stringify({sessionType: sessionType}),
+          method: 'DELETE',
+          dataType: 'json',
+          contentType: 'application/json'
         })
-        .done(() => resolve(true))
+        .done(updatedSessionExercises => resolve(updatedSessionExercises))
         .fail(() => reject({error: 'Error deleting set from exercise'}));
     });
   },
