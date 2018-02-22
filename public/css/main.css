@@ -123,6 +123,8 @@ button:hover {
   border-radius: 3px;
   background-color: transparent;
   font-size: 1.1em;
+  -webkit-transition: 0.2s all ease-in-out;
+  -o-transition: 0.2s all ease-in-out;
   transition: 0.2s all ease-in-out;
 }
 .btn-delete-set {
