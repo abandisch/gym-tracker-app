@@ -8,10 +8,10 @@ export default class ExerciseSetsTable {
   createSetsRowHTML(sets) {
     let exerciseSets = `<tr><td colspan="5">Click the 'Add Set' button to add a new set for this exercise</td></tr>`;
     if (sets.length > 0) {
-      exerciseSets = sets.map(set => {
+      exerciseSets = sets.map((set, index) => {
         return `<tr data-exercise-set-id="${set.id}">
                   <td><button class="btn-delete-set"><i class="fa fa-times"></i><span class="sr-only">Delete Set</span></button></td>
-                  <td class="js-set-number">${set.setNumber}</td>
+                  <td class="js-set-number">${++index}</td>
                   <td class="js-weight">${set.weight}</td>
                   <td class="js-reps">${set.reps}</td>
                   <td><button class="btn-edit-set"><i class="fa fa-edit"></i><span class="sr-only">Edit Set</span></button></td>

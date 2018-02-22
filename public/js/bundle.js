@@ -10649,10 +10649,7 @@ const EventHandler = {
           __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionExercises = [];
           __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showEmptyTrainingSessionPage();
         }
-      })
-      /*.catch(err => {
-        console.error('(2) There has been a problem. Please try again later (' + JSON.stringify(err, null, 2) + ')');
-      });*/
+      });
   },
   onCancelAddExerciseButtonFormSubmit: function (event) {
     event.preventDefault();
@@ -10677,7 +10674,7 @@ const EventHandler = {
         set: exerciseSet
       };
       __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
-    }
+    };
   },
   onUpdateExerciseSetSubmitForm: function (exerciseSetId) {
     return (weight, reps, setNumber) => {
@@ -10688,7 +10685,7 @@ const EventHandler = {
           __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionExercises = session.exercises;
           __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
         });
-    }
+    };
   },
   onDeleteExerciseSetButtonClick: function(exerciseSetId) {
     __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */]
@@ -10697,8 +10694,8 @@ const EventHandler = {
       .then(session => {
         __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionExercises = session.exercises;
         __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showTrainingSessionPage();
-      })
-    }
+      });
+  }
 };
 
 
@@ -11170,10 +11167,10 @@ class ExerciseSetsTable {
   createSetsRowHTML(sets) {
     let exerciseSets = `<tr><td colspan="5">Click the 'Add Set' button to add a new set for this exercise</td></tr>`;
     if (sets.length > 0) {
-      exerciseSets = sets.map(set => {
+      exerciseSets = sets.map((set, index) => {
         return `<tr data-exercise-set-id="${set.id}">
                   <td><button class="btn-delete-set"><i class="fa fa-times"></i><span class="sr-only">Delete Set</span></button></td>
-                  <td class="js-set-number">${set.setNumber}</td>
+                  <td class="js-set-number">${++index}</td>
                   <td class="js-weight">${set.weight}</td>
                   <td class="js-reps">${set.reps}</td>
                   <td><button class="btn-edit-set"><i class="fa fa-edit"></i><span class="sr-only">Edit Set</span></button></td>

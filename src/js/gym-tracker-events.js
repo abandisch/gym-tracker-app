@@ -60,10 +60,7 @@ const EventHandler = {
           State.trainingSessionExercises = [];
           GymTrackerClient.showEmptyTrainingSessionPage();
         }
-      })
-      /*.catch(err => {
-        console.error('(2) There has been a problem. Please try again later (' + JSON.stringify(err, null, 2) + ')');
-      });*/
+      });
   },
   onCancelAddExerciseButtonFormSubmit: function (event) {
     event.preventDefault();
@@ -88,7 +85,7 @@ const EventHandler = {
         set: exerciseSet
       };
       GymTrackerClient.showTrainingSessionPage();
-    }
+    };
   },
   onUpdateExerciseSetSubmitForm: function (exerciseSetId) {
     return (weight, reps, setNumber) => {
@@ -99,7 +96,7 @@ const EventHandler = {
           State.trainingSessionExercises = session.exercises;
           GymTrackerClient.showTrainingSessionPage();
         });
-    }
+    };
   },
   onDeleteExerciseSetButtonClick: function(exerciseSetId) {
     GymTrackerAPI
@@ -108,8 +105,8 @@ const EventHandler = {
       .then(session => {
         State.trainingSessionExercises = session.exercises;
         GymTrackerClient.showTrainingSessionPage();
-      })
-    }
+      });
+  }
 };
 
 export { EventHandler };
