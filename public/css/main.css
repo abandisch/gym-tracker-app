@@ -40,7 +40,7 @@ label {
   font-weight: bold;
 }
 
-/* Button Types */
+/* Buttons */
 button:hover {
   cursor: pointer;
 }
@@ -123,21 +123,35 @@ button:hover {
   border-radius: 3px;
   background-color: transparent;
   font-size: 1.1em;
+  transition: 0.2s all ease-in-out;
 }
 .btn-delete-set {
   border-color: #f7998f;
 }
+.btn-delete-set:hover {
+  background-color: #f7998f;
+  border-color: #c54838;
+}
+.btn-delete-set:hover i {
+  color: #c54838;
+}
 .btn-delete-set i {
   color: #f7998f;
-  /*color: #F4796B;*/
 }
 .btn-edit-set {
-  /*border-color: #304D6D;*/
   border-color: #82A0BC;
+}
+.btn-edit-set:hover {
+  border-color: #072848;
+  background-color: #82A0BC;
+}
+.btn-edit-set:hover i {
+  color: #072848;
 }
 .btn-edit-set i {
   color: #82A0BC;
 }
+
 /* header */
 header {
   margin: 0 auto;

@@ -80,31 +80,6 @@ const TrainingPageAddExerciseSection = {
 }
 };
 
-const TrainingPageExerciseSetSection = {
-  createExerciseSetsHTML(exercise) {
-    let exerciseSets = `<tr><td colspan="5">Click the 'Add Set' button to add a new set for this exercise</td></tr>`;
-    if (exercise.sets.length > 0) {
-      exerciseSets = exercise.sets.map(set => {
-        return `<tr data-exercise-set-id="${set.id}">
-                  <td><button class="btn-delete-set"><i class="fa fa-times"></i><span class="sr-only">Delete Set</span></button></td>
-                  <td>${set.setNumber}</td>
-                  <td>${set.weight}</td>
-                  <td>${set.reps}</td>
-                  <td><button class="btn-edit-set"><i class="fa fa-edit"></i><span class="sr-only">Edit Set</span></button></td>
-                </tr>`;
-      }).join('');
-    }
-    return exerciseSets;
-  },
-  render(props) {
-    const template = props.template(props.exercise);
-    if (props.onSubmitForm) {
-      return $(template).on('submit', props.onSubmitForm);
-    }
-    return template;
-  }
-};
-
 const TrainingPageExerciseListSection = {
   createLastBestSetHTML(exercise) {
     let lastSessionResults = '<div class="last-session-results"><p class="no-stats">No stats from a previous session</p></div>';

@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 
-const GymGoerExercisesMethods = require('../../models/GymGoerExercisesStatics');
+const GymGoerExercisesStatics = require('../../models/GymGoerExercisesStatics');
 
 let dateToday = new Date();
 let dateYesterday = new Date();
@@ -42,16 +42,16 @@ const TEST_SETS_STRING = [
   }
 ];
 
-describe('# GymGoerExercisesMethods', function () {
-  describe('# GymGoerExercisesMethods.findBestSet', function () {
+describe('# GymGoerExercisesStatics', function () {
+  describe('# GymGoerExercisesStatics.findBestSet', function () {
     it('should return an object that has the best reps and weight out of the set, where weight is numeric', function () {
-      const result = GymGoerExercisesMethods.findBestSet(TEST_SETS_NUMERIC);
+      const result = GymGoerExercisesStatics.findBestSet(TEST_SETS_NUMERIC);
       expect(result).to.be.an.instanceOf(Object);
       expect(result.weight).to.be.equal("110");
       expect(result.reps).to.be.equal("12");
     });
     it('should return an object that has the best reps and weight out of the set, where weight is a string', function () {
-      const result = GymGoerExercisesMethods.findBestSet(TEST_SETS_STRING);
+      const result = GymGoerExercisesStatics.findBestSet(TEST_SETS_STRING);
       expect(result).to.be.an.instanceOf(Object);
       expect(result.weight).to.be.equal("body weight");
       expect(result.reps).to.be.equal("12");

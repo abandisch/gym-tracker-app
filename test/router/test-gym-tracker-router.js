@@ -1,14 +1,10 @@
 'use strict';
 
-import {setCookie} from "../../src/js/cookies";
-
 const chai = require('chai');
 const expect = chai.expect;
-const faker = require('faker');
 const chaiHttp = require('chai-http');
 const jwt = require('jsonwebtoken');
 const { runServer, closeServer, app } = require('../../server');
-// const gymTrackerRouter = require('../../routers/gymTrackerRouter');
 const mongoose = require('mongoose');
 
 const {GymGoerModel, GymGoerExercisesModel} = require('../../models/GymGoerModel');
@@ -43,7 +39,7 @@ const addTestExercise = (gymGoerId, sessionType, sessionDate, exerciseName, sets
     exerciseName: exerciseName,
     sets: sets
   });
-}
+};
 
 describe('# gymTrackerRouter', function () {
   before(function() {

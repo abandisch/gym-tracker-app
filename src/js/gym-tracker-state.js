@@ -34,8 +34,6 @@ const State = {
     if (this.displaySelectTrainingSessionPage) {
       const selectTrainingSessionHtml = SelectTrainingSessionSection.render({template: SelectTrainingSessionSection.selectTrainingSessionForm, onSubmitForm: EventHandler.onSelectTrainingSessionFormSubmit});
       main.html(selectTrainingSessionHtml);
-      // main.html(pageTextHtml);
-      // main.append(selectTrainingSessionHtml);
       this.displaySelectTrainingSessionPage = false;
     }
 

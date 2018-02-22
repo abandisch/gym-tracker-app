@@ -1,5 +1,4 @@
 import $ from "jquery";
-import ExerciseSetInputForm from "./exercise-set-input-form";
 
 export default class ExerciseSetsTable {
   constructor(props) {

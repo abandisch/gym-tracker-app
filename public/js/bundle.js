@@ -10509,8 +10509,6 @@ const State = {
     if (this.displaySelectTrainingSessionPage) {
       const selectTrainingSessionHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["b" /* SelectTrainingSessionSection */].render({template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["b" /* SelectTrainingSessionSection */].selectTrainingSessionForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onSelectTrainingSessionFormSubmit});
       main.html(selectTrainingSessionHtml);
-      // main.html(pageTextHtml);
-      // main.append(selectTrainingSessionHtml);
       this.displaySelectTrainingSessionPage = false;
     }
 
@@ -10889,31 +10887,6 @@ const TrainingPageAddExerciseSection = {
 }
 };
 
-const TrainingPageExerciseSetSection = {
-  createExerciseSetsHTML(exercise) {
-    let exerciseSets = `<tr><td colspan="5">Click the 'Add Set' button to add a new set for this exercise</td></tr>`;
-    if (exercise.sets.length > 0) {
-      exerciseSets = exercise.sets.map(set => {
-        return `<tr data-exercise-set-id="${set.id}">
-                  <td><button class="btn-delete-set"><i class="fa fa-times"></i><span class="sr-only">Delete Set</span></button></td>
-                  <td>${set.setNumber}</td>
-                  <td>${set.weight}</td>
-                  <td>${set.reps}</td>
-                  <td><button class="btn-edit-set"><i class="fa fa-edit"></i><span class="sr-only">Edit Set</span></button></td>
-                </tr>`;
-      }).join('');
-    }
-    return exerciseSets;
-  },
-  render(props) {
-    const template = props.template(props.exercise);
-    if (props.onSubmitForm) {
-      return $(template).on('submit', props.onSubmitForm);
-    }
-    return template;
-  }
-};
-
 const TrainingPageExerciseListSection = {
   createLastBestSetHTML(exercise) {
     let lastSessionResults = '<div class="last-session-results"><p class="no-stats">No stats from a previous session</p></div>';
@@ -11157,8 +11130,6 @@ function getCookie(name) {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__exercise_set_input_form__ = __webpack_require__(4);
-
 
 
 class ExerciseSetsTable {
