@@ -507,6 +507,7 @@ describe('# GymGoerExerciseModel', function () {
           reps: 13
         }];
       const UPDATED_SET = {
+        setNumber: 1,
         weight: "body weight",
         reps: 10
       };
@@ -519,8 +520,13 @@ describe('# GymGoerExerciseModel', function () {
         .then(() => GymGoerExercisesModel.findExercisesForToday(gymGoer.id, TEST_SESSION_TYPE))
         .then(exercises => exerciseSetId = exercises[0].sets[0].id)
         .then(() => GymGoerExercisesModel.updateExerciseSetById(exerciseSetId, UPDATED_SET))
-        .then((results) => {
-          expect(results).to.equal(true);
+        .then((results) => expect(results).to.equal(true))
+        .then(() => GymGoerExercisesModel.find({"gymGoerId": gymGoer.id}))
+        .then(exercises => {
+          expect(exercises[0].sets[0]).to.be.a('object');
+          expect(exercises[0].sets[0].setNumber).to.equal(1);
+          expect(exercises[0].sets[0].weight).to.equal('body weight');
+          expect(exercises[0].sets[0].reps).to.equal(10);
         });
     });
   });

@@ -131,10 +131,18 @@ const TrainingPageExerciseListSection = {
     let list = $.parseHTML('<ul class="exercise-list"></ul>');
     exercises.forEach((exercise, index) => {
       const liElement = $.parseHTML(this.exerciseListItemHTML(exercise));
-      const exerciseSetForm = new ExerciseSetInputForm({onSubmitForm: EventHandler.onSaveAddSetForExercise(index)});
+      const exerciseSetFormOptions = {onSubmitForm: EventHandler.onSaveAddSetForExercise(index)};
+      if (exercise.displayExerciseSetInputForm) {
+        Object.assign(exerciseSetFormOptions, {
+          displayInputForm: true,
+          exerciseSet: exercise.updateExerciseSet.set,
+          onSubmitUpdateForm: EventHandler.onUpdateExerciseSetSubmitForm(exercise.updateExerciseSet.setId)});
+        exercise.displayExerciseSetInputForm = false;
+      }
+      const exerciseSetForm = new ExerciseSetInputForm(exerciseSetFormOptions);
       const addExerciseSetDiv = $(liElement).find('.exercise-set-input');
       exerciseSetForm.render(addExerciseSetDiv);
-      const exerciseSetsTable = new ExerciseSetsTable({exercise: exercise, onClickEditButton: EventHandler.onEditExerciseSet, onClickDeleteButton: EventHandler.onDeleteExerciseSet});
+      const exerciseSetsTable = new ExerciseSetsTable({exercise: exercise, onClickEditButton: EventHandler.onEditExerciseSetButtonClick(index), onClickDeleteButton: EventHandler.onDeleteExerciseSetButtonClick});
       const exerciseSetsDiv = $(liElement).find('.exercise-sets');
       exerciseSetsTable.render(exerciseSetsDiv);
       $(list).append(liElement);

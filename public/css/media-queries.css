@@ -82,18 +82,21 @@
     font-size: 0.9em;
     padding: 5px;
   }
-  .exercise-list .set-table {
-    width: 70%;
+  .exercise-list .exercise-sets {
+    width: 62%;
     margin-top: 10px;
     font-size: 1em;
   }
-  .exercise-list button {
-    width: 20%;
-    margin: 10px auto;
+  .exercise-sets .btn-delete-set, .exercise-sets .btn-edit-set {
+    width: 50%;
+    margin: 8px auto;
   }
   .exercise-list li .exercise-set-input {
-    width: 28%;
+    width: 35%;
     margin: 10px auto 0;
+  }
+  .exercise-sets .set-table th, .exercise-sets .set-table td {
+    padding: 0;
   }
 }
 

@@ -25,7 +25,7 @@ const EventHandler = {
       .then(result => {
         State.trainingSessionType = result.sessionType;
         if (result.exercises.length !== 0) {
-          State.initTrainingSessionExercises(result.exercises);
+          State.trainingSessionExercises = result.exercises;
           GymTrackerClient.showTrainingSessionPage();
         } else {
           GymTrackerClient.showEmptyTrainingSessionPage();
@@ -53,16 +53,17 @@ const EventHandler = {
       .addExercise(State.trainingSessionType, exerciseName)
       .then(session => {
         if (session.exercises.length !== 0) {
-          State.initTrainingSessionExercises(session.exercises);
+          State.trainingSessionExercises = session.exercises;
+          // State.initTrainingSessionExercises(session.exercises);
           GymTrackerClient.showTrainingSessionPage();
         } else {
           State.trainingSessionExercises = [];
           GymTrackerClient.showEmptyTrainingSessionPage();
         }
       })
-      .catch(err => {
+      /*.catch(err => {
         console.error('(2) There has been a problem. Please try again later (' + JSON.stringify(err, null, 2) + ')');
-      });
+      });*/
   },
   onCancelAddExerciseButtonFormSubmit: function (event) {
     event.preventDefault();
@@ -71,32 +72,41 @@ const EventHandler = {
   onSaveAddSetForExercise: function(exerciseIndex) {
     return (weight, reps) => {
       const currentExerciseName = State.trainingSessionExercises[exerciseIndex].name;
-
-      // State.trainingSessionExercises[exerciseIndex].displayAddSetInputForm = true;
       GymTrackerAPI
         .addSetToExercise(State.trainingSessionType, currentExerciseName, {weight: weight, reps: reps})
         .then(updatedSession => {
-          State.initTrainingSessionExercises(updatedSession.exercises);
+          State.trainingSessionExercises = updatedSession.exercises;
           GymTrackerClient.showTrainingSessionPage();
         });
     };
   },
-  onEditExerciseSet: function (exerciseSetId, updatedExerciseSet) {
-    console.log('editing exerciseSetId:', exerciseSetId);
-    /*GymTrackerAPI
-      .updateExerciseSet(exerciseSetId, updatedExerciseSet)
-      .then(() => GymTrackerAPI.initGymGoerTrainingSession(State.trainingSessionType))
-      .then(session => {
-        State.initTrainingSessionExercises(session.exercises);
-        GymTrackerClient.showTrainingSessionPage();
-      })*/
+  onEditExerciseSetButtonClick: function (exerciseIndex) {
+    return (exerciseSetId, exerciseSet) => {
+      State.trainingSessionExercises[exerciseIndex].displayExerciseSetInputForm = true;
+      State.trainingSessionExercises[exerciseIndex].updateExerciseSet = {
+        setId: exerciseSetId,
+        set: exerciseSet
+      };
+      GymTrackerClient.showTrainingSessionPage();
+    }
   },
-  onDeleteExerciseSet: function(exerciseSetId) {
+  onUpdateExerciseSetSubmitForm: function (exerciseSetId) {
+    return (weight, reps, setNumber) => {
+      GymTrackerAPI
+        .updateExerciseSet(exerciseSetId, {setNumber: setNumber, weight: weight, reps: reps})
+        .then(() => GymTrackerAPI.initGymGoerTrainingSession(State.trainingSessionType))
+        .then(session => {
+          State.trainingSessionExercises = session.exercises;
+          GymTrackerClient.showTrainingSessionPage();
+        });
+    }
+  },
+  onDeleteExerciseSetButtonClick: function(exerciseSetId) {
     GymTrackerAPI
       .deleteExerciseSet(exerciseSetId)
       .then(() => GymTrackerAPI.initGymGoerTrainingSession(State.trainingSessionType))
       .then(session => {
-        State.initTrainingSessionExercises(session.exercises);
+        State.trainingSessionExercises = session.exercises;
         GymTrackerClient.showTrainingSessionPage();
       })
     }

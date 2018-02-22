@@ -56,7 +56,7 @@ router.post('/exercises', [cookieParser(), jsonParser, jwtAuth], (req, res) => {
     .addNewExercise(gymGoerID, sessionType, exerciseName)
     .then(session => res.status(201).json(session))
     .catch(err => {
-      console.log(err);
+      console.error(err);
       res.status(500).json({error: 'Internal server error'})
     });
 });

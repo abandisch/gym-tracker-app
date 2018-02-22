@@ -203,7 +203,7 @@ gymGoerExercisesSchema.statics.updateExerciseSetById = function (exerciseSetId, 
   return GymGoerExercisesModel.findOneAndUpdate(
     {"sets": {$elemMatch: {"_id": exerciseSetId}}},
     {
-      $set: { "sets.$": { "weight": exerciseSet.weight, "reps": exerciseSet.reps } } },
+      $set: { "sets.$": { "setNumber": exerciseSet.setNumber, "weight": exerciseSet.weight, "reps": exerciseSet.reps } } },
     { 'new': true })
     .then(result => result !== null);
 };

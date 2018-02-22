@@ -19,12 +19,6 @@ const State = {
     {exercise: 'back', icon: 'fa-heart'}
   ],
   trainingSessionExercises: [],
-  initTrainingSessionExercises(exercises) {
-    this.trainingSessionExercises = exercises.map(ex => {
-      ex.displayAddSetInputForm = false; // Include displayAddSetInputForm to the exercise object
-      return ex;
-    });
-  },
   render() {
     const main = $('main');
     let sessionDetails = { };

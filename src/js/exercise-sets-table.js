@@ -1,4 +1,5 @@
 import $ from "jquery";
+import ExerciseSetInputForm from "./exercise-set-input-form";
 
 export default class ExerciseSetsTable {
   constructor(props) {
@@ -10,9 +11,9 @@ export default class ExerciseSetsTable {
       exerciseSets = sets.map(set => {
         return `<tr data-exercise-set-id="${set.id}">
                   <td><button class="btn-delete-set"><i class="fa fa-times"></i><span class="sr-only">Delete Set</span></button></td>
-                  <td>${set.setNumber}</td>
-                  <td>${set.weight}</td>
-                  <td>${set.reps}</td>
+                  <td class="js-set-number">${set.setNumber}</td>
+                  <td class="js-weight">${set.weight}</td>
+                  <td class="js-reps">${set.reps}</td>
                   <td><button class="btn-edit-set"><i class="fa fa-edit"></i><span class="sr-only">Edit Set</span></button></td>
                 </tr>`;
       }).join('');
@@ -45,7 +46,10 @@ export default class ExerciseSetsTable {
       const exerciseSetId = $(event.currentTarget).closest('tr').data('exercise-set-id');
       const func = $(event.currentTarget).text().trim() === 'Delete Set' ? 'delete' : 'edit';
       if (func === 'edit') {
-        this.props.onClickEditButton(exerciseSetId);
+        const setNumber = $(event.currentTarget).closest('tr').find('.js-set-number').text();
+        const setWeight = $(event.currentTarget).closest('tr').find('.js-weight').text();
+        const setReps = $(event.currentTarget).closest('tr').find('.js-reps').text();
+        this.props.onClickEditButton(exerciseSetId, {setNumber: setNumber, weight: setWeight, reps: setReps});
       }
       if (func === 'delete') {
         this.props.onClickDeleteButton(exerciseSetId);
