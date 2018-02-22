@@ -18,6 +18,13 @@ This continues week after week, and over time the gym goer can see how the weigh
 
 https://murmuring-thicket-55410.herokuapp.com/
 
+## Stack
+
+* Client: jQuery
+* Web Server: Express
+* Database: Mongo
+* Tests: Mocha, Chai
+
 ## User Stories
 
 - As a gym goer, I want to create a training session, so that I can track my exercises for that session
