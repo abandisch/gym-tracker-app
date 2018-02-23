@@ -53,7 +53,7 @@ Travis CI Build Status: [![Build Status](https://travis-ci.org/abandisch/gym-tra
 
 ## MVP Feedback
 
-Feedback on the app has been positive - from a usability and design perspective, the app has been well received. The only negative feedback was due to not being able to edit or delete exercises and/or sets, when a typo was accidentally made, which made tracking the rest of the exercise sets difficult. However this functionality was not included in the MVP.  
+Feedback on the app has been positive - from a usability and design perspective, the app has been well received. The only negative feedback was due to not being able to edit or delete exercises, when a typo was accidentally made. However this functionality was not included in the MVP.  
 
 ## MVP App Screenshots - Mobile View
 
