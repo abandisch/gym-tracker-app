@@ -11,7 +11,7 @@ export default class ExerciseSetInputForm {
             </form>`;
   }
   exerciseSetInputFormHTML(set) {
-    return `<form role="form" class="${set && set.reps && set.weight ? 'update-set-input-form' : 'add-set-input-form'}">
+    return `<form autocomplete="off" role="form" class="${set && set.reps && set.weight ? 'update-set-input-form' : 'add-set-input-form'}">
               <div class="inline-form-input">
                 <label for="setWeight">Weight: </label>
                 <input value="${set && set.weight ? set.weight : ''}" type="text" id="setWeight" name="weight" placeholder="E.g. 10 or Body Weight" required>
