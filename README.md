@@ -4,19 +4,24 @@ This app lets people that regularly go to the gym track their exercise results i
 
 ### App Usage Walkthrough
 
-During the first week, a gym goer can create a new session, specify the type of session (e.g. legs, chest, back), and record the following:
-- each exercise completed within that session (e.g. for a legs session this can inclue leg press, hex bar deadlifts, barbell squats, split squats)
-- the number of sets for each exercise (e.g. 3 sets), 
-- the weight lifted for each exercise 
-- the maximum number of reps achieved within each set for the given exercise.
+To start off, enter in your email address - all recorded information will be associated with your email address, so you can log in from any device and pickup where you left off. 
 
-The next week, the gym user has access to the previous weeks session information (session type, exercises, number of sets, weight lifted, max reps for each exercise). They create a new session (as per the first week), however this time they will have access to the previous session data (weight lifted and max reps), which will be set as the goal for the current session. The aim is to match or beat the results from the previous session, in order to improve.
+Then on the 'Select your training session for today' select the type of gym weight lifting training session you would like to complete today. Choices are 'Chest', 'Back', 'Arms' and 'Legs'. 
 
-This continues week after week, and over time the gym goer can see how the weight and maximum reps for each exercise have improved since the first week.
+Once you've selected a training session, go ahead and click the 'Add Exercise' button to add the exercise you're about to do at the gym. For example, if you're doing a 'Chest' session at the gym, you might start off with 'Bench Press' as your first exercise. Go ahead and add 'Bench Press'.
+
+Once you've added your exercise, do you first set at your required weight. When you're done doing your set, click on 'Add Set' in the app to record the weight and reps for that set. If you made a typo, you can click the edit button to the right of the recorded set. Or if you simply don't want to keep that set, just click the delete button to the left of the recorded set.
+
+When you're ready to move on to the next exercise, just add a new exercise and start recording the sets for it. 
+
+When you come back to the gym the following week to do the same training session, the Gym Tracker App will automatically find the exercises you did last week and pre-populate them for you, so you don't have to type them in again. All you need to do is just add a set as per normal to the appropriate exercise. 
+Addiionally, the Gym Tracker App will tell you what your best set was during the last session for each of the given exercises, so you know what to set your goal as for this session.
 
 ## Minimum Viable Product URL
 
-https://murmuring-thicket-55410.herokuapp.com/
+The MVP will allow you to login with your email, select a training session, add exercises and add/edit/delete sets for each exercise. You'll also be able to change training sessions. However you won't be able to edit/delete the exercises.
+
+MVP URL: https://murmuring-thicket-55410.herokuapp.com/
 
 Travis CI Build Status: [![Build Status](https://travis-ci.org/abandisch/gym-tracker-app.svg?branch=master)](https://travis-ci.org/abandisch/gym-tracker-app)
 
@@ -48,7 +53,7 @@ Travis CI Build Status: [![Build Status](https://travis-ci.org/abandisch/gym-tra
 
 ## MVP Feedback
 
-Feedback on the app has been positive - from a usability and design perspective, the app has been well received. The only negative feedback was due to not being able to edit or delete exercises and/or sets, when a typo was accidentally made, which made tracking the rest of the exercise sets difficult. However this functionality was not included in the MVP.  
+Feedback on the app has been positive - from a usability and design perspective, the app has been well received. The only negative feedback was due to not being able to edit or delete exercises, when a typo was accidentally made. However this functionality was not included in the MVP.  
 
 ## MVP App Screenshots - Mobile View
 
