@@ -81,13 +81,24 @@ const TrainingPageAddExerciseSection = {
 };
 
 const TrainingPageExerciseListSection = {
+  createHistoryButton(exerciseId) {
+    const button = ` 
+      <button type="submit" class="btn-show-history">
+        <i class="fa fa-history" aria-hidden="true"></i>
+        <span hidden>See history for exercise</span>
+        <span class="text" aria-hidden="true">History</span>
+      </button>`;
+      return button;
+  },
   createLastBestSetHTML(exercise) {
     let lastSessionResults = '<div class="last-session-results"><p class="no-stats">No stats from a previous session</p></div>';
     if (exercise.lastBestSet.weight !== undefined && exercise.lastBestSet.reps !== undefined) {
+      const historyButton = this.createHistoryButton(exercise.id);
       const lastSessionDate = new Date(exercise.lastBestSet.sessionDate).toLocaleString().split(',').splice(0, 1)[0];
       lastSessionResults = `<div class="last-session-results">
-                              <p class="last-session-date">Last Session [${lastSessionDate}]</p>
+                              <p class="last-session-date">Last Sessions [${lastSessionDate}]</p>
                               <p class="last-session-stats"><span class="stats-weight">Weight: ${exercise.lastBestSet.weight}</span> - <span class="stats-reps">Max Reps: ${exercise.lastBestSet.reps}</span></p>
+                              ${historyButton}
                             </div>`;
     }
     return lastSessionResults;
@@ -120,6 +131,10 @@ const TrainingPageExerciseListSection = {
       const exerciseSetsTable = new ExerciseSetsTable({exercise: exercise, onClickEditButton: EventHandler.onEditExerciseSetButtonClick(index), onClickDeleteButton: EventHandler.onDeleteExerciseSetButtonClick});
       const exerciseSetsDiv = $(liElement).find('.exercise-sets');
       exerciseSetsTable.render(exerciseSetsDiv);
+      if (exercise.lastBestSet.weight !== undefined && exercise.lastBestSet.reps !== undefined) {
+        console.log('id:', exercise.id);
+        $(liElement).on('click', '.btn-show-history', () => EventHandler.onClickShowExerciseHistoryButton(exercise.id));
+      }
       $(list).append(liElement);
     });
     return list;

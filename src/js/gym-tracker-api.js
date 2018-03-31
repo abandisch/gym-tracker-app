@@ -28,7 +28,7 @@ export const GymTrackerAPI = {
     return new Promise((resolve, reject) => {
       $.ajax({
         url: `gym-tracker/exercises`,
-        data: JSON.stringify({sessionType: trainingSession, exerciseName: exerciseName}),
+        data: JSON.stringify({sessionType: trainingSession, exerciseName: exerciseName.trim().toLowerCase()}),
         method: 'POST',
         dataType: 'json',
         contentType: 'application/json'
@@ -92,6 +92,19 @@ export const GymTrackerAPI = {
         })
         .done(updatedSessionExercises => resolve(updatedSessionExercises))
         .fail(() => reject({error: 'Error updating set from exercise'}));
+    });
+  },
+  getExerciseHistory(exerciseId) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: `gym-tracker/exercises/history/${exerciseId}`,
+        method: 'GET',
+        dataType: 'json',
+        contentType: 'application/json'
+      })
+      .done(exerciseHistory => resolve(exerciseHistory))
+      // TODO: figure out why getExerciseHistory
+      .fail((err) => reject({error: 'Error getting exercise history:'}))
     });
   }
 };

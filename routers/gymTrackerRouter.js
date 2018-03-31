@@ -151,6 +151,23 @@ router.post('/exercises/:sessionType/:sessionISODate', [cookieParser(), jsonPars
     });
 });
 
+router.get('/exercises/history/:exerciseId', [cookieParser(), jsonParser, jwtAuth], (req, res) => {
+  const {id: gymGoerId} = req.user;
+  const exerciseId = req.params.exerciseId;
+  
+  routerUtils.confirmRequiredProperties(req.params, ['exerciseId'], (msg) => {
+    console.error(msg);
+    return res.status(400).json({error: msg});
+  });
+
+  GymGoerExercisesModel
+    .findExerciseHistory(gymGoerId, exerciseId)
+    .then(history => {
+      res.json(history);
+    });
+
+});
+
 router.post('/login', [jsonParser, localAuth], (req, res) => {
   const authToken = createAuthToken(req.user);
   res.json({authToken});

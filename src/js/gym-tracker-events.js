@@ -77,6 +77,11 @@ const EventHandler = {
         });
     };
   },
+  onClickShowExerciseHistoryButton: function (exerciseId) {
+    GymTrackerAPI
+    .getExerciseHistory(exerciseId)
+    .then(history => console.log('historydskjfbdsf:', history));
+  },
   onEditExerciseSetButtonClick: function (exerciseIndex) {
     return (exerciseSetId, exerciseSet) => {
       State.trainingSessionExercises[exerciseIndex].displayExerciseSetInputForm = true;

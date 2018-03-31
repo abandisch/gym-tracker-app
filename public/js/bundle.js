@@ -10664,6 +10664,11 @@ const EventHandler = {
         });
     };
   },
+  onClickShowExerciseHistoryButton: function (exerciseId) {
+    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */]
+    .getExerciseHistory(exerciseId)
+    .then(history => console.log('historydskjfbdsf:', history));
+  },
   onEditExerciseSetButtonClick: function (exerciseIndex) {
     return (exerciseSetId, exerciseSet) => {
       __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].trainingSessionExercises[exerciseIndex].displayExerciseSetInputForm = true;
@@ -10794,13 +10799,24 @@ const TrainingPageAddExerciseSection = {
 };
 
 const TrainingPageExerciseListSection = {
+  createHistoryButton(exerciseId) {
+    const button = ` 
+      <button type="submit" class="btn-show-history">
+        <i class="fa fa-history" aria-hidden="true"></i>
+        <span hidden>See history for exercise</span>
+        <span class="text" aria-hidden="true">History</span>
+      </button>`;
+      return button;
+  },
   createLastBestSetHTML(exercise) {
     let lastSessionResults = '<div class="last-session-results"><p class="no-stats">No stats from a previous session</p></div>';
     if (exercise.lastBestSet.weight !== undefined && exercise.lastBestSet.reps !== undefined) {
+      const historyButton = this.createHistoryButton(exercise.id);
       const lastSessionDate = new Date(exercise.lastBestSet.sessionDate).toLocaleString().split(',').splice(0, 1)[0];
       lastSessionResults = `<div class="last-session-results">
-                              <p class="last-session-date">Last Session [${lastSessionDate}]</p>
+                              <p class="last-session-date">Last Sessions [${lastSessionDate}]</p>
                               <p class="last-session-stats"><span class="stats-weight">Weight: ${exercise.lastBestSet.weight}</span> - <span class="stats-reps">Max Reps: ${exercise.lastBestSet.reps}</span></p>
+                              ${historyButton}
                             </div>`;
     }
     return lastSessionResults;
@@ -10833,6 +10849,10 @@ const TrainingPageExerciseListSection = {
       const exerciseSetsTable = new __WEBPACK_IMPORTED_MODULE_2__exercise_sets_table__["a" /* default */]({exercise: exercise, onClickEditButton: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_events__["a" /* EventHandler */].onEditExerciseSetButtonClick(index), onClickDeleteButton: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_events__["a" /* EventHandler */].onDeleteExerciseSetButtonClick});
       const exerciseSetsDiv = $(liElement).find('.exercise-sets');
       exerciseSetsTable.render(exerciseSetsDiv);
+      if (exercise.lastBestSet.weight !== undefined && exercise.lastBestSet.reps !== undefined) {
+        console.log('id:', exercise.id);
+        $(liElement).on('click', '.btn-show-history', () => __WEBPACK_IMPORTED_MODULE_0__gym_tracker_events__["a" /* EventHandler */].onClickShowExerciseHistoryButton(exercise.id));
+      }
       $(list).append(liElement);
     });
     return list;
@@ -10932,7 +10952,7 @@ const GymTrackerAPI = {
     return new Promise((resolve, reject) => {
       $.ajax({
         url: `gym-tracker/exercises`,
-        data: JSON.stringify({sessionType: trainingSession, exerciseName: exerciseName}),
+        data: JSON.stringify({sessionType: trainingSession, exerciseName: exerciseName.trim().toLowerCase()}),
         method: 'POST',
         dataType: 'json',
         contentType: 'application/json'
@@ -10996,6 +11016,19 @@ const GymTrackerAPI = {
         })
         .done(updatedSessionExercises => resolve(updatedSessionExercises))
         .fail(() => reject({error: 'Error updating set from exercise'}));
+    });
+  },
+  getExerciseHistory(exerciseId) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: `gym-tracker/exercises/history/${exerciseId}`,
+        method: 'GET',
+        dataType: 'json',
+        contentType: 'application/json'
+      })
+      .done(exerciseHistory => resolve(exerciseHistory))
+      // TODO: figure out why getExerciseHistory
+      .fail((err) => reject({error: 'Error getting exercise history:'}))
     });
   }
 };

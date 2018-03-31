@@ -65,6 +65,41 @@ describe('# GymGoerExerciseModel', function () {
   let twoWeeksAgoDate = new Date();
   twoWeeksAgoDate.setDate(oneWeekAgoDate.getDate() - 7);
 
+  describe.only('# GymGoerExercisesModel.findExerciseHistory', function() {
+    it('should return the full history of an exercise', function() {
+      let gymGoer;
+      const TEST_SESSION_TYPE = 'chest';
+      const TEST_EXERCISE_NAME_1 = 'bench press';
+      const TEST_EXERCISE_NAME_2 = 'dips';
+      const TEST_EXERCISE_NAME_3 = 'inclined bench press';
+      const TEST_SET_1 = [{ setNumber: 1, weight: "40", reps: 10 }, { setNumber: 2, weight: "40", reps: 11 }, { setNumber: 3, weight: "40", reps: 10 }];
+      const TEST_SET_2 = [{ setNumber: 1, weight: "50", reps: 12 }, { setNumber: 2, weight: "50", reps: 12 }, { setNumber: 3, weight: "52", reps: 10 }];
+      const TEST_SET_3 = [{ setNumber: 1, weight: "Body Weight", reps: 12 }, { setNumber: 2, weight: "Body Weight", reps: 11 }, { setNumber: 3, weight: "Body Weight", reps: 10 }];
+      let exercise;
+      return createTestGymGoer(TEST_EMAIL)
+      .then(_gymGoer => gymGoer = _gymGoer)
+      // exercises two weeks ago
+      .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, twoWeeksAgoDate, TEST_EXERCISE_NAME_1, TEST_SET_1))
+      .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, twoWeeksAgoDate, TEST_EXERCISE_NAME_2, TEST_SET_2))
+      .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, twoWeeksAgoDate, TEST_EXERCISE_NAME_3, TEST_SET_3))
+      // exercise one week ago
+      .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, oneWeekAgoDate, TEST_EXERCISE_NAME_1, TEST_SET_1))
+      .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, oneWeekAgoDate, TEST_EXERCISE_NAME_2, TEST_SET_2))
+      .then(() => addPreviousTestExercise(gymGoer.id, TEST_SESSION_TYPE, oneWeekAgoDate, TEST_EXERCISE_NAME_3, TEST_SET_3))
+      .then((ex) => exercise = ex)
+      .then((() => GymGoerExercisesModel.findExerciseHistory(gymGoer.id, exercise.id)))
+      .then(exercises => {
+        expect(exercises.length).to.equal(2);
+        expect(exercises[0].gymGoerId.toString()).to.equal(gymGoer.id.toString());
+        expect(exercises[0].sessionType).to.equal(TEST_SESSION_TYPE);
+        expect(exercises[0].exerciseName).to.equal(exercise.exerciseName);
+        expect(exercises[1].gymGoerId.toString()).to.equal(gymGoer.id.toString());
+        expect(exercises[1].sessionType).to.equal(TEST_SESSION_TYPE);
+        expect(exercises[1].exerciseName).to.equal(exercise.exerciseName);
+      });
+    });
+  });
+
   describe('# GymGoerExercisesModel.findLastExercisesForSessionType', function () {
     it('should return an exercise object from a previous session', function () {
       let gymGoer;

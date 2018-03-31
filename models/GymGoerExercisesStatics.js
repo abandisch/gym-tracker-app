@@ -1,5 +1,15 @@
 const {validateParameters, toReadableISODate} = require('./GymGoerUtils');
 const GymGoerExercisesStatics = {
+  findExerciseName(exerciseId) {
+    return this.find
+  },
+  findExerciseHistory(gymGoerId, exerciseId) {
+    return this
+      .findById({_id: exerciseId}, {exerciseName: 1, gymGoerId: 1})
+      .then(res => {
+        return this.find( { $and: [{exerciseName: res.exerciseName}, {gymGoerId: res.gymGoerId}] })
+      });
+  },
   extractExercisesFromLastSession(previousExercises) {
     // previousExercises[0] should contain the previous training session
     let exercisesArray = [];

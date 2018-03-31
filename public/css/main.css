@@ -19,6 +19,18 @@ body {
   text-align: center;
 }
 
+/* a11y */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+}
+
 /* Form fields */
 input, .btn, .btn-block {
   border: 1px solid #b9b9b9;
@@ -346,6 +358,20 @@ main > section {
   padding: 8px;
   text-align: center;
   min-height: 50px;
+  position: relative;
+}
+.exercise-list .last-session-results .btn-show-history {
+  position: absolute;
+  top: 50%;
+  left: 2px;
+  transform: translate(0, -50%);
+  font-size: 1.5em;
+  color: #eee;
+}
+.exercise-list .last-session-results .btn-show-history .text {
+  display: block;
+  font-size: 0.4em;
+  text-transform: uppercase;
 }
 .exercise-list .last-session-results p {
   margin: 0;
