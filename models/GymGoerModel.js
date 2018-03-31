@@ -7,7 +7,7 @@ const GymGoerExercisesStatics = require('./GymGoerExercisesStatics');
 const {validateParameters, toReadableISODate} = require('./GymGoerUtils');
 
 const gymGoerExercisesSchema = mongoose.Schema({
-  gymGoerId: {type: mongoose.Schema.Types.ObjectId, required: true},
+  gymGoerId: {type: mongoose.Schema.Types.ObjectId, required: true, index: true},
   sessionType: {type: String, required: true},
   sessionDate: {type: Date, default: Date.now},
   exerciseName: {type: String, default: ''},
