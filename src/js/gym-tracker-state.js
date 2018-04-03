@@ -19,6 +19,7 @@ const State = {
     {exercise: 'back', icon: 'fa-heart'}
   ],
   trainingSessionExercises: [],
+  exercisesHistory: [],
   render() {
     const main = $('main');
     let sessionDetails = { };
@@ -95,6 +96,19 @@ const State = {
       main.append(exerciseDataContainer);
       this.displayTrainingSessionPage = false;
       this.displayAddExerciseInputForm = false;
+    }
+
+    if (this.displayExerciseHistoryPage) {
+      const pageHeadingHtml = TrainingPageHeadingSection.render({ session: sessionDetails });
+      const exerciseDataContainer = $('<div class="exercise-data"></div>');
+      // Build the page
+      main.html(pageHeadingHtml);
+      main.append(exerciseDataContainer);
+      console.log('displ[aying history page....');
+      console.log('history:', this.exercisesHistory);
+      // this.displayExerciseHistoryPage = false;
+      // this.exercisesHistory = [];
+
     }
   }
 };

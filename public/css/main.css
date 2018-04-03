@@ -363,10 +363,11 @@ main > section {
 .exercise-list .last-session-results .btn-show-history {
   position: absolute;
   top: 50%;
-  left: 2px;
+  left: 8px;
   transform: translate(0, -50%);
   font-size: 1.5em;
   color: #eee;
+  background: transparent;
 }
 .exercise-list .last-session-results .btn-show-history .text {
   display: block;

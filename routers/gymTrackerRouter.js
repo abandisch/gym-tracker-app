@@ -162,10 +162,7 @@ router.get('/exercises/history/:exerciseId', [cookieParser(), jsonParser, jwtAut
 
   GymGoerExercisesModel
     .findExerciseHistory(gymGoerId, exerciseId)
-    .then(history => {
-      res.json(history);
-    });
-
+    .then(exercies => res.json(exercies)); // map this later to remove mongo id etc ... no for real, do it!
 });
 
 router.post('/login', [jsonParser, localAuth], (req, res) => {

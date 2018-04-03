@@ -80,7 +80,10 @@ const EventHandler = {
   onClickShowExerciseHistoryButton: function (exerciseId) {
     GymTrackerAPI
     .getExerciseHistory(exerciseId)
-    .then(history => console.log('historydskjfbdsf:', history));
+    .then(history => {
+      State.exercisesHistory = history;
+      GymTrackerClient.showExerciseHistoryPage();
+    });
   },
   onEditExerciseSetButtonClick: function (exerciseIndex) {
     return (exerciseSetId, exerciseSet) => {

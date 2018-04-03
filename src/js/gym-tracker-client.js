@@ -17,6 +17,10 @@ const GymTrackerClient = {
   showTrainingSessionPage() {
     State.displayTrainingSessionPage = true;
     State.render();
+  },
+  showExerciseHistoryPage() {
+    State.displayExerciseHistoryPage = true;
+    State.render();
   }
 };
 

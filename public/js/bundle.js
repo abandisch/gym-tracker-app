@@ -10461,6 +10461,10 @@ const GymTrackerClient = {
   showTrainingSessionPage() {
     __WEBPACK_IMPORTED_MODULE_0__gym_tracker_state__["a" /* State */].displayTrainingSessionPage = true;
     __WEBPACK_IMPORTED_MODULE_0__gym_tracker_state__["a" /* State */].render();
+  },
+  showExerciseHistoryPage() {
+    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_state__["a" /* State */].displayExerciseHistoryPage = true;
+    __WEBPACK_IMPORTED_MODULE_0__gym_tracker_state__["a" /* State */].render();
   }
 };
 
@@ -10494,6 +10498,7 @@ const State = {
     {exercise: 'back', icon: 'fa-heart'}
   ],
   trainingSessionExercises: [],
+  exercisesHistory: [],
   render() {
     const main = $('main');
     let sessionDetails = { };
@@ -10570,6 +10575,19 @@ const State = {
       main.append(exerciseDataContainer);
       this.displayTrainingSessionPage = false;
       this.displayAddExerciseInputForm = false;
+    }
+
+    if (this.displayExerciseHistoryPage) {
+      const pageHeadingHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["f" /* TrainingPageHeadingSection */].render({ session: sessionDetails });
+      const exerciseDataContainer = $('<div class="exercise-data"></div>');
+      // Build the page
+      main.html(pageHeadingHtml);
+      main.append(exerciseDataContainer);
+      console.log('displ[aying history page....');
+      console.log('history:', this.exercisesHistory);
+      // this.displayExerciseHistoryPage = false;
+      // this.exercisesHistory = [];
+
     }
   }
 };
@@ -10667,7 +10685,10 @@ const EventHandler = {
   onClickShowExerciseHistoryButton: function (exerciseId) {
     __WEBPACK_IMPORTED_MODULE_0__gym_tracker_api__["a" /* GymTrackerAPI */]
     .getExerciseHistory(exerciseId)
-    .then(history => console.log('historydskjfbdsf:', history));
+    .then(history => {
+      __WEBPACK_IMPORTED_MODULE_1__gym_tracker_state__["a" /* State */].exercisesHistory = history;
+      __WEBPACK_IMPORTED_MODULE_2__gym_tracker_client__["GymTrackerClient"].showExerciseHistoryPage();
+    });
   },
   onEditExerciseSetButtonClick: function (exerciseIndex) {
     return (exerciseSetId, exerciseSet) => {

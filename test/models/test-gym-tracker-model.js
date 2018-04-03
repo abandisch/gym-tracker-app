@@ -65,7 +65,7 @@ describe('# GymGoerExerciseModel', function () {
   let twoWeeksAgoDate = new Date();
   twoWeeksAgoDate.setDate(oneWeekAgoDate.getDate() - 7);
 
-  describe.only('# GymGoerExercisesModel.findExerciseHistory', function() {
+  describe('# GymGoerExercisesModel.findExerciseHistory', function() {
     it('should return the full history of an exercise', function() {
       let gymGoer;
       const TEST_SESSION_TYPE = 'chest';

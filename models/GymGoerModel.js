@@ -54,6 +54,17 @@ gymGoerExercisesSchema.methods.serialize = function () {
   };
 };
 
+gymGoerExercisesSchema.methods.serializeExercise = function() {
+  return {
+    id: this._id,
+    exerciseName,
+    gymGoerId,
+    sessionDate,
+    sessionType,
+    sets
+  }
+}
+
 gymGoerSchema.methods.serializeAll = function() {
   return {
     id: this._id,
