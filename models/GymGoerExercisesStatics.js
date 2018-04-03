@@ -8,7 +8,8 @@ const GymGoerExercisesStatics = {
       .findById({_id: exerciseId}, {exerciseName: 1, gymGoerId: 1})
       .then(res => {
         return this
-          .find( { $and: [{exerciseName: res.exerciseName}, {gymGoerId: res.gymGoerId}] })  
+          .find( { $and: [{exerciseName: res.exerciseName}, {gymGoerId: res.gymGoerId}] })
+          .sort( { sessionDate: -1 } );
       });
   },
   extractExercisesFromLastSession(previousExercises) {
