@@ -10504,15 +10504,15 @@ const State = {
     let sessionDetails = { };
 
     if (this.displayHomePage) {
-      const pageTextHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["a" /* HomePage */].render({template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["a" /* HomePage */].introText});
-      const homePageLoginHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["a" /* HomePage */].render({template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["a" /* HomePage */].loginForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onLoginFormSubmit});
+      const pageTextHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["b" /* HomePage */].render({template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["b" /* HomePage */].introText});
+      const homePageLoginHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["b" /* HomePage */].render({template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["b" /* HomePage */].loginForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onLoginFormSubmit});
       main.html(pageTextHtml);
       main.append(homePageLoginHtml);
       this.displayHomePage = false;
     }
 
     if (this.displaySelectTrainingSessionPage) {
-      const selectTrainingSessionHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["b" /* SelectTrainingSessionSection */].render({template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["b" /* SelectTrainingSessionSection */].selectTrainingSessionForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onSelectTrainingSessionFormSubmit});
+      const selectTrainingSessionHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* SelectTrainingSessionSection */].render({template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* SelectTrainingSessionSection */].selectTrainingSessionForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onSelectTrainingSessionFormSubmit});
       main.html(selectTrainingSessionHtml);
       this.displaySelectTrainingSessionPage = false;
     }
@@ -10526,15 +10526,15 @@ const State = {
     }
 
     if (this.displayEmptyTrainingSessionPage) {
-      const pageHeadingHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["f" /* TrainingPageHeadingSection */].render({ session: sessionDetails });
+      const pageHeadingHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["g" /* TrainingPageHeadingSection */].render({ session: sessionDetails });
       const formsContainer = $('<div class="no-previous-data"></div>');
-      const changeSessionForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["d" /* TrainingPageChangeSessionSection */].render({ onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onChangeSessionFormSubmit });
-      const noPreviousDataNote = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["g" /* TrainingPageStaticContent */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["g" /* TrainingPageStaticContent */].noPreviousDataNote, session: sessionDetails });
+      const changeSessionForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["e" /* TrainingPageChangeSessionSection */].render({ onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onChangeSessionFormSubmit });
+      const noPreviousDataNote = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["h" /* TrainingPageStaticContent */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["h" /* TrainingPageStaticContent */].noPreviousDataNote, session: sessionDetails });
       let addExercisesForm;
       if (this.displayAddExerciseInputForm) { // show the form with input field
-        addExercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingPageAddExerciseSection */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingPageAddExerciseSection */].addExerciseInputForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseInputFormSubmit });
+        addExercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["d" /* TrainingPageAddExerciseSection */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["d" /* TrainingPageAddExerciseSection */].addExerciseInputForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseInputFormSubmit });
       } else { // just show the big button form
-        addExercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingPageAddExerciseSection */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingPageAddExerciseSection */].addExerciseBigButtonForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseBigButtonFormSubmit });
+        addExercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["d" /* TrainingPageAddExerciseSection */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["d" /* TrainingPageAddExerciseSection */].addExerciseBigButtonForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseBigButtonFormSubmit });
       }
       main.html(pageHeadingHtml);
       formsContainer.append(changeSessionForm);
@@ -10547,27 +10547,27 @@ const State = {
 
     if (this.displayTrainingSessionPage) {
       // Page Header: SessionType [Date]
-      const pageHeadingHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["f" /* TrainingPageHeadingSection */].render({ session: sessionDetails });
+      const pageHeadingHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["g" /* TrainingPageHeadingSection */].render({ session: sessionDetails });
 
       const exerciseDataContainer = $('<div class="exercise-data"></div>');
 
       // Change session type button/form
-      const changeSessionForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["d" /* TrainingPageChangeSessionSection */].render({ onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onChangeSessionFormSubmit });
+      const changeSessionForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["e" /* TrainingPageChangeSessionSection */].render({ onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onChangeSessionFormSubmit });
       exerciseDataContainer.append(changeSessionForm);
 
       // Add exercise form
       if (this.displayAddExerciseInputForm) {
-        const cancelAddExerciseButtonForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingPageAddExerciseSection */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingPageAddExerciseSection */].cancelAddExerciseSmallButtonForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onCancelAddExerciseButtonFormSubmit  });
-        const addExerciseInputForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingPageAddExerciseSection */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingPageAddExerciseSection */].addExerciseInputForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseInputFormSubmit });
+        const cancelAddExerciseButtonForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["d" /* TrainingPageAddExerciseSection */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["d" /* TrainingPageAddExerciseSection */].cancelAddExerciseSmallButtonForm, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onCancelAddExerciseButtonFormSubmit  });
+        const addExerciseInputForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["d" /* TrainingPageAddExerciseSection */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["d" /* TrainingPageAddExerciseSection */].addExerciseInputForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseInputFormSubmit });
         exerciseDataContainer.append(cancelAddExerciseButtonForm);
         exerciseDataContainer.append(addExerciseInputForm);
       } else {
-        const addExercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingPageAddExerciseSection */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["c" /* TrainingPageAddExerciseSection */].addExerciseSmallButtonForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseSmallButtonFormSubmit });
+        const addExercisesForm = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["d" /* TrainingPageAddExerciseSection */].render({ template: __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["d" /* TrainingPageAddExerciseSection */].addExerciseSmallButtonForm, session: sessionDetails, onSubmitForm: __WEBPACK_IMPORTED_MODULE_1__gym_tracker_events__["a" /* EventHandler */].onAddExerciseSmallButtonFormSubmit });
         exerciseDataContainer.append(addExercisesForm);
       }
 
       // Exercises list - also contains the individual add set forms for each exercise
-      const exerciseListSection = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["e" /* TrainingPageExerciseListSection */].render({exercises: State.trainingSessionExercises});
+      const exerciseListSection = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["f" /* TrainingPageExerciseListSection */].render({exercises: State.trainingSessionExercises});
       exerciseDataContainer.append(exerciseListSection);
 
       // Build the page
@@ -10577,9 +10577,12 @@ const State = {
       this.displayAddExerciseInputForm = false;
     }
 
+    // exercise history sets (weight and reps)
     if (this.displayExerciseHistoryPage) {
-      const pageHeadingHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["f" /* TrainingPageHeadingSection */].render({ session: sessionDetails });
+      const pageHeadingHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["g" /* TrainingPageHeadingSection */].render({ session: sessionDetails });
       const exerciseDataContainer = $('<div class="exercise-data"></div>');
+      const historyHtml = __WEBPACK_IMPORTED_MODULE_0__gym_tracker_pages__["a" /* ExerciseHistory */].render({ exercises: this.exercisesHistory });
+      exerciseDataContainer.append(historyHtml);
       // Build the page
       main.html(pageHeadingHtml);
       main.append(exerciseDataContainer);
@@ -10727,13 +10730,14 @@ const EventHandler = {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return SelectTrainingSessionSection; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HomePage; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return TrainingPageHeadingSection; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return TrainingPageChangeSessionSection; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return TrainingPageAddExerciseSection; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return TrainingPageStaticContent; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return TrainingPageExerciseListSection; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return SelectTrainingSessionSection; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return HomePage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return TrainingPageHeadingSection; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return TrainingPageChangeSessionSection; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return TrainingPageAddExerciseSection; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return TrainingPageStaticContent; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return TrainingPageExerciseListSection; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ExerciseHistory; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gym_tracker_events__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__exercise_set_input_form__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__exercise_sets_table__ = __webpack_require__(8);
@@ -10741,6 +10745,59 @@ const EventHandler = {
 
 
 const $ = __webpack_require__(0);
+
+const ExerciseHistory = {
+  setRows(sets) {
+    return sets.map(set => `<tr><td>${set.setNumber}</td><td>${set.weight}</td><td>${set.reps}</td></tr>`).join('');
+  },
+  liElement(sessionDate, sets) {
+    if (sets.length === 0) return;
+    const date = new Date(sessionDate).toLocaleString().split(',').splice(0, 1)[0];
+    const rows = this.setRows(sets)
+    return `
+      <li>
+      <p class="history-session-date">Session Date ${date}</p> 
+      <table class="history-set-table">
+      <!-- Table caption is for Screen Readers only --> 
+      <caption class="sr-only">Exercise Sets Table for Bench Press</caption>
+      <thead>
+        <tr>
+          <th scope="col">Set #</th>
+          <th scope="col">Weight</th>
+          <th scope="col">Reps</th>
+        </tr>                
+      </thead>
+      <tbody>
+        ${rows}
+      </tbody>
+    </table>
+    </li>
+    `
+  },
+  main(exerciseName, exercises) {
+    const liElements = exercises.map(exercise => this.liElement(exercise.sessionDate, exercise.sets)).join('');
+    return `    
+    <div class="exercise-history">
+      <div class="history-heading">
+        <h2>${exerciseName}<span>Weight & Rep History</span></h2>
+      </div>
+      <ul class="exercise-history-list">
+        ${liElements}      
+      </ul>
+    </div>`;
+  },
+  html(exercises) {
+    if (exercises.length > 0) {
+      const exerciseName = exercises[0].exerciseName;
+      return this.main(exerciseName, exercises);
+    } else {
+      return '<p style="text-align: center;">No history found.</p>';
+    }
+  },
+  render(props) {
+    return this.html(props.exercises);
+  }
+}
 
 const TrainingPageStaticContent = {
   noPreviousDataNote(session) {

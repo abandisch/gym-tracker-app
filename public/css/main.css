@@ -464,3 +464,45 @@ footer p a, footer p a:visited {
   text-decoration: none;
   color: #eee;
 }
+
+.exercise-history .history-heading {
+  background-color: #263A40;
+  color: #fff;
+  padding: 6px;
+  text-align: center;
+}
+.exercise-history .history-heading h2 {
+  margin: 0;
+  padding: 0;
+  font-size: 1.1em;
+}
+.exercise-history .history-heading h2 span {
+  display: block;
+  font-size: 0.8em;
+  margin: 0 0 3px;
+}
+.exercise-history .exercise-history-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+.exercise-history .exercise-history-list .history-session-date {
+  margin: 0;
+  background-color: #D9DCD6;
+  padding: 10px;
+  text-align: center;
+  font-size: 0.9em;
+}
+.exercise-history-list .history-set-table {
+  font-size: 0.8em;
+  width: 100%;
+  margin: 0 0 10px;
+}
+.exercise-history-list .history-set-table th, .exercise-history-list .history-set-table td {
+  text-align: center;
+  padding: 8px 0;
+  height: 31px;
+  border-bottom: 1px solid #cecaca;
+  font-weight: normal;
+}

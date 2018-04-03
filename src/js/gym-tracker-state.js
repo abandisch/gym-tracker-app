@@ -1,7 +1,7 @@
 import { SelectTrainingSessionSection, HomePage,
          TrainingPageHeadingSection, TrainingPageChangeSessionSection,
          TrainingPageAddExerciseSection, TrainingPageStaticContent,
-         TrainingPageExerciseListSection } from './gym-tracker-pages';
+         TrainingPageExerciseListSection, ExerciseHistory } from './gym-tracker-pages';
 import {EventHandler} from './gym-tracker-events';
 const $ = require("jquery");
 
@@ -98,9 +98,12 @@ const State = {
       this.displayAddExerciseInputForm = false;
     }
 
+    // exercise history sets (weight and reps)
     if (this.displayExerciseHistoryPage) {
       const pageHeadingHtml = TrainingPageHeadingSection.render({ session: sessionDetails });
       const exerciseDataContainer = $('<div class="exercise-data"></div>');
+      const historyHtml = ExerciseHistory.render({ exercises: this.exercisesHistory });
+      exerciseDataContainer.append(historyHtml);
       // Build the page
       main.html(pageHeadingHtml);
       main.append(exerciseDataContainer);

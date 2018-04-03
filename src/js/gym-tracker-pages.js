@@ -3,6 +3,59 @@ import ExerciseSetInputForm from "./exercise-set-input-form";
 import ExerciseSetsTable from "./exercise-sets-table";
 const $ = require("jquery");
 
+const ExerciseHistory = {
+  setRows(sets) {
+    return sets.map(set => `<tr><td>${set.setNumber}</td><td>${set.weight}</td><td>${set.reps}</td></tr>`).join('');
+  },
+  liElement(sessionDate, sets) {
+    if (sets.length === 0) return;
+    const date = new Date(sessionDate).toLocaleString().split(',').splice(0, 1)[0];
+    const rows = this.setRows(sets)
+    return `
+      <li>
+      <p class="history-session-date">Session Date ${date}</p> 
+      <table class="history-set-table">
+      <!-- Table caption is for Screen Readers only --> 
+      <caption class="sr-only">Exercise Sets Table for Bench Press</caption>
+      <thead>
+        <tr>
+          <th scope="col">Set #</th>
+          <th scope="col">Weight</th>
+          <th scope="col">Reps</th>
+        </tr>                
+      </thead>
+      <tbody>
+        ${rows}
+      </tbody>
+    </table>
+    </li>
+    `
+  },
+  main(exerciseName, exercises) {
+    const liElements = exercises.map(exercise => this.liElement(exercise.sessionDate, exercise.sets)).join('');
+    return `    
+    <div class="exercise-history">
+      <div class="history-heading">
+        <h2>${exerciseName}<span>Weight & Rep History</span></h2>
+      </div>
+      <ul class="exercise-history-list">
+        ${liElements}      
+      </ul>
+    </div>`;
+  },
+  html(exercises) {
+    if (exercises.length > 0) {
+      const exerciseName = exercises[0].exerciseName;
+      return this.main(exerciseName, exercises);
+    } else {
+      return '<p style="text-align: center;">No history found.</p>';
+    }
+  },
+  render(props) {
+    return this.html(props.exercises);
+  }
+}
+
 const TrainingPageStaticContent = {
   noPreviousDataNote(session) {
     if (session === undefined) {
@@ -199,4 +252,4 @@ const HomePage = {
 export { SelectTrainingSessionSection, HomePage,
          TrainingPageHeadingSection, TrainingPageChangeSessionSection,
          TrainingPageAddExerciseSection, TrainingPageStaticContent,
-         TrainingPageExerciseListSection };
+         TrainingPageExerciseListSection, ExerciseHistory };
