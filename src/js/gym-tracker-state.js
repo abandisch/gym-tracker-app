@@ -1,7 +1,8 @@
 import { SelectTrainingSessionSection, HomePage,
          TrainingPageHeadingSection, TrainingPageChangeSessionSection,
          TrainingPageAddExerciseSection, TrainingPageStaticContent,
-         TrainingPageExerciseListSection, ExerciseHistory } from './gym-tracker-pages';
+         TrainingPageExerciseListSection, ExerciseHistory,
+         ReturnToSessionForm } from './gym-tracker-pages';
 import {EventHandler} from './gym-tracker-events';
 const $ = require("jquery");
 
@@ -102,15 +103,19 @@ const State = {
     if (this.displayExerciseHistoryPage) {
       const pageHeadingHtml = TrainingPageHeadingSection.render({ session: sessionDetails });
       const exerciseDataContainer = $('<div class="exercise-data"></div>');
+      
+      const returnToSession = ReturnToSessionForm.render({ onSubmitForm: EventHandler.onReturnToSessionButtonClick });
+      exerciseDataContainer.append(returnToSession);
+
       const historyHtml = ExerciseHistory.render({ exercises: this.exercisesHistory });
       exerciseDataContainer.append(historyHtml);
+      
       // Build the page
       main.html(pageHeadingHtml);
       main.append(exerciseDataContainer);
-      console.log('displ[aying history page....');
-      console.log('history:', this.exercisesHistory);
-      // this.displayExerciseHistoryPage = false;
-      // this.exercisesHistory = [];
+ 
+      this.displayExerciseHistoryPage = false;
+      this.exercisesHistory = [];
 
     }
   }

@@ -368,6 +368,7 @@ main > section {
   font-size: 1.5em;
   color: #eee;
   background: transparent;
+  border: 1px solid #eee;
 }
 .exercise-list .last-session-results .btn-show-history .text {
   display: block;
@@ -505,4 +506,9 @@ footer p a, footer p a:visited {
   height: 31px;
   border-bottom: 1px solid #cecaca;
   font-weight: normal;
+}
+.return-to-session-form {
+  position: absolute;
+  top: 10px;
+  left: 20px;
 }

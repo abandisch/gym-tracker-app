@@ -3,6 +3,21 @@ import ExerciseSetInputForm from "./exercise-set-input-form";
 import ExerciseSetsTable from "./exercise-sets-table";
 const $ = require("jquery");
 
+const ReturnToSessionForm = {
+  html() {
+    return `<form role="form" class="return-to-session-form">
+              <button class="btn btn-change-session btn-small"><i class="fa fa-undo" aria-hidden="true"></i> Return to Session</button>
+            </form>`;
+  },
+  render(props) {
+    const template = this.html(props.session);
+    if (props.onSubmitForm) {
+      return $(template).on('submit', props.onSubmitForm);
+    }
+    return template;
+  }
+};
+
 const ExerciseHistory = {
   setRows(sets) {
     return sets.map(set => `<tr><td>${set.setNumber}</td><td>${set.weight}</td><td>${set.reps}</td></tr>`).join('');
@@ -252,4 +267,5 @@ const HomePage = {
 export { SelectTrainingSessionSection, HomePage,
          TrainingPageHeadingSection, TrainingPageChangeSessionSection,
          TrainingPageAddExerciseSection, TrainingPageStaticContent,
-         TrainingPageExerciseListSection, ExerciseHistory };
+         TrainingPageExerciseListSection, ExerciseHistory,
+         ReturnToSessionForm };

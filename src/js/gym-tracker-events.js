@@ -112,7 +112,11 @@ const EventHandler = {
         State.trainingSessionExercises = session.exercises;
         GymTrackerClient.showTrainingSessionPage();
       });
-  }
+  },
+  onReturnToSessionButtonClick: function (event) {
+    event.preventDefault();
+    GymTrackerClient.showTrainingSessionPage();
+  },
 };
 
 export { EventHandler };
