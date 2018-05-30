@@ -11004,6 +11004,7 @@ const HomePage = {
               <label for="emailAddress">Enter your email address to get started:</label>
               <input type="email" id="emailAddress" name="emailAddress" placeholder="Your Email Address" required>
               <button class="btn btn-start"><i class="fa fa-play"></i> Start Your Training Session</button>
+              <p class="text-center">Demo login: demo@gymtracker.com</p>
             </form>`;
   },
   render(props) {
